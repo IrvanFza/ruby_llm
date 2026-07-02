@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe RubyLLM::Protocols::Responses::Chat do
   let(:protocol) { RubyLLM::Protocols::Responses.allocate }
-  let(:model) { instance_double(RubyLLM::Model::Info, id: 'gpt-5-nano') }
+  let(:model) { instance_double(RubyLLM::Model, id: 'gpt-5-nano') }
 
   def render_payload(messages, tools: {}, schema: nil, thinking: nil, stream: false)
     protocol.send(:render_payload, messages, tools:, temperature: nil, model:, stream:, schema:, thinking:,

@@ -30,7 +30,7 @@ After reading this guide, you will know:
 
 ## Overview
 
-Every entry point that takes a `model:` argument runs the same resolution. `RubyLLM.chat`, `RubyLLM.embed`, and `RubyLLM.paint` all hand the name to the registry, which returns two things: a `RubyLLM::Model::Info` describing the model, and the provider instance that will serve it.
+Every entry point that takes a `model:` argument runs the same resolution. `RubyLLM.chat`, `RubyLLM.embed`, and `RubyLLM.paint` all hand the name to the registry, which returns two things: a `RubyLLM::Model` describing the model, and the provider instance that will serve it.
 
 ```ruby
 chat = RubyLLM.chat(model: "claude-sonnet-4-5")
@@ -136,7 +136,7 @@ chat = RubyLLM.chat(
 )
 ```
 
-RubyLLM then builds a synthetic `Model::Info` with assumed capabilities (`function_calling`, `streaming`, `vision`, `structured_output`) and a metadata warning, because it can't know the real ones:
+RubyLLM then builds a synthetic `RubyLLM::Model` with assumed capabilities (`function_calling`, `streaming`, `vision`, `structured_output`) and a metadata warning, because it can't know the real ones:
 
 ```ruby
 chat.model.capabilities  # => ["function_calling", "streaming", "vision", "structured_output"]

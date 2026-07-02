@@ -98,7 +98,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
 
   describe '.render_payload' do
     let(:model) do
-      instance_double(RubyLLM::Model::Info,
+      instance_double(RubyLLM::Model,
                       id: 'anthropic.claude-haiku-4-5-20251001-v1:0',
                       max_tokens: nil,
                       metadata: {})

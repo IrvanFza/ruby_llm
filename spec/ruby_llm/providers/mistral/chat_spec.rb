@@ -8,7 +8,7 @@ RSpec.describe RubyLLM::Providers::Mistral::Chat do
   let(:messages) { [RubyLLM::Message.new(role: :user, content: 'Hello')] }
 
   def render_payload(model_id:, thinking:)
-    model = instance_double(RubyLLM::Model::Info, id: model_id)
+    model = instance_double(RubyLLM::Model, id: model_id)
 
     provider.send(
       :render_payload,

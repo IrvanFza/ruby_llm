@@ -102,6 +102,11 @@ module RubyLLM
         self
       end
 
+      def with_fallbacks(...)
+        to_llm.with_fallbacks(...)
+        self
+      end
+
       def with_temperature(...)
         to_llm.with_temperature(...)
         self
@@ -149,6 +154,16 @@ module RubyLLM
 
       def after_tool_result(...)
         to_llm.after_tool_result(...)
+        self
+      end
+
+      def before_fallback(...)
+        to_llm.before_fallback(...)
+        self
+      end
+
+      def after_fallback(...)
+        to_llm.after_fallback(...)
         self
       end
 
@@ -220,7 +235,7 @@ module RubyLLM
 
       private
 
-      def resolve_model_from_strings # rubocop:disable Metrics/PerceivedComplexity
+      def resolve_model_from_strings
         config = context&.config || RubyLLM.config
         @model_string ||= config.default_model unless model_association
         return unless @model_string
@@ -232,22 +247,7 @@ module RubyLLM
           config: config
         )
 
-        model_class = self.class.model_class.constantize
-        model_record = model_class.find_or_create_by!(
-          model_id: model_info.id,
-          provider: model_info.provider
-        ) do |m|
-          m.name = model_info.name || model_info.id
-          m.family = model_info.family
-          m.context_window = model_info.context_window
-          m.max_output_tokens = model_info.max_output_tokens
-          m.capabilities = model_info.capabilities || []
-          m.modalities = model_info.modalities.to_h
-          m.pricing = model_info.pricing.to_h
-          m.metadata = model_info.metadata || {}
-        end
-
-        self.model_association = model_record
+        self.model_association = find_or_create_model_record(model_info)
         @model_string = nil
         @provider_string = nil
       end
@@ -276,6 +276,29 @@ module RubyLLM
             tool_call_message.destroy
           end
         end
+      end
+
+      def find_or_create_model_record(model_info)
+        model_class = self.class.model_class.constantize
+        model_class.find_or_create_by!(
+          model_id: model_info.id,
+          provider: model_info.provider
+        ) do |m|
+          m.name = model_info.name || model_info.id
+          m.family = model_info.family
+          m.context_window = model_info.context_window
+          m.max_output_tokens = model_info.max_output_tokens
+          m.capabilities = model_info.capabilities || []
+          m.modalities = model_info.modalities.to_h
+          m.pricing = model_info.pricing.to_h
+          m.metadata = model_info.metadata || {}
+        end
+      end
+
+      def current_llm_model_association(_message = nil)
+        model_info = @chat&.model
+
+        model_info ? find_or_create_model_record(model_info) : model_association
       end
 
       def setup_persistence_callbacks
@@ -337,7 +360,15 @@ module RubyLLM
       end
 
       def persist_new_message
-        @message = messages_association.create!(role: :assistant, content: '')
+        if @message&.persisted? && @message.content.blank? &&
+           !@message.tool_calls_association.exists? &&
+           (!@message.respond_to?(:content_raw) || @message.content_raw.blank?)
+          @message.destroy
+        end
+
+        attrs = { role: :assistant, content: '' }
+        attrs[self.class.model_association_name] = current_llm_model_association
+        @message = messages_association.create!(attrs)
       end
 
       def persist_message_completion(message)
@@ -368,7 +399,7 @@ module RubyLLM
         attrs[:thinking_tokens] = message.thinking_tokens if @message.has_attribute?(:thinking_tokens)
         attrs[:citations] = message.citations.map(&:to_h).presence if @message.has_attribute?(:citations)
         attrs[:finish_reason] = message.finish_reason if @message.has_attribute?(:finish_reason)
-        attrs[self.class.model_association_name] = model_association
+        attrs[self.class.model_association_name] = current_llm_model_association(message)
         if tool_call_id
           parent_tool_call_assoc = @message.class.reflect_on_association(:parent_tool_call)
           attrs[parent_tool_call_assoc.foreign_key] = tool_call_id

@@ -11,21 +11,31 @@ module RubyLLM
     extend Forwardable
     include Enumerable
 
+    DUPED_INHERITED_CONFIG = {
+      :@chat_kwargs => {},
+      :@tools => [],
+      :@tool_options => {},
+      :@params => {},
+      :@headers => {},
+      :@input_names => [],
+      :@fallbacks => [],
+      :@fallback_options => {}
+    }.freeze
+    COPIED_INHERITED_CONFIG = %i[
+      @instructions
+      @temperature
+      @thinking
+      @citations
+      @schema
+      @context
+      @chat_model
+    ].freeze
+    private_constant :DUPED_INHERITED_CONFIG, :COPIED_INHERITED_CONFIG
+
     class << self
       def inherited(subclass)
         super
-        subclass.instance_variable_set(:@chat_kwargs, (@chat_kwargs || {}).dup)
-        subclass.instance_variable_set(:@tools, (@tools || []).dup)
-        subclass.instance_variable_set(:@instructions, @instructions)
-        subclass.instance_variable_set(:@temperature, @temperature)
-        subclass.instance_variable_set(:@thinking, @thinking)
-        subclass.instance_variable_set(:@citations, @citations)
-        subclass.instance_variable_set(:@params, (@params || {}).dup)
-        subclass.instance_variable_set(:@headers, (@headers || {}).dup)
-        subclass.instance_variable_set(:@schema, @schema)
-        subclass.instance_variable_set(:@context, @context)
-        subclass.instance_variable_set(:@chat_model, @chat_model)
-        subclass.instance_variable_set(:@input_names, (@input_names || []).dup)
+        copy_inherited_config_to(subclass)
       end
 
       def model(model_id = nil, **options)
@@ -33,10 +43,15 @@ module RubyLLM
         @chat_kwargs = options
       end
 
-      def tools(*tools, &block)
-        return @tools || [] if tools.empty? && !block_given?
+      def tools(*tools, **options, &block)
+        return @tools || [] if tools.empty? && options.empty? && !block_given?
 
         @tools = block_given? ? block : tools.flatten
+        @tool_options = options
+      end
+
+      def tool_options
+        @tool_options || {}
       end
 
       def instructions(text = nil, **prompt_locals, &block)
@@ -83,6 +98,19 @@ module RubyLLM
 
         @schema = block_given? ? block : value
       end
+
+      def fallbacks(*models, **options)
+        return @fallbacks || [] if models.empty? && options.empty?
+
+        @fallbacks = models.flatten.compact
+        @fallback_options = options
+      end
+
+      def fallback_options
+        @fallback_options || {}
+      end
+
+      private :tool_options, :fallback_options
 
       def context(value = nil)
         return @context if value.nil?
@@ -187,9 +215,21 @@ module RubyLLM
         apply_params(llm_chat, runtime)
         apply_headers(llm_chat, runtime)
         apply_schema(llm_chat, runtime)
+        apply_fallbacks(llm_chat)
       end
 
       private
+
+      def copy_inherited_config_to(subclass)
+        DUPED_INHERITED_CONFIG.each do |ivar, default|
+          value = instance_variable_get(ivar) || default
+          subclass.instance_variable_set(ivar, value.dup)
+        end
+
+        COPIED_INHERITED_CONFIG.each do |ivar|
+          subclass.instance_variable_set(ivar, instance_variable_get(ivar))
+        end
+      end
 
       def with_rails_chat_record(method_name, **kwargs)
         raise ArgumentError, 'chat_model must be configured to use create/create!' unless resolved_chat_model
@@ -216,7 +256,7 @@ module RubyLLM
 
       def apply_tools(llm_chat, runtime)
         tools_to_apply = Array(evaluate(tools, runtime))
-        llm_chat.with_tools(*tools_to_apply) unless tools_to_apply.empty?
+        llm_chat.with_tools(*tools_to_apply, **tool_options) unless tools_to_apply.empty?
       end
 
       def apply_temperature(llm_chat)
@@ -244,6 +284,10 @@ module RubyLLM
       def apply_schema(llm_chat, runtime)
         value = resolved_schema_value(runtime)
         llm_chat.with_schema(value) if value
+      end
+
+      def apply_fallbacks(llm_chat)
+        llm_chat.with_fallbacks(*fallbacks, **fallback_options) if fallbacks.any?
       end
 
       def resolved_schema_value(runtime)
@@ -365,8 +409,9 @@ module RubyLLM
 
     def_delegators :chat, :model, :messages, :tools, :params, :headers, :schema, :ask, :say, :with_tool, :with_tools,
                    :with_model, :with_temperature, :with_thinking, :with_citations, :with_context, :with_params,
-                   :with_headers, :with_schema,
-                   :before_message, :after_message, :before_tool_call, :after_tool_result, :each, :complete,
+                   :with_headers, :with_schema, :with_fallbacks,
+                   :before_message, :after_message, :before_tool_call, :after_tool_result, :before_fallback,
+                   :after_fallback, :each, :complete,
                    :complete?, :ask_later, :generate, :run_tools, :step, :add_message, :add_completion,
                    :cost
   end

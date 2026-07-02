@@ -109,7 +109,7 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
   end
 
   describe '#render_payload' do
-    let(:model) { instance_double(RubyLLM::Model::Info, id: 'anthropic/claude-haiku-4.5') }
+    let(:model) { instance_double(RubyLLM::Model, id: 'anthropic/claude-haiku-4.5') }
     let(:messages) { [RubyLLM::Message.new(role: :user, content: 'Hello')] }
 
     before do

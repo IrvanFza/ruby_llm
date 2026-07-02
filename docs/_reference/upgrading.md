@@ -75,7 +75,7 @@ end
 schema -> { strict ? StrictSchema : LooseSchema }    # dynamic - evaluated per run
 ```
 
-**Cache pricing helpers use canonical names only.** The `cached_input*` / `cache_creation*` aliases on `Cost`, `Model::Info`, and `acts_as_model` records were removed. Use `cache_read*` / `cache_write*` (e.g. `model.cache_read_input_price_per_million`, `cost.cache_read`). Token-count helpers like `message.cached_tokens` are unchanged.
+**Cache pricing helpers use canonical names only.** The `cached_input*` / `cache_creation*` aliases on `Cost`, `Model`, and `acts_as_model` records were removed. Use `cache_read*` / `cache_write*` (e.g. `model.cache_read_input_price_per_million`, `cost.cache_read`). Token-count helpers like `message.cached_tokens` are unchanged.
 
 ## Providers and Protocols Split
 

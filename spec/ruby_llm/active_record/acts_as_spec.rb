@@ -825,6 +825,42 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
     end
   end
 
+  describe 'streaming fallback persistence' do
+    it 'replaces a blank streamed placeholder with the fallback assistant row' do
+      chat = Chat.create!(model: model)
+      llm_chat = chat.to_llm
+
+      chat.send(:persist_new_message)
+      placeholder_id = chat.instance_variable_get(:@message).id
+
+      llm_chat.with_model('claude-haiku-4-5', provider: :anthropic)
+      chat.send(:persist_new_message)
+      fallback_message = chat.instance_variable_get(:@message)
+
+      expect(Message.exists?(placeholder_id)).to be false
+      expect(fallback_message.model.model_id).to eq('claude-haiku-4-5-20251001')
+      expect(fallback_message.model.provider).to eq('anthropic')
+    end
+
+    it 'keeps a partial streamed primary row and starts fallback in a new row' do
+      chat = Chat.create!(model: model)
+      llm_chat = chat.to_llm
+
+      chat.send(:persist_new_message)
+      partial_message = chat.instance_variable_get(:@message)
+      partial_message.update!(content: 'primary partial')
+
+      llm_chat.with_model('claude-haiku-4-5', provider: :anthropic)
+      chat.send(:persist_new_message)
+      fallback_message = chat.instance_variable_get(:@message)
+
+      expect(Message.exists?(partial_message.id)).to be true
+      expect(partial_message.reload.model.model_id).to eq(model)
+      expect(fallback_message.id).not_to eq(partial_message.id)
+      expect(fallback_message.model.model_id).to eq('claude-haiku-4-5-20251001')
+    end
+  end
+
   describe 'error recovery' do
     it 'does not clean up complete tool interactions when error occurs after tool execution' do
       chat = Chat.create!(model: model)

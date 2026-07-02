@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe RubyLLM::Message do
   let(:model) do
-    RubyLLM::Model::Info.new(
+    RubyLLM::Model.new(
       id: 'priced-model',
       name: 'Priced Model',
       provider: 'openai',

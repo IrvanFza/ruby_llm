@@ -131,7 +131,7 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Chat do
   end
 
   describe '.render_payload' do
-    let(:model) { instance_double(RubyLLM::Model::Info, id: 'claude-sonnet-4-5', max_tokens: nil) }
+    let(:model) { instance_double(RubyLLM::Model, id: 'claude-sonnet-4-5', max_tokens: nil) }
 
     it 'embeds raw system content blocks unchanged' do
       system_raw = RubyLLM::Protocols::Anthropic::Content.new(
@@ -264,7 +264,7 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Chat do
     let(:user_message) { RubyLLM::Message.new(role: :user, content: 'Hello') }
 
     def render_payload(model_id:, thinking:, schema: nil, reasoning_options: [])
-      model = RubyLLM::Model::Info.new(
+      model = RubyLLM::Model.new(
         id: model_id,
         provider: 'anthropic',
         metadata: { reasoning_options: reasoning_options }

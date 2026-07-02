@@ -286,7 +286,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
   end
 
   describe '.render_payload' do
-    let(:model) { instance_double(RubyLLM::Model::Info, id: 'gpt-4o') }
+    let(:model) { instance_double(RubyLLM::Model, id: 'gpt-4o') }
     let(:messages) { [RubyLLM::Message.new(role: :user, content: 'Hello')] }
 
     before do
