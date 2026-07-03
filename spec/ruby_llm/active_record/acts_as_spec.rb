@@ -1158,15 +1158,19 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
     before do
       strict_loading_state[:by_default] = ApplicationRecord.strict_loading_by_default
-      strict_loading_state[:mode] = ApplicationRecord.strict_loading_mode
+      if ApplicationRecord.respond_to?(:strict_loading_mode)
+        strict_loading_state[:mode] = ApplicationRecord.strict_loading_mode
+      end
 
       ApplicationRecord.strict_loading_by_default = true
-      ApplicationRecord.strict_loading_mode = :n_plus_one_only
+      ApplicationRecord.strict_loading_mode = :n_plus_one_only if ApplicationRecord.respond_to?(:strict_loading_mode=)
     end
 
     after do
       ApplicationRecord.strict_loading_by_default = strict_loading_state[:by_default]
-      ApplicationRecord.strict_loading_mode = strict_loading_state[:mode]
+      if ApplicationRecord.respond_to?(:strict_loading_mode=)
+        ApplicationRecord.strict_loading_mode = strict_loading_state[:mode]
+      end
     end
 
     it 'to_llm does not raise StrictLoadingViolationError' do
