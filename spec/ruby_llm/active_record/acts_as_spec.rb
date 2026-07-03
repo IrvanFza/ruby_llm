@@ -159,8 +159,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       chat = Chat.create!(model: model)
       chat.ask('Hello')
 
-      chat.with_model('claude-3-5-haiku-20241022')
-      expect(chat.reload.model_id).to eq('claude-3-5-haiku-20241022')
+      chat.with_model('claude-haiku-4-5')
+      expect(chat.reload.model_id).to eq('claude-haiku-4-5')
     end
   end
 
@@ -280,7 +280,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
   end
 
   describe 'raw content support' do
-    let(:anthropic_model) { 'claude-3-5-haiku-20241022' }
+    let(:anthropic_model) { 'claude-haiku-4-5' }
 
     it 'persists raw content blocks separately from plain text' do
       chat = Chat.create!(model: anthropic_model)
@@ -496,8 +496,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
         bot_chat = Assistants::BotChat.create!(model: model)
         bot_chat.ask('Hello')
 
-        bot_chat.with_model('claude-3-5-haiku-20241022')
-        expect(bot_chat.reload.model_id).to eq('claude-3-5-haiku-20241022')
+        bot_chat.with_model('claude-haiku-4-5')
+        expect(bot_chat.reload.model_id).to eq('claude-haiku-4-5')
       end
 
       it 'round-trips finish reasons when the message table has a column' do

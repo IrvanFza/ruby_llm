@@ -106,11 +106,11 @@ RSpec.describe RubyLLM::Models do
 
       # Only use alias when exact match isn't found
       chat_model = RubyLLM.chat(model: 'claude-3-5-haiku')
-      expect(chat_model.model.id).to eq('claude-3-5-haiku-20241022')
+      expect(chat_model.model.id).to eq('claude-3-5-haiku')
     end
 
     it 'prefers the first-party provider when an aggregator serves the same name' do
-      expect(RubyLLM.models.find('claude-3-5-haiku').provider).to eq('anthropic')
+      expect(RubyLLM.models.find('claude-haiku-4-5').provider).to eq('anthropic')
       expect(RubyLLM.models.find('mistral-medium-3').provider).to eq('mistral')
       expect(RubyLLM.models.find('gemini-2.5-flash').provider).to eq('gemini')
     end

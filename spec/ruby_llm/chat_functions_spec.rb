@@ -195,9 +195,9 @@ RSpec.describe RubyLLM::Chat do
   describe '#with_model' do
     it 'changes the model and returns self' do
       chat = described_class.new(model: 'gpt-4.1-nano')
-      result = chat.with_model('claude-3-5-haiku-20241022')
+      result = chat.with_model('claude-haiku-4-5')
 
-      expect(chat.model.id).to eq('claude-3-5-haiku-20241022')
+      expect(chat.model.id).to eq('claude-haiku-4-5')
       expect(result).to eq(chat) # Should return self for chaining
     end
   end
