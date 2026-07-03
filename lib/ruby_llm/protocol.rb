@@ -75,14 +75,28 @@ module RubyLLM
       parse_image_response(response, model:)
     end
 
-    def speak(input, model:, voice:, format:, params: {}, **options) # rubocop:disable Metrics/ParameterLists
-      payload = render_speech_payload(input, model:, voice:, format:, params:, **options)
+    def speak(input, model:, voice:, format:, params: {}, instructions: nil, speed: nil) # rubocop:disable Metrics/ParameterLists
+      payload = render_speech_payload(input, model:, voice:, format:, params:, instructions:, speed:)
       response = @connection.post speech_url(model:), payload
       parse_speech_response(response, model:, voice:, format:)
     end
 
-    def transcribe(audio_file, model:, language:, params: {}, **options)
+    def transcribe(audio_file, model:, language:, params: {}, prompt: nil, temperature: nil, response_format: nil, # rubocop:disable Metrics/ParameterLists
+                   timestamp_granularities: nil, speaker_names: nil, speaker_references: nil, chunking_strategy: nil,
+                   response_mime_type: nil, max_output_tokens: nil, safety_settings: nil)
       file_part = build_audio_file_part(audio_file)
+      options = {
+        prompt: prompt,
+        temperature: temperature,
+        response_format: response_format,
+        timestamp_granularities: timestamp_granularities,
+        speaker_names: speaker_names,
+        speaker_references: speaker_references,
+        chunking_strategy: chunking_strategy,
+        response_mime_type: response_mime_type,
+        max_output_tokens: max_output_tokens,
+        safety_settings: safety_settings
+      }.compact
       payload = render_transcription_payload(file_part, model:, language:, params:, **options)
       response = @connection.post transcription_url, payload
       parse_transcription_response(response, model:)

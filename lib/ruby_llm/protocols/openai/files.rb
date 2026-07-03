@@ -9,7 +9,9 @@ module RubyLLM
 
         private
 
-        def render_upload_payload(attachment, purpose: nil, expires_after: nil, **)
+        # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+        def render_upload_payload(attachment, purpose: nil, expires_after: nil, expiry: nil, visibility: nil,
+                                  display_name: nil, uri: nil, content_type: nil)
           unless purpose
             raise ArgumentError, "#{@provider.name} file uploads require purpose: " \
                                  "#{UPLOAD_PURPOSES.join(', ')}"
@@ -17,6 +19,7 @@ module RubyLLM
 
           multipart_payload(attachment, purpose:, expires_after:)
         end
+        # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
         def parse_file_response(data)
           uploaded_file(

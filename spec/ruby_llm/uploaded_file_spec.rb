@@ -17,6 +17,12 @@ RSpec.describe RubyLLM::UploadedFile do
 
       expect(RubyLLM.download('file_123')).to eq("jsonl\n")
     end
+
+    it 'rejects unknown upload keyword arguments' do
+      expect do
+        RubyLLM.upload('batch.jsonl', unsupported: true)
+      end.to raise_error(ArgumentError, /unknown keyword/)
+    end
   end
 
   describe '.upload' do

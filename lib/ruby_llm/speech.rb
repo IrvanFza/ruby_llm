@@ -29,9 +29,10 @@ module RubyLLM
                    voice: nil,
                    format: nil,
                    context: nil,
+                   instructions: nil,
+                   speed: nil,
                    params: {},
-                   metadata: nil,
-                   **options)
+                   metadata: nil)
       config = context&.config || RubyLLM.config
       model ||= config.default_speech_model
       model, provider_instance = Models.resolve(model, provider: provider, assume_exists: assume_model_exists,
@@ -50,6 +51,7 @@ module RubyLLM
       }
 
       RubyLLM.instrument('speech.ruby_llm', payload, config: config) do |event|
+        options = { instructions:, speed: }.compact
         result = provider_instance.speak(input, model: model.id, voice:, format:, params:, **options)
         event[:result] = result
         event[:response_model] = result.model

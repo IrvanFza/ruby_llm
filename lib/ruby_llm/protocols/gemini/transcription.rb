@@ -7,12 +7,18 @@ module RubyLLM
       module Transcription
         DEFAULT_PROMPT = 'Transcribe the provided audio and respond with only the transcript text.'
 
-        def transcribe(audio_file, model:, language:, params: {}, **options)
+        # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+        def transcribe(audio_file, model:, language:, params: {}, prompt: nil, temperature: nil,
+                       response_format: nil, timestamp_granularities: nil, speaker_names: nil,
+                       speaker_references: nil, chunking_strategy: nil, response_mime_type: 'text/plain',
+                       max_output_tokens: nil, safety_settings: nil)
           attachment = Attachment.new(audio_file)
-          payload = render_transcription_payload(attachment, language:, params:, **options)
+          payload = render_transcription_payload(attachment, language:, params:, prompt:, temperature:,
+                                                             response_mime_type:, max_output_tokens:, safety_settings:)
           response = @connection.post(transcription_url(model), payload)
           parse_transcription_response(response, model:)
         end
+        # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
         private
 
@@ -20,8 +26,9 @@ module RubyLLM
           "models/#{model}:generateContent"
         end
 
-        def render_transcription_payload(attachment, language:, params: {}, **options)
-          prompt = build_prompt(options[:prompt], language)
+        def render_transcription_payload(attachment, language:, params: {}, prompt: nil, temperature: nil, # rubocop:disable Metrics/ParameterLists
+                                         response_mime_type: 'text/plain', max_output_tokens: nil, safety_settings: nil)
+          prompt = build_prompt(prompt, language)
           audio_part = format_audio_part(attachment)
 
           raise UnsupportedAttachmentError, attachment.mime_type unless attachment.audio?
@@ -38,20 +45,19 @@ module RubyLLM
             ]
           }
 
-          generation_config = build_generation_config(options)
+          generation_config = build_generation_config(response_mime_type:, temperature:, max_output_tokens:)
           payload[:generationConfig] = generation_config unless generation_config.empty?
-          payload[:safetySettings] = options[:safety_settings] if options[:safety_settings]
+          payload[:safetySettings] = safety_settings if safety_settings
 
           Utils.deep_merge(payload, params)
         end
 
-        def build_generation_config(options)
+        def build_generation_config(response_mime_type:, temperature:, max_output_tokens:)
           config = {}
-          response_mime_type = options.fetch(:response_mime_type, 'text/plain')
 
           config[:responseMimeType] = response_mime_type if response_mime_type
-          config[:temperature] = options[:temperature] if options.key?(:temperature)
-          config[:maxOutputTokens] = options[:max_output_tokens] if options[:max_output_tokens]
+          config[:temperature] = temperature if temperature
+          config[:maxOutputTokens] = max_output_tokens if max_output_tokens
 
           config
         end

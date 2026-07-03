@@ -53,6 +53,12 @@ RSpec.describe RubyLLM::Speech do
         config: context.config
       )
     end
+
+    it 'rejects unknown keyword arguments' do
+      expect do
+        RubyLLM.speak('Hello', unsupported: true)
+      end.to raise_error(ArgumentError, /unknown keyword/)
+    end
   end
 
   describe '#save' do

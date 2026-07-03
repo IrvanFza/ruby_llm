@@ -11,20 +11,25 @@ module RubyLLM
           'audio/transcriptions'
         end
 
-        def render_transcription_payload(file_part, model:, language:, params: {}, **options)
+        # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+        def render_transcription_payload(file_part, model:, language:, params: {}, prompt: nil, temperature: nil,
+                                         response_format: nil, timestamp_granularities: nil, speaker_names: nil,
+                                         speaker_references: nil, chunking_strategy: nil, response_mime_type: nil,
+                                         max_output_tokens: nil, safety_settings: nil)
           {
             model: model,
             file: file_part,
             language: language,
-            chunking_strategy: (options[:chunking_strategy] || 'auto' if supports_chunking_strategy?(model, options)),
-            response_format: response_format_for(model, options),
-            prompt: options[:prompt],
-            temperature: options[:temperature],
-            timestamp_granularities: options[:timestamp_granularities],
-            known_speaker_names: options[:speaker_names],
-            known_speaker_references: encode_speaker_references(options[:speaker_references])
+            chunking_strategy: resolved_chunking_strategy(model, chunking_strategy),
+            response_format: response_format_for(model, response_format),
+            prompt: prompt,
+            temperature: temperature,
+            timestamp_granularities: timestamp_granularities,
+            known_speaker_names: speaker_names,
+            known_speaker_references: encode_speaker_references(speaker_references)
           }.compact.merge(params)
         end
+        # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
         def encode_speaker_references(references)
           return nil unless references
@@ -34,15 +39,21 @@ module RubyLLM
           end
         end
 
-        def response_format_for(model, options)
-          return options[:response_format] if options.key?(:response_format)
+        def resolved_chunking_strategy(model, chunking_strategy)
+          return unless supports_chunking_strategy?(model, chunking_strategy)
+
+          chunking_strategy || 'auto'
+        end
+
+        def response_format_for(model, response_format)
+          return response_format if response_format
 
           'diarized_json' if model.include?('diarize')
         end
 
-        def supports_chunking_strategy?(model, options)
+        def supports_chunking_strategy?(model, chunking_strategy)
           return false if model.start_with?('whisper')
-          return true if options.key?(:chunking_strategy)
+          return true if chunking_strategy
 
           model.include?('diarize')
         end

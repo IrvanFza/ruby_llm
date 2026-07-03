@@ -7,9 +7,12 @@ module RubyLLM
       class Files < UploadedFile::Protocol
         private
 
-        def render_upload_payload(attachment, expires_after: nil, purpose: nil, **)
+        # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+        def render_upload_payload(attachment, expires_after: nil, purpose: nil, expiry: nil, visibility: nil,
+                                  display_name: nil, uri: nil, content_type: nil)
           multipart_payload(attachment, expires_after:, purpose:)
         end
+        # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
         def parse_file_response(data)
           uploaded_file(

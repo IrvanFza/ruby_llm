@@ -35,8 +35,10 @@ module RubyLLM
         @connection = provider.connection
       end
 
-      def upload(file, filename: nil, **options)
+      def upload(file, filename: nil, purpose: nil, expires_after: nil, expiry: nil, visibility: nil, # rubocop:disable Metrics/ParameterLists
+                 display_name: nil, uri: nil, content_type: nil)
         attachment = file_attachment(file, filename:)
+        options = { purpose:, expires_after:, expiry:, visibility:, display_name:, uri:, content_type: }.compact
         response = @connection.post(files_url, render_upload_payload(attachment, **options)) do |request|
           request.headers.delete('Content-Type')
           upload_headers(request)
@@ -75,9 +77,12 @@ module RubyLLM
         "#{file_info_url(file_id)}/content"
       end
 
-      def render_upload_payload(attachment, **)
+      # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+      def render_upload_payload(attachment, purpose: nil, expires_after: nil, expiry: nil, visibility: nil,
+                                display_name: nil, uri: nil, content_type: nil)
         { file: file_part(attachment) }
       end
+      # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
       def multipart_payload(attachment, **fields)
         { file: file_part(attachment) }.merge(fields.compact)
@@ -137,7 +142,11 @@ module RubyLLM
       end
     end
 
-    def self.upload(file, provider: nil, context: nil, **options)
+    def self.upload(file, provider: nil, context: nil, filename: nil, purpose: nil, expires_after: nil, expiry: nil, # rubocop:disable Metrics/ParameterLists
+                    visibility: nil, display_name: nil, uri: nil, content_type: nil)
+      options = { filename:, purpose:, expires_after:, expiry:, visibility:, display_name:, uri:, content_type: }
+                .compact
+
       provider_for(provider, context).upload_file(file, **options)
     end
 

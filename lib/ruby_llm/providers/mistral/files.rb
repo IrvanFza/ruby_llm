@@ -11,9 +11,12 @@ module RubyLLM
           "#{file_info_url(file_id)}/download"
         end
 
-        def render_upload_payload(attachment, purpose: nil, expiry: nil, visibility: nil, **)
+        # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+        def render_upload_payload(attachment, purpose: nil, expiry: nil, visibility: nil, expires_after: nil,
+                                  display_name: nil, uri: nil, content_type: nil)
           multipart_payload(attachment, purpose:, expiry:, visibility:)
         end
+        # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
         def parse_file_response(data)
           uploaded_file(

@@ -11,7 +11,7 @@ module RubyLLM
           "models/#{model}:generateContent"
         end
 
-        def render_speech_payload(input, model:, voice:, format:, params: {}, **options) # rubocop:disable Lint/UnusedMethodArgument,Metrics/ParameterLists
+        def render_speech_payload(input, model:, voice:, format:, params: {}, instructions: nil, speed: nil) # rubocop:disable Lint/UnusedMethodArgument,Metrics/ParameterLists
           RubyLLM.logger.debug { "Ignoring speech format #{format}. Gemini returns PCM audio." } if format
 
           payload = {

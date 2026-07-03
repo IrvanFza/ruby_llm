@@ -148,16 +148,35 @@ module RubyLLM
       default_protocol.new(self).paint(prompt, model:, size:, with:, mask:, params:)
     end
 
-    def speak(input, model:, voice:, format:, params: {}, **options) # rubocop:disable Metrics/ParameterLists
-      default_protocol.new(self).speak(input, model:, voice:, format:, params:, **options)
+    def speak(input, model:, voice:, format:, params: {}, instructions: nil, speed: nil) # rubocop:disable Metrics/ParameterLists
+      default_protocol.new(self).speak(input, model:, voice:, format:, params:, instructions:, speed:)
     end
 
-    def transcribe(audio_file, model:, language:, params: {}, **options)
+    def transcribe(audio_file, model:, language:, params: {}, prompt: nil, temperature: nil, response_format: nil, # rubocop:disable Metrics/ParameterLists
+                   timestamp_granularities: nil, speaker_names: nil, speaker_references: nil, chunking_strategy: nil,
+                   response_mime_type: nil, max_output_tokens: nil, safety_settings: nil)
+      options = {
+        prompt: prompt,
+        temperature: temperature,
+        response_format: response_format,
+        timestamp_granularities: timestamp_granularities,
+        speaker_names: speaker_names,
+        speaker_references: speaker_references,
+        chunking_strategy: chunking_strategy,
+        response_mime_type: response_mime_type,
+        max_output_tokens: max_output_tokens,
+        safety_settings: safety_settings
+      }.compact
+
       default_protocol.new(self).transcribe(audio_file, model:, language:, params:, **options)
     end
 
-    def upload_file(file, **options)
+    def upload_file(file, filename: nil, purpose: nil, expires_after: nil, expiry: nil, visibility: nil, # rubocop:disable Metrics/ParameterLists
+                    display_name: nil, uri: nil, content_type: nil)
       ensure_files_supported!
+      options = { filename:, purpose:, expires_after:, expiry:, visibility:, display_name:, uri:, content_type: }
+                .compact
+
       file_protocol.new(self).upload(file, **options)
     end
 
