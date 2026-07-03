@@ -9,19 +9,6 @@ def skip_unless_supports_functions(provider, model)
   skip "#{model} doesn't support function calling" unless model_info&.supports_functions?
 end
 
-PROVIDER_KEY_HINTS = {
-  bedrock: 'AWS_ACCESS_KEY_ID', vertexai: 'GOOGLE_CLOUD_PROJECT',
-  ollama: 'OLLAMA_API_BASE', gpustack: 'GPUSTACK_API_KEY'
-}.freeze
-
-def skip_unless_cassette_or_keys(example, provider)
-  cassette = example.full_description.parameterize(separator: '_').delete_prefix('rubyllm_')
-  return if File.exist?(File.join(VCR.configuration.cassette_library_dir, "#{cassette}.yml"))
-  return if ENV.key?(PROVIDER_KEY_HINTS.fetch(provider, "#{provider.to_s.upcase}_API_KEY"))
-
-  skip "#{provider} cassette not recorded yet; run bundle exec rake vcr:record[#{provider}]"
-end
-
 RSpec.describe RubyLLM::Chat do
   include_context 'with configured RubyLLM'
 
@@ -707,10 +694,12 @@ RSpec.describe RubyLLM::Chat do
     CHAT_MODELS.each do |model_info|
       model = model_info[:model]
       provider = model_info[:provider]
-      it "#{provider}/#{model} returns text and attachments from tools" do |example|
+      it "#{provider}/#{model} returns text and attachments from tools" do
         skip_unless_supports_functions(provider, model)
-        skip_unless_cassette_or_keys(example, provider)
         skip 'DeepSeek rejects tool attachments (no vision support)' if provider == :deepseek
+
+        # No cassettes yet: local server was not running at recording time
+        skip "#{provider} has no cassette for this example" if provider.in?(%i[gpustack ollama])
 
         chat = RubyLLM.chat(model: model, provider: provider).with_tool(FileFetchTool)
 
