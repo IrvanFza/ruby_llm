@@ -18,7 +18,7 @@ end
 
 RSpec.describe RubyLLM do
   let(:instrumenter) { OneShotCaptureInstrumenter.new }
-  let(:api_context) { described_class.context { |config| config.instrumenter = instrumenter } }
+  let(:model) { instance_double(RubyLLM::Model, id: 'test-model', provider: 'openai') }
   let(:provider) do
     provider_class = class_double(RubyLLM::Provider, display_name: 'OpenAI')
     instance_double(RubyLLM::Provider, slug: 'openai', class: provider_class)
@@ -27,7 +27,6 @@ RSpec.describe RubyLLM do
   let(:metadata) { { academy_id: 42, feature: 'search' } }
 
   before do
-    model = instance_double(RubyLLM::Model, id: 'test-model', provider: 'openai')
     allow(RubyLLM::Models).to receive(:resolve).and_return([model, provider])
   end
 
@@ -38,7 +37,7 @@ RSpec.describe RubyLLM do
     result = api_context.embed('hello', model: 'test-model', params: params, metadata: metadata)
 
     expect(result).to eq(embedding)
-    expect(provider).to have_received(:embed).with('hello', model: 'test-model', dimensions: nil, params: params)
+    expect(provider).to have_received(:embed).with('hello', model: model, dimensions: nil, params: params)
     _event_name, payload = instrumenter.events.last
     expect(payload[:params]).to eq(params)
     expect(payload[:metadata]).to eq(metadata)
@@ -53,7 +52,7 @@ RSpec.describe RubyLLM do
     expect(result).to eq(image)
     expect(provider).to have_received(:paint).with(
       'draw this',
-      model: 'test-model',
+      model: model,
       size: '1024x1024',
       with: nil,
       mask: nil,
@@ -71,7 +70,7 @@ RSpec.describe RubyLLM do
     result = api_context.moderate('check this', model: 'test-model', params: params, metadata: metadata)
 
     expect(result).to eq(moderation)
-    expect(provider).to have_received(:moderate).with('check this', model: 'test-model', params: params)
+    expect(provider).to have_received(:moderate).with('check this', model: model, params: params)
     _event_name, payload = instrumenter.events.last
     expect(payload[:params]).to eq(params)
     expect(payload[:metadata]).to eq(metadata)
@@ -86,7 +85,7 @@ RSpec.describe RubyLLM do
     expect(result).to eq(speech)
     expect(provider).to have_received(:speak).with(
       'say this',
-      model: 'test-model',
+      model: model,
       voice: nil,
       format: nil,
       params: params
@@ -103,10 +102,14 @@ RSpec.describe RubyLLM do
     result = api_context.transcribe('audio.wav', model: 'test-model', params: params, metadata: metadata)
 
     expect(result).to eq(transcription)
-    expect(provider).to have_received(:transcribe).with('audio.wav', model: 'test-model', language: nil,
+    expect(provider).to have_received(:transcribe).with('audio.wav', model: model, language: nil,
                                                                      params: params)
     _event_name, payload = instrumenter.events.last
     expect(payload[:params]).to eq(params)
     expect(payload[:metadata]).to eq(metadata)
+  end
+
+  def api_context
+    described_class.context { |config| config.instrumenter = instrumenter }
   end
 end

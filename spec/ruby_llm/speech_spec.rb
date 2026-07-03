@@ -25,7 +25,7 @@ RSpec.describe RubyLLM::Speech do
       )
       expect(provider).to have_received(:speak).with(
         'Hello',
-        model: 'gpt-4o-mini-tts',
+        model: model,
         voice: nil,
         format: nil,
         params: {}

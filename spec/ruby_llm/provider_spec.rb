@@ -281,6 +281,53 @@ RSpec.describe RubyLLM::Provider do
       expect(provider.send(:resolve_protocol, :responses, model)).to eq(RubyLLM::Protocols::Responses)
     end
 
+    it 'routes one-shot APIs through protocol_for' do
+      routed_model = instance_double(RubyLLM::Model, id: 'gpt-audio-mini')
+      protocol = instance_double(
+        RubyLLM::Protocols::ChatCompletions,
+        embed: RubyLLM::Embedding.new(vectors: [0.1], model: routed_model.id),
+        moderate: RubyLLM::Moderation.new(id: 'modr_1', model: routed_model.id, results: []),
+        paint: RubyLLM::Image.new(model_id: routed_model.id),
+        speak: RubyLLM::Speech.new(data: 'audio', model: routed_model.id),
+        transcribe: RubyLLM::Transcription.new(text: 'transcript', model: routed_model.id)
+      )
+
+      allow(RubyLLM::Protocols::ChatCompletions).to receive(:new).with(provider, routed_model).and_return(protocol)
+
+      provider.embed('hello', model: routed_model, dimensions: nil)
+      provider.moderate('hello', model: routed_model)
+      provider.paint('hello', model: routed_model, size: '1024x1024')
+      provider.speak('hello', model: routed_model, voice: nil, format: nil)
+      provider.transcribe('audio.mp3', model: routed_model, language: nil)
+
+      expect(RubyLLM::Protocols::ChatCompletions).to have_received(:new).with(provider, routed_model).exactly(5).times
+      expect(protocol).to have_received(:embed).with('hello', model: routed_model.id, dimensions: nil, params: {})
+      expect(protocol).to have_received(:moderate).with('hello', model: routed_model.id, params: {})
+      expect(protocol).to have_received(:paint).with(
+        'hello',
+        model: routed_model.id,
+        size: '1024x1024',
+        with: nil,
+        mask: nil,
+        params: {}
+      )
+      expect(protocol).to have_received(:speak).with(
+        'hello',
+        model: routed_model.id,
+        voice: nil,
+        format: nil,
+        params: {},
+        instructions: nil,
+        speed: nil
+      )
+      expect(protocol).to have_received(:transcribe).with(
+        'audio.mp3',
+        model: routed_model.id,
+        language: nil,
+        params: {}
+      )
+    end
+
     it 'raises on protocols the provider does not speak' do
       expect do
         provider.send(:resolve_protocol, :gemini, model)

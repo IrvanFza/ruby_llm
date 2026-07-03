@@ -37,7 +37,7 @@ module RubyLLM
       }
 
       RubyLLM.instrument('embedding.ruby_llm', payload, config: config) do |event|
-        result = provider_instance.embed(text, model: model_id, dimensions:, params:)
+        result = provider_instance.embed(text, model:, dimensions:, params:)
         event[:result] = result
         event[:response_model] = result.model
         event[:input_tokens] = result.input_tokens

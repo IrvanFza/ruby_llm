@@ -8,7 +8,16 @@ module RubyLLM
       include Bedrock::Models
 
       protocol :converse, Protocols::Converse, batches: Protocols::Converse::Batches
+      protocol :titan_text_embeddings, Bedrock::TitanTextEmbeddings
+      protocol :titan_multimodal_embeddings, Bedrock::TitanMultimodalEmbeddings
+      protocol :cohere_embeddings, Bedrock::CohereEmbeddings
       files Bedrock::Files
+
+      def protocol_for(model, operation: nil, **)
+        return embedding_protocol_for(model_id_for(model)) if operation == :embed
+
+        super
+      end
 
       def api_base
         @config.bedrock_api_base || "https://bedrock-runtime.#{bedrock_region}.amazonaws.com"
@@ -114,6 +123,24 @@ module RubyLLM
 
       def model_supports_top_k?(model)
         Protocols::Converse.reasoning_embedded?(model)
+      end
+
+      def embedding_protocol_for(model_id)
+        case model_id
+        when bedrock_model_id_pattern('amazon.titan-embed-image')
+          protocols[:titan_multimodal_embeddings]
+        when bedrock_model_id_pattern('amazon.titan-embed-g1-text'),
+             bedrock_model_id_pattern('amazon.titan-embed-text')
+          protocols[:titan_text_embeddings]
+        when bedrock_model_id_pattern('cohere.embed')
+          protocols[:cohere_embeddings]
+        else
+          raise Error, "Bedrock embeddings are not supported for #{model_id.inspect}"
+        end
+      end
+
+      def bedrock_model_id_pattern(prefix)
+        /\A(?:(?:#{Bedrock::Models::REGION_PREFIXES.join('|')})\.)?#{Regexp.escape(prefix)}/
       end
     end
   end

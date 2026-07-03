@@ -44,7 +44,7 @@ module RubyLLM
       self.class.protocols
     end
 
-    # Routing hook. Override to pick a protocol per model or request —
+    # Routing hook. Override to pick a protocol per model or request operation —
     # an explicit `with_protocol` or `config.<slug>_protocol` wins over this.
     def protocol_for(_model, **)
       default_protocol
@@ -137,19 +137,31 @@ module RubyLLM
     end
 
     def embed(text, model:, dimensions:, params: {})
-      default_protocol.new(self).embed(text, model:, dimensions:, params:)
+      protocol = resolve_protocol(nil, model, operation: :embed)
+      protocol.new(self, model).embed(text, model: model_id_for(model), dimensions:, params:)
     end
 
     def moderate(input, model:, params: {})
-      default_protocol.new(self).moderate(input, model:, params:)
+      protocol = resolve_protocol(nil, model, operation: :moderate)
+      protocol.new(self, model).moderate(input, model: model_id_for(model), params:)
     end
 
     def paint(prompt, model:, size:, with: nil, mask: nil, params: {}) # rubocop:disable Metrics/ParameterLists
-      default_protocol.new(self).paint(prompt, model:, size:, with:, mask:, params:)
+      protocol = resolve_protocol(nil, model, operation: :paint)
+      protocol.new(self, model).paint(prompt, model: model_id_for(model), size:, with:, mask:, params:)
     end
 
     def speak(input, model:, voice:, format:, params: {}, instructions: nil, speed: nil) # rubocop:disable Metrics/ParameterLists
-      default_protocol.new(self).speak(input, model:, voice:, format:, params:, instructions:, speed:)
+      protocol = resolve_protocol(nil, model, operation: :speak)
+      protocol.new(self, model).speak(
+        input,
+        model: model_id_for(model),
+        voice:,
+        format:,
+        params:,
+        instructions:,
+        speed:
+      )
     end
 
     def transcribe(audio_file, model:, language:, params: {}, prompt: nil, temperature: nil, response_format: nil, # rubocop:disable Metrics/ParameterLists
@@ -168,7 +180,8 @@ module RubyLLM
         safety_settings: safety_settings
       }.compact
 
-      default_protocol.new(self).transcribe(audio_file, model:, language:, params:, **options)
+      protocol = resolve_protocol(nil, model, operation: :transcribe)
+      protocol.new(self, model).transcribe(audio_file, model: model_id_for(model), language:, params:, **options)
     end
 
     def upload_file(file, filename: nil, purpose: nil, expires_after: nil, expiry: nil, visibility: nil, # rubocop:disable Metrics/ParameterLists
@@ -376,6 +389,10 @@ module RubyLLM
       protocols.fetch(name.to_sym) do
         raise Error, "#{name} is not a protocol of #{self.class.display_name}. Available: #{protocols.keys.join(', ')}"
       end
+    end
+
+    def model_id_for(model)
+      model.respond_to?(:id) ? model.id : model
     end
 
     def try_parse_json(maybe_json)

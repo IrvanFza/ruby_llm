@@ -52,7 +52,7 @@ module RubyLLM
 
       RubyLLM.instrument('speech.ruby_llm', payload, config: config) do |event|
         options = { instructions:, speed: }.compact
-        result = provider_instance.speak(input, model: model.id, voice:, format:, params:, **options)
+        result = provider_instance.speak(input, model:, voice:, format:, params:, **options)
         event[:result] = result
         event[:response_model] = result.model
         event[:voice] = result.voice

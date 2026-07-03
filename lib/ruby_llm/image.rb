@@ -33,7 +33,7 @@ module RubyLLM
       }
 
       RubyLLM.instrument('image.ruby_llm', payload, config: config) do |event|
-        result = provider_instance.paint(prompt, model: model.id, size:, with:, mask:, params:)
+        result = provider_instance.paint(prompt, model:, size:, with:, mask:, params:)
         event[:result] = result
         event[:response_model] = result.model_id
         result

@@ -34,7 +34,7 @@ module RubyLLM
       }
 
       RubyLLM.instrument('moderation.ruby_llm', payload, config: config) do |event|
-        result = provider_instance.moderate(input, model: model.id, params:)
+        result = provider_instance.moderate(input, model:, params:)
         event[:result] = result
         event[:flagged] = result.flagged?
         result

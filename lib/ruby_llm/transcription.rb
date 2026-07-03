@@ -62,7 +62,7 @@ module RubyLLM
           safety_settings: safety_settings
         }.compact
 
-        result = provider_instance.transcribe(audio_file, model: model.id, language:, params:, **options)
+        result = provider_instance.transcribe(audio_file, model:, language:, params:, **options)
         event[:result] = result
         event[:response_model] = result.model
         event[:input_tokens] = result.input_tokens
