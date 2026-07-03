@@ -64,13 +64,7 @@ module RubyLLM
           )
         end
 
-        def parse_completion_response(response)
-          parse_completion_body(response.body, raw: response)
-        end
-
         def parse_completion_body(data, raw:)
-          return if data.nil? || data.empty?
-
           raise Error.new(raw, data.dig('error', 'message')) if data.dig('error', 'message')
 
           message_data = data.dig('choices', 0, 'message')

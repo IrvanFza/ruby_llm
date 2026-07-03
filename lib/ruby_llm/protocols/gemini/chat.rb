@@ -127,10 +127,6 @@ module RubyLLM
           part
         end
 
-        def parse_completion_response(response)
-          parse_completion_body(response.body, raw: response)
-        end
-
         def parse_completion_body(data, raw:)
           parts = data.dig('candidates', 0, 'content', 'parts') || []
           tool_calls = extract_tool_calls(data)

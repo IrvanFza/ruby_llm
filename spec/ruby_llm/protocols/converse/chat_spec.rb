@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RubyLLM::Protocols::Converse::Chat do
-  describe '.parse_completion_response' do
+  describe '.parse_completion_body' do
     it 'exposes AWS inputTokens as-is (already non-cached) and keeps cache buckets separate' do
       # Per AWS, inputTokens already excludes cache; a real payload sends the non-cached count
       # directly, with cache read/write reported separately.
@@ -23,7 +23,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       }
 
       response = instance_double(Faraday::Response, body: response_body)
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.input_tokens).to eq(50)
       expect(message.output_tokens).to eq(5)
@@ -48,7 +48,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       }
 
       response = instance_double(Faraday::Response, body: response_body)
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.input_tokens).to eq(3)
       expect(message.cached_tokens).to eq(7714)
@@ -68,7 +68,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       }
 
       response = instance_double(Faraday::Response, body: response_body)
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.finish_reason).to eq('guardrail_intervened')
     end
@@ -88,7 +88,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       }
 
       response = instance_double(Faraday::Response, body: response_body)
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.thinking_tokens).to eq(7)
     end
@@ -108,7 +108,7 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       }
 
       response = instance_double(Faraday::Response, body: response_body)
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.thinking_tokens).to eq(7)
     end

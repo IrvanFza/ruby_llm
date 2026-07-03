@@ -6,10 +6,12 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
   let(:provider) { RubyLLM::Providers::OpenRouter::ChatCompletions.allocate }
 
   describe '#parse_completion_response' do
-    it 'returns nil for a nil response body' do
+    it 'raises RubyLLM::Error for a nil response body' do
       response = instance_double(Faraday::Response, body: nil)
 
-      expect(provider.send(:parse_completion_response, response)).to be_nil
+      expect do
+        provider.send(:parse_completion_response, response)
+      end.to raise_error(RubyLLM::Error, 'Provider returned an empty response body')
     end
 
     it 'normalizes cached prompt tokens out of input tokens' do

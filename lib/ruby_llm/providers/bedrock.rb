@@ -36,9 +36,9 @@ module RubyLLM
       end
 
       def parse_error(response)
-        return if response.body.nil? || response.body.empty?
+        body = parse_error_body(response)
+        return unless body
 
-        body = try_parse_json(response.body)
         return body if body.is_a?(String)
 
         body['message'] || body['Message'] || body['error'] || body['__type'] || super

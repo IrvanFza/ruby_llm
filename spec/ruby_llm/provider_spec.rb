@@ -122,6 +122,20 @@ RSpec.describe RubyLLM::Provider do
     end
   end
 
+  describe '#parse_error' do
+    it 'returns nil for empty error bodies on every provider' do
+      described_class.providers.each do |slug, provider_class|
+        provider = provider_class.new(config_for(slug))
+
+        [nil, '', {}, []].each do |body|
+          response = instance_double(Faraday::Response, body: body)
+
+          expect(provider.parse_error(response)).to be_nil
+        end
+      end
+    end
+  end
+
   describe '.register' do
     it 'registers provider configuration options on Configuration' do
       provider_key = :test_provider_spec

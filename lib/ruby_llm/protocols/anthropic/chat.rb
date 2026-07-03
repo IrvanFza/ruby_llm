@@ -105,10 +105,6 @@ module RubyLLM
           { format: { type: 'json_schema', schema: normalized } }
         end
 
-        def parse_completion_response(response)
-          parse_completion_body(response.body, raw: response)
-        end
-
         def parse_completion_body(data, raw:)
           content_blocks = data['content'] || []
 

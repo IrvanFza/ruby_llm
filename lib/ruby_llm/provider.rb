@@ -221,9 +221,9 @@ module RubyLLM
     end
 
     def parse_error(response)
-      return if response.body.empty?
+      body = parse_error_body(response)
+      return unless body
 
-      body = try_parse_json(response.body)
       case body
       when Hash
         error = body['error']
@@ -401,6 +401,13 @@ module RubyLLM
       JSON.parse(maybe_json)
     rescue JSON::ParserError
       maybe_json
+    end
+
+    def parse_error_body(response)
+      body = response.body
+      return if body.nil? || (body.respond_to?(:empty?) && body.empty?)
+
+      try_parse_json(body)
     end
 
     def ensure_configured!

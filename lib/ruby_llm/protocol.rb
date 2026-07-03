@@ -204,5 +204,14 @@ module RubyLLM
       end
       parse_completion_response response
     end
+
+    def parse_completion_response(response)
+      body = response.body
+      if body.nil? || (body.respond_to?(:empty?) && body.empty?)
+        raise Error.new(response, 'Provider returned an empty response body')
+      end
+
+      parse_completion_body(body, raw: response)
+    end
   end
 end

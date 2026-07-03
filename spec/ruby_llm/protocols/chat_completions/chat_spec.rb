@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
-  describe '.parse_completion_response' do
+  describe '.parse_completion_body' do
     it 'captures cached token information when present' do
       response_body = {
         'model' => 'gpt-4.1-nano',
@@ -25,7 +25,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       response = instance_double(Faraday::Response, body: response_body)
       allow(described_class).to receive(:parse_tool_calls).and_return(nil)
 
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.cached_tokens).to eq(6)
       expect(message.input_tokens).to eq(2)
@@ -58,7 +58,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       allow(described_class).to receive(:parse_tool_calls).and_return(
         'call_1' => RubyLLM::ToolCall.new(id: 'call_1', name: 'weather', arguments: {})
       )
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.finish_reason).to eq('tool_calls')
     end
@@ -85,7 +85,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       response = instance_double(Faraday::Response, body: response_body)
       allow(described_class).to receive(:parse_tool_calls).and_return(nil)
 
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.input_tokens).to eq(14)
       expect(message.cached_tokens).to eq(192)
@@ -115,7 +115,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       response = instance_double(Faraday::Response, body: response_body)
       allow(described_class).to receive(:parse_tool_calls).and_return(nil)
 
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.output_tokens).to eq(1306)
       expect(message.thinking_tokens).to eq(1087)
@@ -143,7 +143,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       response = instance_double(Faraday::Response, body: response_body)
       allow(described_class).to receive(:parse_tool_calls).and_return(nil)
 
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.output_tokens).to eq(9928)
       expect(message.thinking_tokens).to eq(9827)
@@ -171,7 +171,7 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       response = instance_double(Faraday::Response, body: response_body)
       allow(described_class).to receive(:parse_tool_calls).and_return(nil)
 
-      message = described_class.parse_completion_response(response)
+      message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.output_tokens).to eq(11_395)
       expect(message.thinking_tokens).to eq(193_947)
