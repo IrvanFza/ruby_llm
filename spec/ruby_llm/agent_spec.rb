@@ -1,9 +1,20 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'tmpdir'
 
 RSpec.describe RubyLLM::Agent do
   include_context 'with configured RubyLLM'
+
+  def with_prompt_root
+    tmpdir = Dir.mktmpdir
+    prompt_root = Pathname.new(tmpdir).join('app/prompts')
+    prompt_root.mkpath
+    allow(RubyLLM::Prompt).to receive(:root).and_return(prompt_root)
+    yield prompt_root
+  ensure
+    FileUtils.rm_rf(tmpdir) if tmpdir
+  end
 
   it 'builds a configured plain chat via .chat with runtime inputs' do
     tool_class = Class.new(RubyLLM::Tool) do
@@ -75,6 +86,38 @@ RSpec.describe RubyLLM::Agent do
     end
 
     expect { agent_class.chat }.to raise_error(RubyLLM::PromptNotFoundError, /Prompt file not found/)
+  end
+
+  it 'loads conventional instructions prompt automatically for named agents' do
+    with_prompt_root do |prompt_root|
+      path = prompt_root.join('spec_implicit_prompt_agent/instructions.txt.erb')
+      path.dirname.mkpath
+      path.write('Hello from <%= chat.class.name %>')
+
+      agent_class = Class.new(RubyLLM::Agent) do
+        model 'gpt-4.1-nano'
+      end
+      stub_const('SpecImplicitPromptAgent', agent_class)
+
+      chat = SpecImplicitPromptAgent.chat
+
+      expect(chat.messages.first.role).to eq(:system)
+      expect(chat.messages.first.content).to eq('Hello from RubyLLM::Chat')
+    end
+  end
+
+  it 'does not load a conventional prompt implicitly for anonymous agents' do
+    with_prompt_root do |prompt_root|
+      path = prompt_root.join('agent/instructions.txt.erb')
+      path.dirname.mkpath
+      path.write('Anonymous prompt')
+
+      agent_class = Class.new(RubyLLM::Agent) do
+        model 'gpt-4.1-nano'
+      end
+
+      expect(agent_class.chat.messages).to be_empty
+    end
   end
 
   it 'supports inline schema DSL via schema do ... end' do

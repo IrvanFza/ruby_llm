@@ -2,7 +2,7 @@
 layout: default
 title: Advanced Request Control
 parent: "Chat"
-nav_order: 7
+nav_order: 8
 description: Reach provider-specific features with custom parameters, wire protocols, raw content blocks, and HTTP headers
 ---
 

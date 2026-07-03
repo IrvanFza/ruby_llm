@@ -94,14 +94,14 @@ The install generator creates these directories with `.gitkeep` files so teams s
 These are conventions, not hard requirements:
 
 - Agents, tools, and schemas can live anywhere in your app autoload paths.
-- Prompt lookup convention: the `instructions` class macro resolves `instructions.txt.erb` from the agent class name.
+- Prompt lookup convention: named agents automatically resolve `instructions.txt.erb` from the agent class name when the file exists.
 
 For prompt lookup, RubyLLM uses class name conventions:
 
 - `WorkAssistant` -> `app/prompts/work_assistant/instructions.txt.erb`
 - `Admin::SupportAgent` -> `app/prompts/admin/support_agent/instructions.txt.erb`
 
-See the [Agents guide]({% link _advanced/agents.md %}#default-instructions-prompt) for how `instructions` rendering works.
+See the [Agents guide]({% link _advanced/agents.md %}#default-instructions-prompt) for how agent instruction rendering works, or [Prompt Rendering]({% link _core_features/prompt-rendering.md %}) for direct `RubyLLM.render_prompt` usage.
 
 ## Rails Generators for Agents, Tools, and Schemas
 

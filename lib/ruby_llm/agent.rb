@@ -321,13 +321,24 @@ module RubyLLM
       end
 
       def resolved_instructions_value(chat_object, runtime, inputs:)
-        value = evaluate(@instructions, runtime)
+        value = evaluate(instructions_config, runtime)
         return value unless prompt_instruction?(value)
 
         runtime.prompt(
           value[:prompt],
           **resolve_prompt_locals(value[:locals] || {}, runtime:, chat: chat_object, inputs:)
         )
+      end
+
+      def instructions_config
+        return @instructions unless @instructions.nil?
+        return unless default_instructions_prompt_exists?
+
+        { prompt: 'instructions', locals: {} }
+      end
+
+      def default_instructions_prompt_exists?
+        name && File.exist?(Prompt.new("#{prompt_agent_path}/instructions").path)
       end
 
       def prompt_instruction?(value)

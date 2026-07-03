@@ -200,11 +200,25 @@ Important: values that depend on runtime `chat` must be lazy (blocks/lambdas), n
 
 ## Prompt Management and Conventions
 
-Agents have prompt conventions built in.
+Agents have prompt conventions built in. They use the same `app/prompts` templates as [Prompt Rendering]({% link _core_features/prompt-rendering.md %}), with class-based lookup layered on top.
 
 ### Default instructions prompt
 
-Calling `instructions` with no arguments enables default prompt lookup:
+Named agents automatically use their conventional instructions prompt when it exists:
+
+```ruby
+class WorkAssistant < RubyLLM::Agent
+  chat_model Chat
+end
+```
+
+RubyLLM looks for:
+
+* `app/prompts/work_assistant/instructions.txt.erb`
+
+If the file exists, it is rendered and used as instructions. If it does not exist and you did not call `instructions`, the agent starts without system instructions.
+
+Call `instructions` with no arguments when the prompt is required and a missing file should fail loudly:
 
 ```ruby
 class WorkAssistant < RubyLLM::Agent
@@ -213,11 +227,7 @@ class WorkAssistant < RubyLLM::Agent
 end
 ```
 
-RubyLLM looks for:
-
-* `app/prompts/work_assistant/instructions.txt.erb`
-
-If the file exists, it is rendered and used as instructions. If it does not exist, RubyLLM raises `RubyLLM::PromptNotFoundError`.
+If that file does not exist, RubyLLM raises `RubyLLM::PromptNotFoundError`.
 
 ### Prompt shorthand with locals
 
@@ -248,6 +258,8 @@ Agent prompt path is derived from class name:
 * `Admin::SupportAgent` -> `app/prompts/admin/support_agent/...`
 
 Prompt extension defaults to `.txt.erb`.
+
+For rendering a prompt directly outside an agent, use `RubyLLM.render_prompt`. See [Prompt Rendering]({% link _core_features/prompt-rendering.md %}).
 
 ## Using an Agent
 

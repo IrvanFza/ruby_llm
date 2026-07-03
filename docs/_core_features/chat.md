@@ -26,6 +26,7 @@ After reading this guide, you will know:
 
 * How to start and continue conversations with AI models.
 * How to guide AI behavior with system prompts.
+* How to render reusable prompt templates.
 * How to select and work with different models and providers.
 * How to control response creativity with temperature.
 * How to read the raw provider response.
@@ -101,6 +102,8 @@ chat.with_instructions "Use exactly one short paragraph.", append: true
 
 System prompts are added to the conversation as messages with the `:system` role and are sent with every request to the AI provider. This ensures the model always considers your instructions when generating responses.
 
+Plain chats do not have a class name, so they do not infer a prompt path. For reusable instructions stored in `app/prompts`, render a template with [Prompt Rendering]({% link _core_features/prompt-rendering.md %}) and pass the result to `with_instructions`.
+
 When using the [Rails Integration]({% link _advanced/rails.md %}), system messages are persisted in your database along with user and assistant messages, maintaining the full conversation context.
 {: .note }
 
@@ -143,7 +146,7 @@ puts response2.content
 
 The `with_temperature` method returns the chat instance, allowing you to chain multiple configuration calls together.
 
-For provider-specific request options, wire protocols, raw content blocks, and custom HTTP headers, see [Advanced Request Control]({% link _core_features/chat-request-control.md %}). For prompt reuse, see [Prompt Caching]({% link _core_features/prompt-caching.md %}).
+For provider-specific request options, wire protocols, raw content blocks, and custom HTTP headers, see [Advanced Request Control]({% link _core_features/chat-request-control.md %}). For local ERB prompt templates, see [Prompt Rendering]({% link _core_features/prompt-rendering.md %}). For provider-side prompt reuse, see [Prompt Caching]({% link _core_features/prompt-caching.md %}).
 
 ## Raw Responses
 
@@ -198,6 +201,7 @@ This page covers the core `Chat` interface. Each facet of a conversation has its
 * [Structured Output]({% link _core_features/structured-output.md %}) - get responses that match an exact JSON schema.
 * [Extended Thinking]({% link _core_features/thinking.md %}) - give reasoning models room to deliberate and read their thinking.
 * [Citations]({% link _core_features/citations.md %}) - get verifiable answers backed by your documents and web sources.
+* [Prompt Rendering]({% link _core_features/prompt-rendering.md %}) - render reusable ERB templates from `app/prompts`.
 * [Prompt Caching]({% link _core_features/prompt-caching.md %}) - reuse stable prompt prefixes automatically or with explicit boundaries.
 * [Advanced Request Control]({% link _core_features/chat-request-control.md %}) - provider-specific parameters, wire protocols, raw content blocks, and custom headers.
 * [Token Usage and Cost]({% link _core_features/chat-tokens.md %}) - read per-turn and per-conversation token counts and costs.
