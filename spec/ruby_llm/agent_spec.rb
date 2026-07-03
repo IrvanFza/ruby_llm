@@ -15,6 +15,7 @@ RSpec.describe RubyLLM::Agent do
       inputs :display_name
       instructions { "Hello #{display_name}" }
       tools(choice: :required, calls: :one) { [tool_class.new] }
+      caching { { ttl: '1h' } }
       params { { max_tokens: 12 } }
     end
 
@@ -23,6 +24,8 @@ RSpec.describe RubyLLM::Agent do
     expect(chat.messages.first.role).to eq(:system)
     expect(chat.messages.first.content).to eq('Hello Ava')
     expect(chat.tools.keys).to include(:echo_tool)
+    expect(chat.tool_prefs).to include(choice: :required, calls: :one)
+    expect(chat.caching).to eq(ttl: '1h')
     expect(chat.tool_prefs).to include(choice: :required, calls: :one)
     expect(chat.params).to eq(max_tokens: 12)
   end
@@ -35,6 +38,34 @@ RSpec.describe RubyLLM::Agent do
 
     chat = agent_class.chat
     expect(chat.messages.first.content).to eq('RubyLLM::Chat')
+  end
+
+  it 'lets agents enable provider-default prompt caching' do
+    agent_class = Class.new(RubyLLM::Agent) do
+      model 'gpt-4.1-nano'
+      caching { {} }
+    end
+
+    expect(agent_class.chat.caching).to eq({})
+  end
+
+  it 'does not enable prompt caching unless configured' do
+    agent_class = Class.new(RubyLLM::Agent) do
+      model 'gpt-4.1-nano'
+    end
+
+    expect(agent_class.chat.caching).to be_nil
+  end
+
+  it 'lets agent instances clear prompt caching' do
+    agent_class = Class.new(RubyLLM::Agent) do
+      model 'gpt-4.1-nano'
+      caching { { retention: '24h' } }
+    end
+    agent = agent_class.new
+
+    expect(agent.without_caching).to eq(agent.chat)
+    expect(agent.caching).to be_nil
   end
 
   it 'raises when instructions default prompt is missing' do

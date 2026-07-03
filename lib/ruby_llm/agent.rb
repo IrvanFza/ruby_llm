@@ -15,6 +15,7 @@ module RubyLLM
       :@chat_kwargs => {},
       :@tools => [],
       :@tool_options => {},
+      :@caching => nil,
       :@params => {},
       :@headers => {},
       :@input_names => [],
@@ -79,6 +80,12 @@ module RubyLLM
         return @citations if value.nil?
 
         @citations = value
+      end
+
+      def caching(**options, &block)
+        return @caching if options.empty? && !block_given?
+
+        @caching = block_given? ? block : options
       end
 
       def params(**params, &block)
@@ -212,6 +219,7 @@ module RubyLLM
         apply_temperature(llm_chat)
         apply_thinking(llm_chat)
         apply_citations(llm_chat)
+        apply_caching(llm_chat, runtime)
         apply_params(llm_chat, runtime)
         apply_headers(llm_chat, runtime)
         apply_schema(llm_chat, runtime)
@@ -222,8 +230,8 @@ module RubyLLM
 
       def copy_inherited_config_to(subclass)
         DUPED_INHERITED_CONFIG.each do |ivar, default|
-          value = instance_variable_get(ivar) || default
-          subclass.instance_variable_set(ivar, value.dup)
+          value = instance_variable_defined?(ivar) ? instance_variable_get(ivar) : default
+          subclass.instance_variable_set(ivar, value.respond_to?(:dup) ? value.dup : value)
         end
 
         COPIED_INHERITED_CONFIG.each do |ivar|
@@ -269,6 +277,11 @@ module RubyLLM
 
       def apply_citations(llm_chat)
         llm_chat.with_citations(citations) unless citations.nil?
+      end
+
+      def apply_caching(llm_chat, runtime)
+        value = evaluate(caching, runtime)
+        llm_chat.with_caching(**value) if value
       end
 
       def apply_params(llm_chat, runtime)
@@ -407,9 +420,9 @@ module RubyLLM
 
     attr_reader :chat
 
-    def_delegators :chat, :model, :messages, :tools, :params, :headers, :schema, :ask, :say, :with_tool, :with_tools,
-                   :with_model, :with_temperature, :with_thinking, :with_citations, :with_context, :with_params,
-                   :with_headers, :with_schema, :with_fallbacks,
+    def_delegators :chat, :model, :messages, :tools, :params, :headers, :schema, :caching, :ask, :say, :with_tool,
+                   :with_tools, :with_model, :with_temperature, :with_thinking, :with_citations, :with_caching,
+                   :without_caching, :with_context, :with_params, :with_headers, :with_schema, :with_fallbacks,
                    :before_message, :after_message, :before_tool_call, :after_tool_result, :before_fallback,
                    :after_fallback, :each, :complete,
                    :complete?, :ask_later, :generate, :run_tools, :step, :add_message, :add_completion,

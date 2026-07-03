@@ -116,6 +116,17 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       expect(chat.messages.where(role: 'system').count).to eq(1)
       expect(chat.messages.find_by(role: 'system').content).to eq('Be awesome')
     end
+
+    it 'keeps system messages in chronological order' do
+      chat = Chat.create!(model: model)
+
+      chat.add_message(role: :user, content: 'Hi')
+      chat.add_message(role: :assistant, content: 'Hello')
+      chat.with_instructions('System')
+
+      expect(chat.messages.map(&:role)).to eq(%w[user assistant system])
+      expect(chat.to_llm.messages.map(&:role)).to eq(%i[user assistant system])
+    end
   end
 
   describe 'tool usage' do
@@ -309,6 +320,38 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       expect(message.cache_write_tokens).to eq(7)
     end
 
+    it 'persists cache boundaries on messages' do
+      chat = Chat.create!(model: anthropic_model)
+      message = chat.add_message(role: :user, content: 'Long context')
+
+      expect(message.cache_until_here!).to eq(message)
+      expect(message.reload.cache_until_here?).to be true
+      expect(message.to_llm.cache_until_here?).to be true
+    end
+
+    it 'marks the latest persisted chat message as a cache boundary' do
+      chat = Chat.create!(model: anthropic_model)
+
+      chat.ask_later('Long context').cache_until_here!
+
+      expect(chat.messages.last.cache_until_here?).to be true
+      expect(chat.to_llm.messages.last.cache_until_here?).to be true
+    end
+
+    it 'delegates prompt caching config to the LLM chat' do
+      chat = Chat.create!(model: anthropic_model)
+
+      expect(chat.with_caching(ttl: '1h')).to eq(chat)
+      expect(chat.to_llm.caching).to eq(ttl: '1h')
+    end
+
+    it 'clears runtime prompt caching config from the LLM chat' do
+      chat = Chat.create!(model: anthropic_model).with_caching(ttl: '1h')
+
+      expect(chat.without_caching).to eq(chat)
+      expect(chat.to_llm.caching).to be_nil
+    end
+
     it 'keeps create_user_message as a convenience wrapper for add_message' do
       chat = Chat.create!(model: anthropic_model)
 
@@ -414,6 +457,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
           t.string :role
           t.text :content
           t.json :content_raw
+          t.boolean :cache_until_here, null: false, default: false
           t.string :model_id
           t.integer :input_tokens
           t.integer :output_tokens
@@ -944,6 +988,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
             t.string :role
             t.text :content
             t.json :content_raw
+            t.boolean :cache_until_here, null: false, default: false
             t.string :model_id
             t.integer :input_tokens
             t.integer :output_tokens

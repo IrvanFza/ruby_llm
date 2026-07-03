@@ -61,8 +61,7 @@ module RubyLLM
           provider: model_record.provider.to_sym,
           assume_model_exists: assume_model_exists || false
         )
-        ordered_messages = order_messages_for_llm(messages_association.to_a)
-        @chat.messages = ordered_messages
+        @chat.messages = messages_association.to_a
         reapply_runtime_instructions(@chat)
 
         setup_persistence_callbacks
@@ -122,6 +121,16 @@ module RubyLLM
         self
       end
 
+      def with_caching(...)
+        to_llm.with_caching(...)
+        self
+      end
+
+      def without_caching
+        to_llm.without_caching
+        self
+      end
+
       def with_params(...)
         to_llm.with_params(...)
         self
@@ -173,6 +182,7 @@ module RubyLLM
 
         attrs = { role: llm_message.role, content: content_text }
         add_finish_reason_attribute(attrs, llm_message, messages_association.klass)
+        attrs[:cache_until_here] = llm_message.cache_until_here?
         parent_tool_call_assoc = messages_association.klass.reflect_on_association(:parent_tool_call)
         if parent_tool_call_assoc && llm_message.tool_call_id
           tool_call_id = find_tool_call_id(llm_message.tool_call_id)
@@ -186,6 +196,19 @@ module RubyLLM
         persist_tool_calls(llm_message.tool_calls, message_record:) if llm_message.tool_calls.present?
 
         message_record
+      end
+
+      def cache_until_here!
+        message_record = messages_association.order(:id).last
+        if message_record
+          message_record.cache_until_here!
+        elsif @chat&.messages&.any?
+          @chat.cache_until_here!
+        else
+          raise ArgumentError, 'No messages to cache'
+        end
+
+        self
       end
 
       def cost
@@ -312,16 +335,8 @@ module RubyLLM
       end
 
       def replace_persisted_system_instructions(instructions)
-        system_messages = messages_association.where(role: :system).order(:id).to_a
-
-        if system_messages.empty?
-          messages_association.create!(role: :system, content: instructions)
-          return
-        end
-
-        primary_message = system_messages.shift
-        primary_message.update!(content: instructions) if primary_message.content != instructions
-        system_messages.each(&:destroy!)
+        messages_association.where(role: :system).destroy_all
+        messages_association.create!(role: :system, content: instructions)
       end
 
       def persist_system_instruction(instructions, append:)
@@ -332,11 +347,6 @@ module RubyLLM
             replace_persisted_system_instructions(instructions)
           end
         end
-      end
-
-      def order_messages_for_llm(messages)
-        system_messages, non_system_messages = messages.partition { |msg| msg.role.to_s == 'system' }
-        system_messages + non_system_messages
       end
 
       def runtime_instructions
@@ -399,6 +409,7 @@ module RubyLLM
         attrs[:thinking_tokens] = message.thinking_tokens if @message.has_attribute?(:thinking_tokens)
         attrs[:citations] = message.citations.map(&:to_h).presence if @message.has_attribute?(:citations)
         attrs[:finish_reason] = message.finish_reason if @message.has_attribute?(:finish_reason)
+        attrs[:cache_until_here] = message.cache_until_here?
         attrs[self.class.model_association_name] = current_llm_model_association(message)
         if tool_call_id
           parent_tool_call_assoc = @message.class.reflect_on_association(:parent_tool_call)

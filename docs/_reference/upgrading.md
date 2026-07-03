@@ -42,7 +42,7 @@ bin/rails generate ruby_llm:upgrade
 bin/rails db:migrate
 ```
 
-The generator adds a JSON `citations` column and string `finish_reason` column to your messages table so [citations]({% link _core_features/citations.md %}) and provider stop reasons are persisted with each assistant message. It also creates the `batches` table for [provider-side batches]({% link _advanced/batches.md %}). These are optional - without them, citations and finish reasons stay on in-memory responses and batches aren't persisted.
+The generator adds a JSON `citations` column and string `finish_reason` column to your messages table so [citations]({% link _core_features/citations.md %}) and provider stop reasons are persisted with each assistant message. It also adds `cache_until_here` for [prompt caching]({% link _core_features/prompt-caching.md %}), and creates the `batches` table for [provider-side batches]({% link _advanced/batches.md %}). These are optional - without them, citations and finish reasons stay on in-memory responses, cache boundaries stay on in-memory messages, and batches aren't persisted.
 
 ## Breaking Changes
 
@@ -223,7 +223,7 @@ That's it! The generator:
 
 Among other features:
 
-- [Raw Content Blocks]({% link _core_features/chat-request-control.md %}#raw-content-blocks) to pass content verbatim to an LLM, e.g. useful to enable Anthropic Prompt Caching.
+- [Raw Content Blocks]({% link _core_features/chat-request-control.md %}#raw-content-blocks) to pass provider-specific content verbatim to an LLM.
 - Cached token tracking to accurately track costs given cache hits
 
 # Upgrade to 1.7

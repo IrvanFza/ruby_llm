@@ -406,6 +406,19 @@ RSpec.describe RubyLLM::Protocols::Gemini::Chat do
       }
     end
 
+    it 'renders system messages as systemInstruction' do
+      model = instance_double(RubyLLM::Model, id: 'gemini-2.5-flash', family: nil, metadata: {})
+      messages = [
+        RubyLLM::Message.new(role: :user, content: 'Hi'),
+        RubyLLM::Message.new(role: :system, content: 'Be brief.')
+      ]
+
+      payload = test_obj.send(:render_payload, messages, tools:, temperature: nil, model:, schema: nil)
+
+      expect(payload[:systemInstruction]).to eq(parts: [{ text: 'Be brief.' }])
+      expect(payload[:contents].map { |message| message[:role] }).to eq(['user'])
+    end
+
     it 'uses responseJsonSchema for Gemini 2.5 models' do
       model = instance_double(RubyLLM::Model, id: 'gemini-2.5-flash', family: nil, metadata: {})
 
