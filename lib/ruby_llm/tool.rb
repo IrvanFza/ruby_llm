@@ -50,6 +50,36 @@ module RubyLLM
       def provider_params
         @provider_params ||= {}
       end
+
+      def split_result(result)
+        case result
+        when Attachment then ['', [result]]
+        when Array then split_array_result(result)
+        else [result_content(result), []]
+        end
+      end
+
+      private
+
+      def split_array_result(result)
+        parts = result.flatten.compact
+        return [result_content(result), []] if parts.none?(Attachment)
+
+        texts, attachments = parts.partition { |part| part.is_a?(String) }
+        unless attachments.all?(Attachment)
+          raise ArgumentError, 'Tool results mixing attachments can only contain Strings and RubyLLM::Attachments'
+        end
+
+        [texts.join("\n\n"), attachments]
+      end
+
+      def result_content(result)
+        case result
+        when String then result
+        when Hash, Array, SearchResults then result.to_json
+        else result.to_s
+        end
+      end
     end
 
     def name

@@ -19,21 +19,22 @@ module RubyLLM
         end
 
         def format_tool_result_block(msg)
-          content = msg.content
-          content = '(no output)' if content.nil? || content.empty?
-
           {
             type: 'tool_result',
             tool_use_id: msg.tool_call_id,
-            content: format_tool_result_content(content)
+            content: format_tool_result_content(msg)
           }
         end
 
-        def format_tool_result_content(content)
-          search_results = RubyLLM::SearchResults.from_content(content)
+        def format_tool_result_content(msg)
+          search_results = RubyLLM::SearchResults.from_content(msg.content)
           return search_results.results.map { |result| search_result_block(result) } if search_results
 
-          Media.format_content(content)
+          content = msg.content
+          content = nil if content && content.empty?
+          content = '(no output)' if content.nil? && msg.attachments.empty?
+
+          Media.format_content(content, msg.attachments)
         end
 
         def search_result_block(result)

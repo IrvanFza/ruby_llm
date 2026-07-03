@@ -148,6 +148,28 @@ end
 
 To make results citable on providers with citation support, return a `RubyLLM::SearchResults`; see [Citations]({% link _core_features/citations.md %}).
 
+## Returning Attachments from Tools
+
+A tool message is text plus files, like any other message. Return `content, [attachments]` and each lands on the right field:
+
+```ruby
+class DocumentSearch < RubyLLM::Tool
+  description "Searches the company drive"
+  param :query, desc: "What to look for"
+
+  def execute(query:)
+    doc = Drive.search(query).first
+    return "Found: #{doc.name}", [RubyLLM::Attachment.new(doc.download_path)]
+  end
+end
+```
+
+The rule underneath is by type, so every natural variation works: strings become the message content, `RubyLLM::Attachment` objects become its attachments. Return a bare attachment for a file-only result, or several attachments for multiple files. Arrays without attachments stay structured data and serialize to JSON as usual.
+
+Vision-capable models see the files: search tools can hand back the documents they found, chart tools their rendered graphs, browser tools their screenshots.
+
+Anthropic and Bedrock Converse accept tool-result attachments natively. Providers whose tool results are text-only on the wire (OpenAI, Gemini) raise `UnsupportedAttachmentError` rather than silently dropping files.
+
 ## Custom Initialization
 
 Tools can have custom initialization:

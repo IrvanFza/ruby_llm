@@ -227,6 +227,11 @@ module RubyLLM
         end
 
         def format_message_content(msg, **)
+          if msg.tool_result? && msg.attachments.any?
+            raise UnsupportedAttachmentError, 'Chat Completions tool results are text-only; ' \
+                                              'tool result attachments are not supported'
+          end
+
           content = format_content(msg.content, msg.attachments)
           return '' if content.nil? && thinking_only_assistant_message?(msg)
 

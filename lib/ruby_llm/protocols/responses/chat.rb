@@ -139,6 +139,11 @@ module RubyLLM
         def format_item(msg)
           case msg.role
           when :tool
+            if msg.attachments.any?
+              raise UnsupportedAttachmentError, 'Responses API tool results are text-only; ' \
+                                                'tool result attachments are not supported'
+            end
+
             {
               type: 'function_call_output',
               call_id: msg.tool_call_id,

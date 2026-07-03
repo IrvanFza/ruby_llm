@@ -152,7 +152,8 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Tools do
     let(:msg) do
       instance_double(RubyLLM::Message,
                       tool_call_id: 'tool_123',
-                      content: 'Tool result')
+                      content: 'Tool result',
+                      attachments: [])
     end
 
     it 'formats a tool result message' do
@@ -178,7 +179,8 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Tools do
     it 'uses a placeholder when the tool returns no content' do
       msg = instance_double(RubyLLM::Message,
                             tool_call_id: 'tool_123',
-                            content: '')
+                            content: '',
+                            attachments: [])
 
       result = tools.format_tool_result(msg)
 

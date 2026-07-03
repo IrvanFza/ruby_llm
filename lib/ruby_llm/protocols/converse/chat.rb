@@ -165,13 +165,14 @@ module RubyLLM
           {
             toolResult: {
               toolUseId: msg.tool_call_id,
-              content: format_tool_result_content(msg.content)
+              content: format_tool_result_content(msg)
             }
           }
         end
 
-        def format_tool_result_content(content)
-          [text_tool_result_block(content)]
+        def format_tool_result_content(msg)
+          blocks = Media.format_content(msg.content, msg.attachments, used_document_names: @used_document_names)
+          blocks.empty? ? [text_tool_result_block(nil)] : blocks
         end
 
         def text_tool_result_block(text)

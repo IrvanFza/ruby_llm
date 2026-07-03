@@ -116,7 +116,8 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
 
   describe '.format_tool_result_content' do
     it 'uses a placeholder when the tool returns no content' do
-      result = described_class.format_tool_result_content('')
+      msg = instance_double(RubyLLM::Message, content: '', attachments: [])
+      result = described_class.format_tool_result_content(msg)
 
       expect(result).to eq([{ text: '(no output)' }])
     end

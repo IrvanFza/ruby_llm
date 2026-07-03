@@ -555,17 +555,10 @@ module RubyLLM
     end
 
     def add_tool_result_message(tool_call, result)
-      message = add_message role: :tool, content: tool_result_content(result), tool_call_id: tool_call.id
+      content, attachments = Tool.split_result(result)
+      message = add_message role: :tool, content:, attachments:, tool_call_id: tool_call.id
       run_callbacks(:after_message, message)
       message
-    end
-
-    def tool_result_content(result)
-      case result
-      when String then result
-      when Hash, Array, SearchResults then result.to_json
-      else result.to_s
-      end
     end
 
     def execute_tool(tool_call)
