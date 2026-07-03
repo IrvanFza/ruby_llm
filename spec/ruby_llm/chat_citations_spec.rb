@@ -21,6 +21,22 @@ RSpec.describe RubyLLM::Chat do
   let(:facts_path) { File.expand_path('../fixtures/facts.txt', __dir__) }
   let(:pdf_path) { File.expand_path('../fixtures/sample.pdf', __dir__) }
 
+  describe '#with_citations' do
+    it 'enables citations with no arguments' do
+      chat = RubyLLM.chat.with_citations
+
+      expect(chat.instance_variable_get(:@citations)).to be(true)
+    end
+
+    it 'clears citations with nil' do
+      chat = RubyLLM.chat.with_citations
+
+      chat.with_citations(nil)
+
+      expect(chat.instance_variable_get(:@citations)).to be(false)
+    end
+  end
+
   describe 'citations' do
     context 'with anthropic/claude-haiku-4-5' do
       let(:chat) { RubyLLM.chat(model: 'claude-haiku-4-5', provider: :anthropic).with_citations }

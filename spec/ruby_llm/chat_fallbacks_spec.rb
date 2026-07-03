@@ -83,6 +83,24 @@ RSpec.describe RubyLLM::Chat do
     expect(chat.fallback_errors).to eq(RubyLLM::Fallback::DEFAULT_ERRORS)
   end
 
+  it 'clears fallback models with no arguments' do
+    chat = described_class.new(model: 'primary-model').with_fallbacks('fallback-model')
+
+    chat.with_fallbacks
+
+    expect(chat.fallbacks).to be_empty
+    expect(chat.fallback_errors).to eq(RubyLLM::Fallback::DEFAULT_ERRORS)
+  end
+
+  it 'clears fallback models with nil' do
+    chat = described_class.new(model: 'primary-model').with_fallbacks('fallback-model')
+
+    chat.with_fallbacks(nil)
+
+    expect(chat.fallbacks).to be_empty
+    expect(chat.fallback_errors).to eq(RubyLLM::Fallback::DEFAULT_ERRORS)
+  end
+
   it 'falls back on transient errors and restores the primary model' do
     chat = described_class.new(model: 'primary-model').with_fallbacks('fallback-model')
     allow(primary_provider).to receive(:complete)

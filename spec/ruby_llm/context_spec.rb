@@ -81,6 +81,18 @@ RSpec.describe RubyLLM::Context do
       chat = context.chat(model: 'claude-haiku-4-5')
       expect(chat.model.id).to eq('claude-haiku-4-5')
     end
+
+    it 'clears a chat context with nil' do
+      context = RubyLLM.context do |config|
+        config.default_model = 'claude-haiku-4-5'
+      end
+      chat = context.chat
+
+      chat.with_context(nil)
+
+      expect(chat.instance_variable_get(:@context)).to be_nil
+      expect(chat.instance_variable_get(:@config)).to eq(RubyLLM.config)
+    end
   end
 
   describe 'context embed operations' do

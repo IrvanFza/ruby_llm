@@ -75,7 +75,7 @@ RSpec.describe RubyLLM::Agent do
     end
     agent = agent_class.new
 
-    expect(agent.without_caching).to eq(agent.chat)
+    expect(agent.with_caching(nil)).to eq(agent.chat)
     expect(agent.caching).to be_nil
   end
 

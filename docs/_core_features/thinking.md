@@ -57,6 +57,12 @@ chat.with_thinking(budget: 10_000)
 chat.with_thinking(effort: :none)
 ```
 
+Pass `nil` to clear the thinking configuration and return to the model's default behavior:
+
+```ruby
+chat.with_thinking(nil)
+```
+
 ### Effort and Budget
 
 Use `effort` to pick a qualitative depth (`:low`, `:medium`, `:high`) and `budget` for models that accept a token cap.

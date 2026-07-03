@@ -27,6 +27,37 @@ After reading this guide, you will know:
 * How to send a raw content payload with `Content::Raw`.
 * How to add custom HTTP headers to a request.
 
+## Fluent Configuration
+
+Chat configuration methods use a chainable `with_*` style:
+
+```ruby
+chat = RubyLLM.chat
+              .with_temperature(0.2)
+              .with_params(max_output_tokens: 200)
+```
+
+Scalar `with_*` methods replace the setting when called again. Collection helpers keep their add/replace behavior: `with_tool` adds a tool and ignores `nil`, while passing `nil` to `with_tools` clears the tool list. Reset uses `nil` instead of a separate `without_*` method:
+
+```ruby
+chat.with_caching(ttl: "1h")
+chat.with_caching(nil)
+
+chat.with_params(max_output_tokens: 200)
+chat.with_params(nil)
+
+chat.with_headers("X-Custom-Feature" => "enabled")
+chat.with_headers(nil)
+
+chat.with_thinking(effort: :high)
+chat.with_thinking(nil)
+
+chat.with_tool(SearchDocs)
+chat.with_tools(nil)
+```
+
+False is reserved for features where an explicit disabled state is meaningful, such as boolean toggles. Methods with no arguments only enable a feature when there is a clear default behavior, like provider-default prompt caching with `with_caching` or document citations with `with_citations`. Hash-style settings such as `with_params` and `with_headers` require either options or `nil`.
+
 ## Provider-Specific Parameters
 
 Different providers offer unique features and parameters. The `with_params` method lets you access these provider-specific capabilities while maintaining RubyLLM's unified interface. Parameters passed via `with_params` will override any defaults set by RubyLLM, giving you full control over the API request payload.

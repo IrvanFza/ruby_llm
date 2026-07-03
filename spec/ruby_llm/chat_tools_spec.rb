@@ -67,6 +67,24 @@ RSpec.describe RubyLLM::Chat do
     end
   end
 
+  describe '.with_params on tools' do
+    it 'clears provider params with nil' do
+      tool_class = Class.new(RubyLLM::Tool) do
+        with_params cache_control: { type: 'ephemeral' }
+      end
+
+      tool_class.with_params(nil)
+
+      expect(tool_class.provider_params).to eq({})
+    end
+
+    it 'requires params or nil' do
+      tool_class = Class.new(RubyLLM::Tool)
+
+      expect { tool_class.with_params }.to raise_error(ArgumentError)
+    end
+  end
+
   class ArrayParamsTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Uses params DSL array support'
 

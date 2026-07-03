@@ -15,6 +15,20 @@ RSpec.describe RubyLLM::Chat do
       expect(chat.with_headers('X-Test' => 'test')).to eq(chat)
     end
 
+    it 'clears headers with nil' do
+      chat = RubyLLM.chat.with_headers('X-Test' => 'test')
+
+      chat.with_headers(nil)
+
+      expect(chat.headers).to eq({})
+    end
+
+    it 'requires headers or nil' do
+      chat = RubyLLM.chat
+
+      expect { chat.with_headers }.to raise_error(ArgumentError)
+    end
+
     it 'passes headers to provider complete method' do
       chat = RubyLLM.chat
       provider = chat.instance_variable_get(:@provider)

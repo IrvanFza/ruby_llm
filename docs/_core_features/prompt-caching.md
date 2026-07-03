@@ -29,7 +29,7 @@ After reading this guide, you will know:
 
 ## Automatic Prompt Caching
 
-Use `with_caching` when the provider should cache the stable prompt prefix automatically:
+Use `with_caching` when the provider should cache the stable prompt prefix automatically. Calling it with no arguments enables provider-default prompt caching:
 
 ```ruby
 chat = RubyLLM.chat(model: '{{ site.models.anthropic_latest }}').with_caching
@@ -68,10 +68,10 @@ If you switch to a provider that needs different caching options, call `with_cac
 chat.with_caching(ttl: "1h")
 ```
 
-To disable caching for later requests, clear the policy explicitly:
+To disable caching for later requests, clear the policy explicitly with `nil`:
 
 ```ruby
-chat.without_caching
+chat.with_caching(nil)
 ```
 
 ## Explicit Cache Boundaries

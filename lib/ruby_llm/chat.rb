@@ -17,13 +17,11 @@ module RubyLLM
 
       @context = context
       @config = context&.config || RubyLLM.config
-      model_id = model || @config.default_model
-      with_model(model_id, provider: provider, assume_exists: assume_model_exists)
+      with_model(model, provider: provider, assume_exists: assume_model_exists)
       @temperature = nil
       @messages = []
       @tools = {}
-      @tool_prefs = { choice: nil, calls: nil }
-      @concurrency = normalize_tool_concurrency(@config.tool_concurrency)
+      reset_tools
       @params = {}
       @headers = {}
       @schema = nil
@@ -93,6 +91,8 @@ module RubyLLM
     end
 
     def with_instructions(instructions, append: false)
+      return clear_system_instructions if instructions.nil?
+
       append ? append_system_instruction(instructions) : replace_system_instruction(instructions)
       self
     end
@@ -103,19 +103,26 @@ module RubyLLM
         @tools[tool_instance.name.to_sym] = tool_instance
       end
       update_tool_options(choice:, calls:)
-      update_tool_concurrency(concurrency)
+      @concurrency = normalize_tool_concurrency(concurrency)
       self
     end
 
     def with_tools(*tools, replace: false, choice: nil, calls: nil, concurrency: @concurrency)
+      if tools == [nil]
+        raise ArgumentError, 'with_tools(nil) cannot be combined with options' unless choice.nil? && calls.nil?
+
+        return reset_tools
+      end
+
       @tools.clear if replace
       tools.compact.each { |tool| with_tool tool }
       update_tool_options(choice:, calls:)
-      update_tool_concurrency(concurrency)
+      @concurrency = normalize_tool_concurrency(concurrency)
       self
     end
 
     def with_model(model_id, provider: nil, assume_exists: false)
+      model_id ||= @config.default_model
       @model, @provider = Models.resolve(model_id, provider:, assume_exists:, config: @config)
       @connection = @provider.connection
       self
@@ -132,37 +139,41 @@ module RubyLLM
       self
     end
 
-    def with_thinking(effort: nil, budget: nil)
-      raise ArgumentError, 'with_thinking requires :effort or :budget' if effort.nil? && budget.nil?
+    def with_thinking(*args, effort: nil, budget: nil)
+      raise ArgumentError, 'with_thinking accepts nil or keyword options' unless args.empty? || args == [nil]
+
+      if args == [nil]
+        raise ArgumentError, 'with_thinking(nil) cannot be combined with options' if effort || budget
+
+        @thinking = nil
+        return self
+      end
+
+      raise ArgumentError, 'with_thinking requires :effort or :budget' unless effort || budget
 
       @thinking = Thinking::Config.new(effort: effort, budget: budget)
       self
     end
 
     def with_citations(enabled = true) # rubocop:disable Style/OptionalBooleanParameter
-      @citations = enabled
+      @citations = enabled || false
       self
     end
 
-    def with_caching(**options)
-      @caching = options.transform_keys(&:to_sym).freeze
-      self
-    end
-
-    def without_caching
-      @caching = nil
+    def with_caching(options = {})
+      @caching = options&.transform_keys(&:to_sym)&.freeze
       self
     end
 
     def with_context(context)
       @context = context
-      @config = context.config
+      @config = context&.config || RubyLLM.config
       with_model(@model.id, provider: @provider.slug, assume_exists: true)
       self
     end
 
-    def with_params(**params)
-      @params = params
+    def with_params(params)
+      @params = params.to_h
       self
     end
 
@@ -171,8 +182,8 @@ module RubyLLM
       self
     end
 
-    def with_headers(**headers)
-      @headers = headers
+    def with_headers(headers)
+      @headers = headers.to_h
       self
     end
 
@@ -516,7 +527,7 @@ module RubyLLM
         handle_sequential_tool_calls(response.tool_calls)
       end
 
-      reset_tool_choice if forced_tool_choice?
+      @tool_prefs[:choice] = nil if forced_tool_choice?
     end
 
     def handle_sequential_tool_calls(tool_calls)
@@ -586,6 +597,13 @@ module RubyLLM
       end
     end
 
+    def reset_tools
+      @tools.clear
+      @tool_prefs = { choice: nil, calls: nil }
+      @concurrency = normalize_tool_concurrency(@config.tool_concurrency)
+      self
+    end
+
     def update_tool_options(choice:, calls:)
       unless choice.nil?
         normalized_choice = normalize_tool_choice(choice)
@@ -599,10 +617,6 @@ module RubyLLM
       end
 
       @tool_prefs[:calls] = normalize_calls(calls) unless calls.nil?
-    end
-
-    def update_tool_concurrency(concurrency)
-      @concurrency = normalize_tool_concurrency(concurrency)
     end
 
     def normalize_tool_concurrency(concurrency)
@@ -650,10 +664,6 @@ module RubyLLM
       @tool_prefs[:choice] && !%i[auto none].include?(@tool_prefs[:choice])
     end
 
-    def reset_tool_choice
-      @tool_prefs[:choice] = nil
-    end
-
     def last_non_system_message
       messages.reverse.find { |message| message.role != :system }
     end
@@ -668,6 +678,11 @@ module RubyLLM
       object.is_a?(Content) || object.is_a?(Content::Raw)
     end
 
+    def clear_system_instructions
+      @messages.reject! { |msg| msg.role == :system }
+      self
+    end
+
     def append_system_instruction(instructions)
       message = Message.new(role: :system, content: instructions)
       @messages << message
@@ -675,7 +690,7 @@ module RubyLLM
     end
 
     def replace_system_instruction(instructions)
-      @messages.reject! { |msg| msg.role == :system }
+      clear_system_instructions
       append_system_instruction(instructions)
     end
   end

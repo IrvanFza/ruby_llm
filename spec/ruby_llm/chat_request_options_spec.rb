@@ -6,6 +6,20 @@ RSpec.describe RubyLLM::Chat do
   include_context 'with configured RubyLLM'
 
   describe 'with params' do
+    it 'clears params with nil' do
+      chat = RubyLLM.chat.with_params(max_tokens: 100)
+
+      chat.with_params(nil)
+
+      expect(chat.params).to eq({})
+    end
+
+    it 'requires params or nil' do
+      chat = RubyLLM.chat
+
+      expect { chat.with_params }.to raise_error(ArgumentError)
+    end
+
     # Supported params vary by provider, and to lesser degree, by model.
 
     # Providers [:openai, :ollama, :deepseek] support a JSON object mode param.

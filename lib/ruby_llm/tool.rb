@@ -42,8 +42,8 @@ module RubyLLM
         self
       end
 
-      def with_params(**params)
-        @provider_params = params
+      def with_params(params)
+        @provider_params = params.to_h
         self
       end
 

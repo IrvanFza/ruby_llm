@@ -97,6 +97,27 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       expect(chat.messages.find_by(role: 'system').content).to eq('Be concise')
     end
 
+    it 'clears persisted system instructions with nil' do
+      chat = Chat.create!(model: model)
+
+      chat.with_instructions('Be helpful')
+      chat.with_instructions(nil)
+
+      expect(chat.messages.where(role: 'system')).to be_empty
+      expect(chat.to_llm.messages.select { |msg| msg.role == :system }).to be_empty
+    end
+
+    it 'clears runtime instructions with nil and keeps persisted ones' do
+      chat = Chat.create!(model: model)
+
+      chat.with_instructions('Persisted rules')
+      chat.with_runtime_instructions('Runtime overlay')
+      chat.with_runtime_instructions(nil)
+
+      expect(chat.messages.where(role: 'system').pluck(:content)).to eq(['Persisted rules'])
+      expect(chat.to_llm.messages.select { |msg| msg.role == :system }.map(&:content)).to eq(['Persisted rules'])
+    end
+
     it 'appends system messages when append: true' do
       chat = Chat.create!(model: model)
 
@@ -172,6 +193,15 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
       chat.with_model('claude-haiku-4-5')
       expect(chat.reload.model_id).to eq('claude-haiku-4-5')
+    end
+
+    it 'resets to the configured default model with nil' do
+      chat = Chat.create!(model: 'claude-haiku-4-5')
+
+      chat.with_model(nil)
+
+      expect(chat.reload.model_id).to eq(RubyLLM.config.default_model)
+      expect(chat.to_llm.model.id).to eq(RubyLLM.config.default_model)
     end
   end
 
@@ -348,7 +378,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
     it 'clears runtime prompt caching config from the LLM chat' do
       chat = Chat.create!(model: anthropic_model).with_caching(ttl: '1h')
 
-      expect(chat.without_caching).to eq(chat)
+      expect(chat.with_caching(nil)).to eq(chat)
       expect(chat.to_llm.caching).to be_nil
     end
 

@@ -230,6 +230,8 @@ end
 
 Provider metadata is passed through verbatim. Turn on `RUBYLLM_DEBUG=true` if you want to inspect the final payload while experimenting.
 
+Pass `nil` to `with_params` to clear provider-specific tool params.
+
 ## Next Steps
 
 *   [Controlling Tool Execution]({% link _core_features/tool-execution.md %}) - Steer tool choice, call counts, concurrency, and callbacks.

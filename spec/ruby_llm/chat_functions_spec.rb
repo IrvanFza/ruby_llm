@@ -20,6 +20,18 @@ RSpec.describe RubyLLM::Chat do
         chat.with_tool(RubyLLM::Tool)
       end.not_to raise_error
     end
+
+    it 'ignores nil tools' do
+      chat = described_class.new
+      tool = Class.new(RubyLLM::Tool) do
+        def name = 'tool1'
+      end
+
+      chat.with_tool(tool.new)
+      chat.with_tool(nil)
+
+      expect(chat.tools.keys).to eq([:tool1])
+    end
   end
 
   describe '#with_tools' do
@@ -81,6 +93,27 @@ RSpec.describe RubyLLM::Chat do
       chat.with_tools(nil, replace: true)
 
       expect(chat.tools).to be_empty
+    end
+
+    it 'clears all tools and tool options with nil' do
+      chat = described_class.new
+
+      tool1 = Class.new(RubyLLM::Tool) do
+        def name = 'tool1'
+      end
+
+      chat.with_tools(tool1.new, calls: :one, concurrency: true)
+      chat.with_tools(nil)
+
+      expect(chat.tools).to be_empty
+      expect(chat.tool_prefs).to eq(choice: nil, calls: nil)
+      expect(chat.concurrency).to be_nil
+    end
+
+    it 'rejects combining nil with tool options' do
+      chat = described_class.new
+
+      expect { chat.with_tools(nil, choice: :auto) }.to raise_error(ArgumentError, /cannot be combined/)
     end
 
     it 'clears all tools when called with no arguments and replace: true' do
@@ -200,6 +233,14 @@ RSpec.describe RubyLLM::Chat do
       expect(chat.model.id).to eq('claude-haiku-4-5')
       expect(result).to eq(chat) # Should return self for chaining
     end
+
+    it 'resets to the configured default model with nil' do
+      chat = described_class.new(model: 'claude-haiku-4-5')
+
+      chat.with_model(nil)
+
+      expect(chat.model.id).to eq(RubyLLM.config.default_model)
+    end
   end
 
   describe '#with_instructions' do
@@ -242,6 +283,15 @@ RSpec.describe RubyLLM::Chat do
 
       expect(chat).not_to be_complete
     end
+
+    it 'clears system instructions with nil' do
+      chat = described_class.new
+
+      chat.with_instructions('Be helpful')
+      chat.with_instructions(nil)
+
+      expect(chat.messages.select { |msg| msg.role == :system }).to be_empty
+    end
   end
 
   describe '#with_temperature' do
@@ -251,6 +301,24 @@ RSpec.describe RubyLLM::Chat do
 
       expect(chat.instance_variable_get(:@temperature)).to eq(0.8)
       expect(result).to eq(chat) # Should return self for chaining
+    end
+
+    it 'clears the temperature with nil' do
+      chat = described_class.new.with_temperature(0.8)
+
+      chat.with_temperature(nil)
+
+      expect(chat.instance_variable_get(:@temperature)).to be_nil
+    end
+  end
+
+  describe '#with_protocol' do
+    it 'clears the explicit protocol with nil' do
+      chat = described_class.new.with_protocol(:chat_completions)
+
+      chat.with_protocol(nil)
+
+      expect(chat.instance_variable_get(:@protocol)).to be_nil
     end
   end
 

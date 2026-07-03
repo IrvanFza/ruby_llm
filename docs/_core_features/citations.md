@@ -58,6 +58,12 @@ response.citations.each do |citation|
 end
 ```
 
+Pass `nil` or `false` to `with_citations` to clear the citations override:
+
+```ruby
+chat.with_citations(nil)
+```
+
 This works with plain text files and PDFs. PDF citations include page numbers:
 
 ```ruby

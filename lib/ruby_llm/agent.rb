@@ -255,8 +255,8 @@ module RubyLLM
       end
 
       def apply_tools(llm_chat, runtime)
-        tools_to_apply = Array(evaluate(tools, runtime))
-        llm_chat.with_tools(*tools_to_apply, **tool_options) unless tools_to_apply.empty?
+        tools_to_apply = Array(evaluate(tools, runtime)).compact
+        llm_chat.with_tools(*tools_to_apply, **tool_options) if tools_to_apply.any? || tool_options.any?
       end
 
       def apply_temperature(llm_chat)
@@ -411,9 +411,9 @@ module RubyLLM
 
     def_delegators :chat, :model, :messages, :tools, :params, :headers, :schema, :caching, :ask, :say, :with_tool,
                    :with_tools, :with_model, :with_temperature, :with_thinking, :with_citations, :with_caching,
-                   :without_caching, :with_context, :with_params, :with_headers, :with_schema, :with_fallbacks,
-                   :before_message, :after_message, :before_tool_call, :after_tool_result, :before_fallback,
-                   :after_fallback, :each, :complete,
+                   :with_context, :with_params, :with_headers, :with_schema, :with_fallbacks, :before_message,
+                   :after_message, :before_tool_call, :after_tool_result, :before_fallback, :after_fallback, :each,
+                   :complete,
                    :complete?, :ask_later, :generate, :run_tools, :step, :add_message, :add_completion,
                    :cost
   end

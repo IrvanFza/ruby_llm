@@ -68,6 +68,12 @@ module RubyLLM
       end
 
       def with_instructions(instructions, append: false)
+        if instructions.nil?
+          clear_persisted_system_instructions
+          to_llm
+          return self
+        end
+
         persist_system_instruction(instructions, append:)
 
         to_llm.with_instructions(instructions, append:)
@@ -75,6 +81,12 @@ module RubyLLM
       end
 
       def with_runtime_instructions(instructions, append: false)
+        if instructions.nil?
+          @runtime_instructions = []
+          to_llm
+          return self
+        end
+
         store_runtime_instruction(instructions, append:)
 
         to_llm.with_instructions(instructions, append:)
@@ -92,6 +104,7 @@ module RubyLLM
       end
 
       def with_model(model_name, provider: nil, assume_exists: false)
+        model_name ||= (context&.config || RubyLLM.config).default_model
         self.model = model_name
         self.provider = provider if provider
         self.assume_model_exists = assume_exists
@@ -123,11 +136,6 @@ module RubyLLM
 
       def with_caching(...)
         to_llm.with_caching(...)
-        self
-      end
-
-      def without_caching
-        to_llm.without_caching
         self
       end
 
@@ -350,8 +358,14 @@ module RubyLLM
         @chat
       end
 
+      def clear_persisted_system_instructions
+        association = messages_association
+        association.where(role: :system).destroy_all
+        association.reset
+      end
+
       def replace_persisted_system_instructions(instructions)
-        messages_association.where(role: :system).destroy_all
+        clear_persisted_system_instructions
         messages_association.create!(role: :system, content: instructions)
       end
 

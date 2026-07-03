@@ -127,6 +127,12 @@ Override it per chat when needed:
 chat.with_tools(Weather, StockPrice, concurrency: false)
 ```
 
+Pass `nil` to clear the attached tool list and reset tool call controls:
+
+```ruby
+chat.with_tools(nil)
+```
+
 Rails chat records use the same setting and override:
 
 ```ruby
