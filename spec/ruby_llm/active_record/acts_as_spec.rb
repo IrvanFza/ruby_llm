@@ -184,6 +184,55 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       result = chat.with_tool(Calculator)
       expect(result).to eq(chat)
     end
+
+    it 'supports dynamically adding tools during tool execution' do
+      dynamic_tool = Class.new(RubyLLM::Tool) do
+        description 'Searches for tools and makes them available'
+        param :query, type: :string, desc: 'Search query'
+
+        attr_accessor :chat_ref
+
+        def execute(query:)
+          chat_ref.with_tool(Calculator)
+          "Found calculator tool for: #{query}"
+        end
+      end
+
+      chat = Chat.create!(model: model)
+      tool_instance = dynamic_tool.new
+      tool_instance.chat_ref = chat
+      chat.with_tool(tool_instance)
+
+      llm_chat = chat.instance_variable_get(:@chat)
+      provider = llm_chat.instance_variable_get(:@provider)
+      search_tool_call = RubyLLM::ToolCall.new(
+        id: 'call_1',
+        name: tool_instance.name,
+        arguments: { 'query' => 'calculator' }
+      )
+
+      messages_per_call = []
+      call_count = 0
+      allow(provider).to receive(:complete) do |messages, **_kwargs, &_block|
+        messages_per_call << messages.map { |message| message.role.to_s }
+        call_count += 1
+
+        if call_count == 1
+          RubyLLM::Message.new(
+            role: :assistant,
+            content: '',
+            tool_calls: { search_tool_call.id => search_tool_call }
+          )
+        else
+          RubyLLM::Message.new(role: :assistant, content: 'Found it!')
+        end
+      end
+
+      response = chat.ask('Find me a calculator')
+
+      expect(response.content).to eq('Found it!')
+      expect(messages_per_call[1]).to eq(%w[user assistant tool])
+    end
   end
 
   describe 'model switching' do

@@ -94,12 +94,12 @@ module RubyLLM
       end
 
       def with_tool(...)
-        to_llm.with_tool(...)
+        (@chat || to_llm).with_tool(...)
         self
       end
 
       def with_tools(...)
-        to_llm.with_tools(...)
+        (@chat || to_llm).with_tools(...)
         self
       end
 
