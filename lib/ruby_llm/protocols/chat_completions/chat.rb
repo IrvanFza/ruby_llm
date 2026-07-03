@@ -211,14 +211,24 @@ module RubyLLM
         end
 
         def format_messages(messages, caching: nil)
-          messages_for_provider(messages).map do |msg|
-            {
+          messages_for_provider(messages).flat_map do |msg|
+            formatted = {
               role: format_role(msg.role),
               content: format_message_content(msg, caching: caching),
               tool_calls: format_tool_calls(msg.tool_calls),
               tool_call_id: msg.tool_call_id
             }.compact.merge(format_thinking(msg))
+
+            msg.tool_result? && msg.attachments.any? ? [formatted, tool_attachment_message(msg)] : [formatted]
           end
+        end
+
+        # Chat Completions tool messages are text-only on the wire, so tool
+        # attachments ride a user message spliced in right after the result.
+        def tool_attachment_message(msg)
+          parts = [Media.format_text("Attachments from tool call #{msg.tool_call_id}:")]
+          parts.concat(format_content(nil, msg.attachments))
+          { role: 'user', content: parts }
         end
 
         def messages_for_provider(messages)
@@ -227,12 +237,7 @@ module RubyLLM
         end
 
         def format_message_content(msg, **)
-          if msg.tool_result? && msg.attachments.any?
-            raise UnsupportedAttachmentError, 'Chat Completions tool results are text-only; ' \
-                                              'tool result attachments are not supported'
-          end
-
-          content = format_content(msg.content, msg.attachments)
+          content = format_content(msg.content, msg.tool_result? ? [] : msg.attachments)
           return '' if content.nil? && thinking_only_assistant_message?(msg)
 
           content

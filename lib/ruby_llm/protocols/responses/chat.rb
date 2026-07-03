@@ -139,21 +139,30 @@ module RubyLLM
         def format_item(msg)
           case msg.role
           when :tool
-            if msg.attachments.any?
-              raise UnsupportedAttachmentError, 'Responses API tool results are text-only; ' \
-                                                'tool result attachments are not supported'
-            end
-
-            {
-              type: 'function_call_output',
-              call_id: msg.tool_call_id,
-              output: format_content(msg.content)
-            }
+            format_tool_items(msg)
           when :assistant
             format_assistant_items(msg)
           else
             { role: 'user', content: format_content(msg.content, msg.attachments) }
           end
+        end
+
+        # Function call outputs are text-only on the wire, so tool attachments
+        # ride a user item spliced in right after the result.
+        def format_tool_items(msg)
+          items = [{
+            type: 'function_call_output',
+            call_id: msg.tool_call_id,
+            output: format_content(msg.content)
+          }]
+
+          if msg.attachments.any?
+            parts = [{ type: 'input_text', text: "Attachments from tool call #{msg.tool_call_id}:" }]
+            parts.concat(Media.format_content(nil, msg.attachments))
+            items << { role: 'user', content: parts }
+          end
+
+          items
         end
 
         def format_assistant_items(msg)

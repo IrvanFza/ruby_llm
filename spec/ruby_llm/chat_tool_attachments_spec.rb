@@ -83,22 +83,39 @@ RSpec.describe RubyLLM::Chat do
       expect(tool_result[:content].last).to have_key(:image)
     end
 
-    it 'raises for Responses API tool result attachments' do
-      chat = chat_with_tool_attachment('gpt-5-nano', 'openai')
-
-      expect { chat.render }.to raise_error(RubyLLM::UnsupportedAttachmentError, /text-only/)
-    end
-
-    it 'raises for Chat Completions tool result attachments' do
-      chat = chat_with_tool_attachment('gpt-5-nano', 'openai').with_protocol(:chat_completions)
-
-      expect { chat.render }.to raise_error(RubyLLM::UnsupportedAttachmentError, /text-only/)
-    end
-
-    it 'raises for Gemini tool result attachments' do
+    it 'renders Gemini media parts alongside the function response' do
       chat = chat_with_tool_attachment('gemini-2.5-flash', 'gemini')
 
-      expect { chat.render }.to raise_error(RubyLLM::UnsupportedAttachmentError, /JSON-only/)
+      parts = chat.render[:contents].last[:parts]
+      expect(parts.first).to have_key(:functionResponse)
+      expect(parts.last).to have_key(:inline_data)
+    end
+
+    it 'splices a user item after Responses API tool results' do
+      chat = chat_with_tool_attachment('gpt-5-nano', 'openai')
+
+      input = chat.render[:input]
+      followup = input[input.index { |item| item[:type] == 'function_call_output' } + 1]
+      expect(followup[:role]).to eq('user')
+      expect(followup[:content].first[:text]).to include('call_1')
+      expect(followup[:content].last[:type]).to eq('input_image')
+    end
+
+    it 'splices a user message after Chat Completions tool results' do
+      chat = chat_with_tool_attachment('gpt-5-nano', 'openai').with_protocol(:chat_completions)
+
+      messages = chat.render[:messages]
+      tool_message = messages.find { |message| message[:role] == 'tool' }
+      followup = messages[messages.index(tool_message) + 1]
+      expect(tool_message[:content]).to eq('Found it')
+      expect(followup[:role]).to eq('user')
+      expect(followup[:content].last[:type]).to eq('image_url')
+    end
+
+    it 'raises for file types a provider cannot take' do
+      chat = chat_with_tool_attachment('deepseek-chat', 'deepseek')
+
+      expect { chat.render }.to raise_error(RubyLLM::UnsupportedAttachmentError)
     end
   end
 end

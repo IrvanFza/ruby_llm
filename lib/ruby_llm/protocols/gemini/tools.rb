@@ -44,16 +44,12 @@ module RubyLLM
         end
 
         def format_tool_result(msg, function_name = nil)
-          if msg.attachments.any?
-            raise UnsupportedAttachmentError, 'Gemini function responses are JSON-only; ' \
-                                              'tool result attachments are not supported'
-          end
-
           function_name ||= msg.tool_call_id
           content = msg.content
-          content = '(no output)' if content.nil? || content.empty?
+          content = nil if content && content.empty?
+          content = '(no output)' if content.nil? && msg.attachments.empty?
 
-          [{
+          parts = [{
             functionResponse: {
               name: function_name,
               response: {
@@ -62,6 +58,9 @@ module RubyLLM
               }
             }
           }]
+
+          msg.attachments.each { |attachment| parts << Media.format_content_attachment(attachment) }
+          parts
         end
 
         def extract_tool_calls(data) # rubocop:disable Metrics/PerceivedComplexity
