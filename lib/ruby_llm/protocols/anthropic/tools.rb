@@ -14,13 +14,13 @@ module RubyLLM
         def format_tool_result(msg)
           {
             role: 'user',
-            content: msg.content.is_a?(RubyLLM::Content::Raw) ? msg.content.value : [format_tool_result_block(msg)]
+            content: [format_tool_result_block(msg)]
           }
         end
 
         def format_tool_result_block(msg)
           content = msg.content
-          content = '(no output)' if content.nil? || (content.respond_to?(:empty?) && content.empty?)
+          content = '(no output)' if content.nil? || content.empty?
 
           {
             type: 'tool_result',
@@ -30,7 +30,8 @@ module RubyLLM
         end
 
         def format_tool_result_content(content)
-          return content.results.map { |result| search_result_block(result) } if content.is_a?(RubyLLM::SearchResults)
+          search_results = RubyLLM::SearchResults.from_content(content)
+          return search_results.results.map { |result| search_result_block(result) } if search_results
 
           Media.format_content(content)
         end

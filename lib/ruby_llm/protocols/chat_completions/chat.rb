@@ -227,7 +227,7 @@ module RubyLLM
         end
 
         def format_message_content(msg, **)
-          content = format_content(msg.content)
+          content = format_content(msg.content, msg.attachments)
           return '' if content.nil? && thinking_only_assistant_message?(msg)
 
           content
@@ -237,8 +237,8 @@ module RubyLLM
           msg.role == :assistant && msg.thinking && !msg.tool_call?
         end
 
-        def format_content(content)
-          Media.format_content(content)
+        def format_content(content, attachments = [])
+          Media.format_content(content, attachments)
         end
 
         def format_role(role)

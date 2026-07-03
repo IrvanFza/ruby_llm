@@ -193,10 +193,9 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
     end
 
     it 'opts OpenAI into native file parts for PDF attachments' do
-      content = RubyLLM::Content.new('Summarize this file')
-      content.add_attachment(StringIO.new('pdf bytes'), filename: 'proposal.pdf')
+      attachment = RubyLLM::Attachment.new(StringIO.new('pdf bytes'), filename: 'proposal.pdf')
 
-      messages = [RubyLLM::Message.new(role: :user, content:)]
+      messages = [RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])]
 
       formatted = RubyLLM::Protocols::ChatCompletions.allocate.send(:format_messages, messages)
 
@@ -234,11 +233,11 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
 
     it 'keeps image attachments disabled for DeepSeek' do
       provider = RubyLLM::Providers::DeepSeek::ChatCompletions.allocate
-      content = RubyLLM::Content.new('Describe this')
-      content.add_attachment(StringIO.new('png bytes'), filename: 'image.png')
+      attachment = RubyLLM::Attachment.new(StringIO.new('png bytes'), filename: 'image.png')
+      message = RubyLLM::Message.new(role: :user, content: 'Describe this', attachments: [attachment])
 
       expect do
-        provider.send(:format_messages, [RubyLLM::Message.new(role: :user, content:)])
+        provider.send(:format_messages, [message])
       end.to raise_error(RubyLLM::UnsupportedAttachmentError, %r{Unsupported attachment type: image/png})
     end
 
@@ -257,11 +256,10 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       provider = RubyLLM::Providers::Perplexity::ChatCompletions.allocate
 
       %w[csv txt md html json].each do |extension|
-        content = RubyLLM::Content.new('Summarize this file')
-        content.add_attachment(StringIO.new('notes'), filename: "notes.#{extension}")
+        attachment = RubyLLM::Attachment.new(StringIO.new('notes'), filename: "notes.#{extension}")
+        message = RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])
 
-        formatted = provider.send(:format_messages, [RubyLLM::Message.new(role: :user, content:)])
-        attachment = content.attachments.first
+        formatted = provider.send(:format_messages, [message])
 
         expect(formatted.dig(0, :content, 1)).to eq(
           type: 'text',
@@ -283,18 +281,17 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
 
     it 'keeps PDF file parts disabled for xAI chat completions' do
       provider = RubyLLM::Providers::XAI::ChatCompletions.allocate
-      content = RubyLLM::Content.new('Summarize this file')
-      content.add_attachment(StringIO.new('pdf bytes'), filename: 'proposal.pdf')
+      attachment = RubyLLM::Attachment.new(StringIO.new('pdf bytes'), filename: 'proposal.pdf')
+      message = RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])
 
       expect do
-        provider.send(:format_messages, [RubyLLM::Message.new(role: :user, content:)])
+        provider.send(:format_messages, [message])
       end.to raise_error(RubyLLM::UnsupportedAttachmentError, %r{Unsupported attachment type: application/pdf})
     end
 
     def docx_message
-      content = RubyLLM::Content.new('Summarize this file')
-      content.add_attachment(StringIO.new('docx bytes'), filename: 'proposal.docx')
-      RubyLLM::Message.new(role: :user, content:)
+      attachment = RubyLLM::Attachment.new(StringIO.new('docx bytes'), filename: 'proposal.docx')
+      RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])
     end
   end
 

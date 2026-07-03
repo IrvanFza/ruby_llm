@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module RubyLLM
-  # Tool results the model can cite. Providers with native citation support
-  # receive citable search result blocks; other providers receive plain text.
+  # Tool results the model can cite. Serializes to the search-results
+  # convention: a tool message whose content is {"search_results": [...]}
+  # renders as citable blocks on providers with citation support.
   #
   #   def execute(query:)
   #     RubyLLM::SearchResults.new(
@@ -11,21 +12,35 @@ module RubyLLM
   #       text: report_text
   #     )
   #   end
-  class SearchResults < Content
+  class SearchResults
+    KEY = 'search_results'
+
     attr_reader :results
 
     def initialize(*results, **result)
       results << result if result.any?
       @results = results.map { |entry| normalize(entry) }
       raise ArgumentError, 'SearchResults requires at least one result' if @results.empty?
-
-      super(@results.map { |entry| format_result(entry) }.join("\n\n"))
     end
 
-    # Stays structured so providers with citation support can format natively;
-    # Content#format would collapse to plain text.
-    def format
-      self
+    def self.from_content(content)
+      return unless content.is_a?(String) && content.lstrip.start_with?('{')
+
+      parsed = JSON.parse(content)
+      entries = parsed[KEY]
+      return unless entries.is_a?(Array) && entries.any?
+
+      new(*entries)
+    rescue JSON::ParserError, ArgumentError
+      nil
+    end
+
+    def to_h
+      { KEY => results }
+    end
+
+    def to_json(*args)
+      JSON.generate(to_h, *args)
     end
 
     private
@@ -35,13 +50,6 @@ module RubyLLM
       raise ArgumentError, 'Search results require :title and :text' unless entry[:title] && entry[:text]
 
       entry.slice(:title, :url, :text)
-    end
-
-    # Plain text rendering for providers without citation support.
-    def format_result(entry)
-      attributes = "title='#{entry[:title]}'"
-      attributes += " url='#{entry[:url]}'" if entry[:url]
-      "<search_result #{attributes}>\n#{entry[:text]}\n</search_result>"
     end
   end
 end

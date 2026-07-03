@@ -170,7 +170,9 @@ RSpec.describe RubyLLM::Chat do
 
       chat.add_completion message
 
-      expect(message.content).to eq('answer' => 'hello')
+      # Content stays the raw JSON string; parsing lives in Message#parsed
+      expect(message.content).to eq('{"answer":"hello"}')
+      expect(message.parsed).to eq('answer' => 'hello')
     end
   end
 end

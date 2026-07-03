@@ -300,15 +300,16 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
       response = chat.ask('Generate a person named Alice who is 25 years old')
 
-      # The response content should be parsed JSON
-      expect(response.content).to be_a(Hash)
-      expect(response.content['name']).to eq('Alice')
-      expect(response.content['age']).to eq(25)
+      # The response content is the raw JSON string, parsed exposes the Hash
+      expect(response.content).to be_a(String)
+      expect(response.parsed).to eq({ 'name' => 'Alice', 'age' => 25 })
 
       # Check that the message is saved in ActiveRecord with valid JSON
       saved_message = chat.messages.last
       expect(saved_message.role).to eq('assistant')
-      expect(saved_message.content_raw).to eq({ 'name' => 'Alice', 'age' => 25 })
+      expect(saved_message.content).to eq(response.content)
+      expect(saved_message.to_llm.content).to eq(response.content)
+      expect(saved_message.to_llm.parsed).to eq({ 'name' => 'Alice', 'age' => 25 })
     end
 
     it 'supports multi-turn conversations with structured responses' do
@@ -331,8 +332,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       # Second turn - this should not raise an error
       response = chat.ask('What about Berlin?')
 
-      expect(response.content).to be_a(Hash)
-      expect(response.content['country']).to eq('Germany')
+      expect(response.content).to be_a(String)
+      expect(response.parsed['country']).to eq('Germany')
     end
   end
 
@@ -371,20 +372,6 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
   describe 'raw content support' do
     let(:anthropic_model) { 'claude-haiku-4-5' }
-
-    it 'persists raw content blocks separately from plain text' do
-      chat = Chat.create!(model: anthropic_model)
-      raw_block = RubyLLM::Protocols::Anthropic::Content.new('Cache me once', cache: true)
-
-      message = chat.add_message(role: :user, content: raw_block)
-
-      expect(message.content).to be_nil
-      expect(message.content_raw).to eq(JSON.parse(raw_block.value.to_json))
-
-      reconstructed = message.to_llm
-      expect(reconstructed.content).to be_a(RubyLLM::Content::Raw)
-      expect(reconstructed.content.value).to eq(JSON.parse(raw_block.value.to_json))
-    end
 
     it 'round-trips cached token metrics through ActiveRecord models' do
       chat = Chat.create!(model: anthropic_model)
@@ -829,8 +816,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       )
 
       llm_message = message.to_llm
-      expect(llm_message.content).to be_a(RubyLLM::Content)
-      expect(llm_message.content.attachments.first.mime_type).to eq('image/png')
+      expect(llm_message.content).to eq('Check this out')
+      expect(llm_message.attachments.first.mime_type).to eq('image/png')
     end
 
     it 'handles multiple attachments' do
@@ -870,7 +857,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
         )
 
         llm_message = message.to_llm
-        attachment = llm_message.content.attachments.first
+        attachment = llm_message.attachments.first
         expect(attachment.type).to eq(:image)
       end
 
@@ -885,7 +872,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
         )
 
         llm_message = message.to_llm
-        attachment = llm_message.content.attachments.first
+        attachment = llm_message.attachments.first
         expect(attachment.type).to eq(:pdf)
       end
     end

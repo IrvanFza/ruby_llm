@@ -19,6 +19,19 @@ module RubyLLM
       ActiveStorage::Attached::Many
     ].freeze
 
+    def self.wrap(sources)
+      case sources
+      when nil then []
+      when Hash then sources.values.flat_map { |group| wrap(group) }
+      else
+        Utils.to_safe_array(sources).filter_map do |source|
+          next if source.nil? || (source.is_a?(String) && source.strip.empty?)
+
+          source.is_a?(Attachment) ? source : new(source)
+        end
+      end
+    end
+
     def initialize(source, filename: nil)
       @source = source
       @source = source_type_cast

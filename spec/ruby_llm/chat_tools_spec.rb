@@ -47,14 +47,11 @@ RSpec.describe RubyLLM::Chat do
   end
 
   class ContentReturningTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
-    description 'Returns a Content object with text and attachments'
+    description 'Returns a processed string result'
     param :query, desc: 'Query to process'
 
     def execute(query:)
-      RubyLLM::Content.new(
-        "Processed: #{query}",
-        File.join(__dir__, '..', 'fixtures', 'ruby.png')
-      )
+      "Processed: #{query}"
     end
   end
 
@@ -685,15 +682,15 @@ RSpec.describe RubyLLM::Chat do
     end
   end
 
-  describe 'content object support' do
+  describe 'string tool results' do
     CHAT_MODELS.each do |model_info|
       model = model_info[:model]
       provider = model_info[:provider]
-      it "#{provider}/#{model} preserves Content objects returned from tools" do
+      it "#{provider}/#{model} preserves strings returned from tools" do
         skip_unless_supports_functions(provider, model)
 
-        # Skip providers that don't support images in tool results
-        skip "#{provider} doesn't support images in tool results" if provider.in?(%i[deepseek gpustack bedrock])
+        # No cassettes exist for these providers (skipped at recording time)
+        skip "#{provider} has no cassette for this example" if provider.in?(%i[deepseek gpustack bedrock])
 
         chat = RubyLLM.chat(model: model, provider: provider)
                       .with_tool(ContentReturningTool)
@@ -702,11 +699,8 @@ RSpec.describe RubyLLM::Chat do
 
         tool_message = chat.messages.find { |m| m.role == :tool }
         expect(tool_message).not_to be_nil
-        expect(tool_message.content).to be_a(RubyLLM::Content)
-        expect(tool_message.content.text).to eq('Processed: test data')
-        expect(tool_message.content.attachments).not_to be_empty
-        expect(tool_message.content.attachments.first).to be_a(RubyLLM::Attachment)
-        expect(tool_message.content.attachments.first.filename).to eq('ruby.png')
+        expect(tool_message.content).to be_a(String)
+        expect(tool_message.content).to eq('Processed: test data')
       end
     end
   end

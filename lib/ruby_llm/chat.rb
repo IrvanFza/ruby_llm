@@ -44,7 +44,7 @@ module RubyLLM
     # Stages a question without asking it, leaving the chat for `complete`, a
     # single `step`, or a provider-side batch via RubyLLM.batch.
     def ask_later(message = nil, with: nil)
-      add_message role: :user, content: build_content(message, with)
+      add_message role: :user, content: message, attachments: with
       self
     end
 
@@ -221,6 +221,10 @@ module RubyLLM
       add_callback(:after_fallback, &)
     end
 
+    def before_request(&)
+      add_callback(:before_request, &)
+    end
+
     def each(&)
       messages.each(&)
     end
@@ -252,7 +256,6 @@ module RubyLLM
     # same callbacks as a synchronous completion so persistence works unchanged.
     def add_completion(response)
       run_callbacks(:before_message)
-      normalize_schema_response(response)
       add_message response
       run_callbacks(:after_message, response)
       response
@@ -271,7 +274,8 @@ module RubyLLM
         thinking: @thinking,
         citations: @citations,
         caching: @caching,
-        protocol: @protocol
+        protocol: @protocol,
+        before_request: @callbacks[:before_request]
       )
     end
 
@@ -348,7 +352,6 @@ module RubyLLM
       RubyLLM.instrument('chat.ruby_llm', payload, config: @config) do |event|
         result = provider_completion(stream_tracker:, &block)
         run_callbacks(:before_message) unless block_given?
-        normalize_schema_response(result)
         add_message result
         run_callbacks(:after_message, result)
         record_completion_event(event, result)
@@ -493,16 +496,9 @@ module RubyLLM
         citations: @citations,
         caching: @caching,
         protocol: @protocol,
+        before_request: @callbacks[:before_request],
         &wrap_streaming_block(stream_tracker:, &)
       )
-    end
-
-    def normalize_schema_response(response)
-      return unless @schema && response.content.is_a?(String) && !response.tool_call?
-
-      response.content = JSON.parse(response.content)
-    rescue JSON::ParserError
-      # If parsing fails, keep content as string.
     end
 
     def run_callbacks(name, *args)
@@ -559,10 +555,17 @@ module RubyLLM
     end
 
     def add_tool_result_message(tool_call, result)
-      content = content_like?(result) ? result : result.to_s
-      message = add_message role: :tool, content:, tool_call_id: tool_call.id
+      message = add_message role: :tool, content: tool_result_content(result), tool_call_id: tool_call.id
       run_callbacks(:after_message, message)
       message
+    end
+
+    def tool_result_content(result)
+      case result
+      when String then result
+      when Hash, Array, SearchResults then result.to_json
+      else result.to_s
+      end
     end
 
     def execute_tool(tool_call)
@@ -666,16 +669,6 @@ module RubyLLM
 
     def last_non_system_message
       messages.reverse.find { |message| message.role != :system }
-    end
-
-    def build_content(message, attachments)
-      return message if content_like?(message)
-
-      Content.new(message, attachments)
-    end
-
-    def content_like?(object)
-      object.is_a?(Content) || object.is_a?(Content::Raw)
     end
 
     def clear_system_instructions

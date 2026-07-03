@@ -50,7 +50,7 @@ module RubyLLM
           # (each optionally with cache_control); each :system message becomes its
           # own block in the resulting array.
           system_messages.flat_map do |msg|
-            blocks = content_blocks_for(msg.content)
+            blocks = Media.format_content(msg.content, msg.attachments).dup
             msg.cache_until_here? ? inject_cache_control(blocks, caching:) : blocks
           end
         end
@@ -214,7 +214,7 @@ module RubyLLM
             content_blocks << thinking_block if thinking_block
           end
 
-          append_formatted_content(content_blocks, msg.content, citations: citations)
+          append_formatted_content(content_blocks, msg, citations: citations)
           inject_cache_control(content_blocks, caching:) if msg.cache_until_here?
 
           {
@@ -224,17 +224,8 @@ module RubyLLM
         end
 
         def format_tool_call_with_thinking(msg, thinking_enabled, caching: nil)
-          if msg.content.is_a?(RubyLLM::Content::Raw)
-            content_blocks = msg.content.value
-            content_blocks = content_blocks.is_a?(Array) ? content_blocks.dup : [content_blocks]
-            content_blocks = prepend_thinking_block(content_blocks, msg, thinking_enabled)
-            inject_cache_control(content_blocks, caching:) if msg.cache_until_here?
-
-            return { role: 'assistant', content: content_blocks }
-          end
-
           content_blocks = prepend_thinking_block([], msg, thinking_enabled)
-          append_formatted_content(content_blocks, msg.content) unless msg.content.nil? || msg.content.empty?
+          append_formatted_content(content_blocks, msg) unless msg.content.nil? || msg.content.empty?
 
           msg.tool_calls.each_value do |tool_call|
             content_blocks << {
@@ -278,18 +269,8 @@ module RubyLLM
           end
         end
 
-        def append_formatted_content(content_blocks, content, citations: false)
-          formatted_content = Media.format_content(content, citations: citations)
-          if formatted_content.is_a?(Array)
-            content_blocks.concat(formatted_content)
-          else
-            content_blocks << formatted_content
-          end
-        end
-
-        def content_blocks_for(content)
-          blocks = content.is_a?(RubyLLM::Content::Raw) ? content.value : Media.format_content(content)
-          blocks.is_a?(Array) ? blocks.dup : [blocks]
+        def append_formatted_content(content_blocks, msg, citations: false)
+          content_blocks.concat(Media.format_content(msg.content, msg.attachments, citations: citations))
         end
 
         def cache_boundaries?(messages)

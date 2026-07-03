@@ -81,7 +81,7 @@ module RubyLLM
 
         def format_system_instruction(messages)
           parts = messages.select { |msg| msg.role == :system }.filter_map do |msg|
-            text = msg.content.is_a?(Content) ? msg.content.text : msg.content.to_s
+            text = msg.content.to_s
             { text: text } unless text.empty?
           end
 
@@ -115,8 +115,7 @@ module RubyLLM
 
           parts << build_thought_part(msg.thinking) if msg.role == :assistant && msg.thinking
 
-          content_parts = Media.format_content(msg.content)
-          parts.concat(content_parts.is_a?(Array) ? content_parts : [content_parts])
+          parts.concat(Media.format_content(msg.content, msg.attachments))
           parts
         end
 
@@ -130,11 +129,12 @@ module RubyLLM
         def parse_completion_body(data, raw:)
           parts = data.dig('candidates', 0, 'content', 'parts') || []
           tool_calls = extract_tool_calls(data)
-          content = parse_content(data)
+          content, attachments = parse_content(data)
 
           Message.new(
             role: :assistant,
             content: content,
+            attachments: attachments,
             citations: extract_citations(data, content),
             thinking: Thinking.build(
               text: extract_thought_parts(parts),
@@ -169,15 +169,15 @@ module RubyLLM
 
         def parse_content(data)
           candidate = data.dig('candidates', 0)
-          return '' unless candidate
+          return ['', []] unless candidate
 
-          return '' if function_call?(candidate)
+          return ['', []] if function_call?(candidate)
 
           parts = candidate.dig('content', 'parts')
-          return '' unless parts&.any?
+          return ['', []] unless parts&.any?
 
           non_thought_parts = parts.reject { |part| part['thought'] }
-          return '' unless non_thought_parts.any?
+          return ['', []] unless non_thought_parts.any?
 
           build_response_content(non_thought_parts)
         end

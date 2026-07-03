@@ -32,6 +32,62 @@ RSpec.describe RubyLLM::Message do
 
       expect(message.content).to be_nil
     end
+
+    it 'rejects non-string content' do
+      expect do
+        described_class.new(role: :assistant, content: { name: 'Alice' })
+      end.to raise_error(ArgumentError, /content must be a String/)
+    end
+  end
+
+  describe '#parsed' do
+    it 'parses JSON content' do
+      message = described_class.new(role: :assistant, content: '{"name":"Alice","age":30}')
+
+      expect(message.parsed).to eq({ 'name' => 'Alice', 'age' => 30 })
+    end
+
+    it 'returns nil for nil content' do
+      message = described_class.new(role: :assistant, content: nil)
+
+      expect(message.parsed).to be_nil
+    end
+
+    it 'raises for non-JSON content' do
+      message = described_class.new(role: :assistant, content: 'plain text')
+
+      expect { message.parsed }.to raise_error(JSON::ParserError)
+    end
+  end
+
+  describe '#attachments' do
+    let(:image_path) { File.expand_path('../fixtures/ruby.png', __dir__) }
+
+    it 'defaults to an empty array' do
+      message = described_class.new(role: :user, content: 'hello')
+
+      expect(message.attachments).to eq([])
+    end
+
+    it 'wraps a single source' do
+      message = described_class.new(role: :user, content: 'look', attachments: image_path)
+
+      expect(message.attachments.map(&:filename)).to eq(['ruby.png'])
+    end
+
+    it 'wraps grouped hash sources and skips blanks' do
+      message = described_class.new(role: :user, content: 'look', attachments: { image: [image_path, nil, ''] })
+
+      expect(message.attachments.map(&:filename)).to eq(['ruby.png'])
+    end
+
+    it 'appears in to_h only when present' do
+      with_files = described_class.new(role: :user, content: 'look', attachments: image_path)
+      without_files = described_class.new(role: :user, content: 'look')
+
+      expect(with_files.to_h[:attachments].length).to eq(1)
+      expect(without_files.to_h).not_to have_key(:attachments)
+    end
   end
 
   describe '#cache_until_here!' do

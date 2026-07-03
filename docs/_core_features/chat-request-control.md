@@ -3,7 +3,7 @@ layout: default
 title: Advanced Request Control
 parent: "Chat"
 nav_order: 8
-description: Reach provider-specific features with custom parameters, wire protocols, raw content blocks, and HTTP headers
+description: Reach provider-specific features with custom parameters, wire protocols, request hooks, and HTTP headers
 ---
 
 # {{ page.title }}
@@ -24,7 +24,7 @@ After reading this guide, you will know:
 
 * How to pass provider-specific parameters with `with_params`.
 * How to choose the wire protocol a provider speaks.
-* How to send a raw content payload with `Content::Raw`.
+* How to modify the final request payload with `before_request`.
 * How to add custom HTTP headers to a request.
 
 ## Fluent Configuration
@@ -104,22 +104,21 @@ end
 
 Unknown protocol names raise immediately, listing what the provider speaks.
 
-## Raw Content Blocks
+## Request Hooks
 
-Most of the time you can rely on RubyLLM to format messages for each provider. When you need to send a custom payload as content, wrap it in `RubyLLM::Content::Raw`. The block is forwarded verbatim, with no additional processing.
+Most of the time you can rely on RubyLLM to format messages for each provider. When a provider ships a block type RubyLLM has not wrapped yet, use `before_request` to see the fully rendered payload and adjust it before it is sent. The hook runs on every request, after all RubyLLM formatting and `with_params` merging.
 
 ```ruby
-raw_block = RubyLLM::Content::Raw.new([
-  { type: 'text', text: 'Analyze this request using the provider-native block below.' },
-  { type: 'custom_context', data: provider_specific_payload }
-])
-
 chat = RubyLLM.chat
-chat.add_message(role: :system, content: raw_block)
-chat.ask(raw_block)
+chat.before_request do |payload|
+  payload[:messages].last[:content] << { type: 'custom_context', data: provider_specific_payload }
+end
+chat.ask('Analyze this request using the provider-native block above.')
 ```
 
-Use raw blocks sparingly: they bypass cross-provider safeguards, so it is your responsibility to ensure the payload matches the provider's expectations. `Chat#ask`, `Chat#add_message`, tool results, and streaming accumulators all understand `Content::Raw` values. For prompt reuse, prefer [Prompt Caching]({% link _core_features/prompt-caching.md %}).
+Hooks mutate the payload in place; return values are ignored (use `payload.replace(new_payload)` to swap it wholesale). Use hooks sparingly: they operate on the provider's wire format, so it is your responsibility to match what the provider expects, and switching providers means revisiting the hook. Nothing a hook adds is persisted; it is applied fresh on each request. For prompt reuse, prefer [Prompt Caching]({% link _core_features/prompt-caching.md %}).
+
+`Chat#render` returns the request the chat would send, with hooks applied, which makes hook output easy to inspect and test.
 
 The same idea applies to tool definitions:
 

@@ -132,11 +132,7 @@ module RubyLLM
         end
 
         def format_message_content(msg, caching: nil, automatic_cache_target: nil)
-          blocks = if msg.content.is_a?(RubyLLM::Content::Raw)
-                     format_raw_message_content(msg)
-                   else
-                     format_structured_message_content(msg)
-                   end
+          blocks = format_structured_message_content(msg)
 
           if msg.tool_call?
             msg.tool_calls.each_value do |tool_call|
@@ -154,37 +150,15 @@ module RubyLLM
           blocks
         end
 
-        def format_raw_message_content(msg)
-          blocks = format_raw_content(msg.content)
-          return blocks if msg.role == :assistant
-
-          sanitize_non_assistant_raw_blocks(blocks)
-        end
-
         def format_structured_message_content(msg)
           blocks = []
 
           thinking_block = format_thinking_block(msg.thinking)
           blocks << thinking_block if msg.role == :assistant && thinking_block
 
-          text_and_media_blocks = Media.format_content(msg.content, used_document_names: @used_document_names)
-          blocks.concat(text_and_media_blocks) if text_and_media_blocks
+          blocks.concat(Media.format_content(msg.content, msg.attachments, used_document_names: @used_document_names))
 
           blocks
-        end
-
-        def format_raw_content(content)
-          value = content.value
-          value.is_a?(Array) ? value.dup : [value]
-        end
-
-        def sanitize_non_assistant_raw_blocks(blocks)
-          blocks.filter_map do |block|
-            next unless block.is_a?(Hash)
-            next if block.key?(:reasoningContent) || block.key?('reasoningContent')
-
-            block
-          end
         end
 
         def format_tool_result_block(msg)
@@ -197,47 +171,13 @@ module RubyLLM
         end
 
         def format_tool_result_content(content)
-          return format_raw_tool_result_content(content.value) if content.is_a?(RubyLLM::Content::Raw)
-          return [{ json: content }] if content.is_a?(Hash) || content.is_a?(Array)
-          return format_content_tool_result_content(content) if content.is_a?(RubyLLM::Content)
-
           [text_tool_result_block(content)]
-        end
-
-        def format_content_tool_result_content(content)
-          blocks = []
-          blocks << text_tool_result_block(content.text) unless content.text.to_s.empty?
-          content.attachments.each { |attachment| blocks << text_tool_result_block(attachment.for_llm) }
-          blocks.empty? ? [text_tool_result_block(nil)] : blocks
         end
 
         def text_tool_result_block(text)
           text = text.to_s
           text = '(no output)' if text.empty?
           { text: text }
-        end
-
-        def format_raw_tool_result_content(raw_value)
-          blocks = raw_value.is_a?(Array) ? raw_value : [raw_value]
-
-          normalized = blocks.filter_map do |block|
-            normalize_tool_result_block(block)
-          end
-
-          normalized.empty? ? [{ text: raw_value.to_s }] : normalized
-        end
-
-        def normalize_tool_result_block(block)
-          return nil unless block.is_a?(Hash)
-          return block if tool_result_content_block?(block)
-
-          nil
-        end
-
-        def tool_result_content_block?(block)
-          %w[text json document image].any? do |key|
-            block.key?(key) || block.key?(key.to_sym)
-          end
         end
 
         def format_role(role)
@@ -249,7 +189,7 @@ module RubyLLM
 
         def format_system(messages, caching: nil, automatic_cache_target: nil)
           messages.flat_map do |msg|
-            blocks = Media.format_content(msg.content, used_document_names: @used_document_names)
+            blocks = Media.format_content(msg.content, msg.attachments, used_document_names: @used_document_names)
             cache_boundary?(msg, automatic_cache_target) ? blocks + [converse_cache_block_for(caching)] : blocks
           end
         end

@@ -18,10 +18,10 @@ module RubyLLM
 
     # rubocop:disable Metrics/ParameterLists
     def complete(messages, tools:, temperature:, params: {}, headers: {}, schema: nil, thinking: nil,
-                 citations: false, caching: nil, tool_prefs: nil, &)
+                 citations: false, caching: nil, tool_prefs: nil, before_request: [], &)
       payload = render(
         messages, tools:, tool_prefs:, temperature:, params:, schema:, thinking:, citations:, caching:,
-                  stream: block_given?
+                  before_request:, stream: block_given?
       )
 
       if block_given?
@@ -32,8 +32,8 @@ module RubyLLM
     end
 
     def render(messages, tools:, temperature:, params: {}, schema: nil, thinking: nil,
-               citations: false, caching: nil, tool_prefs: nil, stream: false)
-      Utils.deep_merge(
+               citations: false, caching: nil, tool_prefs: nil, before_request: [], stream: false)
+      payload = Utils.deep_merge(
         render_payload(
           messages,
           tools: tools,
@@ -48,6 +48,7 @@ module RubyLLM
         ),
         params
       )
+      apply_before_request_hooks(payload, before_request)
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -113,18 +114,20 @@ module RubyLLM
     def preprocess_message(message)
       return message unless auto_upload_large_files?
       return message unless message.role == :user
-      return message unless message.content.is_a?(Content)
+      return message if message.attachments.empty?
 
-      attachments = message.content.attachments
-      uploaded = attachments.map { |attachment| preprocess_attachment(attachment) }
-      return message if uploaded == attachments
+      uploaded = message.attachments.map { |attachment| preprocess_attachment(attachment) }
+      return message if uploaded == message.attachments
 
-      message.dup.tap do |copy|
-        copy.content = Content.new(message.content.text, uploaded)
-      end
+      message.with_attachments(uploaded)
     end
 
     private
+
+    def apply_before_request_hooks(payload, hooks)
+      Array(hooks).each { |hook| hook.call(payload) }
+      payload
+    end
 
     def auto_upload_large_files?
       @config.auto_upload_large_files && @provider.files? && supports_provider_file_references?

@@ -40,10 +40,11 @@ RSpec.describe RubyLLM::Chat do
                      .with_schema(person_schema)
                      .ask('Generate a person named John who is 30 years old')
 
-          # Content should already be parsed as a Hash when schema is used
-          expect(response.content).to be_a(Hash)
-          expect(response.content['name']).to eq('John')
-          expect(response.content['age']).to eq(30)
+          # Content stays the raw JSON string; #parsed returns the Hash
+          expect(response.content).to be_a(String)
+          expect(response.parsed).to be_a(Hash)
+          expect(response.parsed['name']).to eq('John')
+          expect(response.parsed['age']).to eq(30)
         end
 
         it 'accepts schema regardless of model capabilities' do
@@ -55,14 +56,15 @@ RSpec.describe RubyLLM::Chat do
         end
 
         it 'allows removing schema with nil mid-conversation' do
-          # First, ask with schema - should get parsed JSON
+          # First, ask with schema - content is a JSON string, #parsed gives the Hash
           chat.with_schema(person_schema)
           response1 = chat.ask('Generate a person named Bob')
 
-          expect(response1.content).to be_a(Hash)
-          expect(response1.content['name']).to be_a(String)
-          expect(response1.content['name']).not_to be_empty
-          expect(response1.content['age']).to be_a(Integer)
+          expect(response1.content).to be_a(String)
+          expect(response1.parsed).to be_a(Hash)
+          expect(response1.parsed['name']).to be_a(String)
+          expect(response1.parsed['name']).not_to be_empty
+          expect(response1.parsed['age']).to be_a(Integer)
 
           # Remove schema and ask again - should get plain string
           chat.with_schema(nil)
@@ -79,10 +81,11 @@ RSpec.describe RubyLLM::Chat do
                      .with_schema(PersonSchemaClass)
                      .ask('Generate a person named Alice who is 28 years old')
 
-          # Content should already be parsed as a Hash when schema is used
-          expect(response.content).to be_a(Hash)
-          expect(response.content['name']).to eq('Alice')
-          expect(response.content['age']).to eq(28)
+          # Content stays the raw JSON string; #parsed returns the Hash
+          expect(response.content).to be_a(String)
+          expect(response.parsed).to be_a(Hash)
+          expect(response.parsed['name']).to eq('Alice')
+          expect(response.parsed['age']).to eq(28)
         end
       end
     end
@@ -131,9 +134,9 @@ RSpec.describe RubyLLM::Chat do
 
     # Regression test for schema + tool calls interaction
     # When both schema and tools are used, intermediate tool-call responses
-    # may contain text content. Parsing that text into a Hash causes errors
-    # on the next API call because the Hash gets serialized as
-    # { type: "text", text: <Hash> } instead of a plain string.
+    # may contain JSON-like text content. Content is never auto-parsed:
+    # it must stay a plain String on every message so it serializes
+    # correctly on the next API call. #parsed gives the Hash on demand.
     describe 'schema with tool calls' do
       before do
         stub_const('SchemaToolTestWeather', Class.new(RubyLLM::Tool) do
@@ -175,11 +178,12 @@ RSpec.describe RubyLLM::Chat do
         # The intermediate tool-call message should have kept content as String
         tool_call_msg = chat.messages.find { |m| m.role == :assistant && m.tool_call? }
         expect(tool_call_msg.content).to be_a(String)
+        expect(tool_call_msg.content).to eq('{"name": "partial"}')
 
-        # The final response should have parsed content as Hash
-        expect(response.content).to be_a(Hash)
-        expect(response.content['name']).to eq('John')
-        expect(response.content['age']).to eq(30)
+        # The final response content stays a String too; #parsed returns the Hash
+        expect(response.content).to be_a(String)
+        expect(response.parsed['name']).to eq('John')
+        expect(response.parsed['age']).to eq(30)
       end
     end
 
@@ -232,11 +236,12 @@ RSpec.describe RubyLLM::Chat do
                      .with_schema(complex_schema)
                      .ask('Generate a response with 2 users and metadata with version 1')
 
-          # Content should already be parsed as a Hash when schema is used
-          expect(response.content).to be_a(Hash)
-          expect(response.content['users']).to be_an(Array)
-          expect(response.content['users'].length).to be >= 2
-          expect(response.content['metadata']['version']).to eq(1)
+          # Content stays the raw JSON string; #parsed returns the Hash
+          expect(response.content).to be_a(String)
+          expect(response.parsed).to be_a(Hash)
+          expect(response.parsed['users']).to be_an(Array)
+          expect(response.parsed['users'].length).to be >= 2
+          expect(response.parsed['metadata']['version']).to eq(1)
         end
       end
     end

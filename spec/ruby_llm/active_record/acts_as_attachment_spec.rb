@@ -61,8 +61,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       )
 
       llm_message = message.to_llm
-      expect(llm_message.content).to be_a(RubyLLM::Content)
-      expect(llm_message.content.attachments.first.mime_type).to eq('image/png')
+      expect(llm_message.content).to eq('Check this out')
+      expect(llm_message.attachments.first.mime_type).to eq('image/png')
     end
 
     it 'handles multiple attachments' do
@@ -112,8 +112,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       llm_user_message = captured_messages.find { |message| message.role == :user }
 
       expect(user_message.attachments.count).to eq(1)
-      expect(llm_user_message.content.attachments.first.filename).to eq(image_upload.original_filename)
-      expect(llm_user_message.content.attachments.first.content).to eq(File.binread(image_path))
+      expect(llm_user_message.attachments.first.filename).to eq(image_upload.original_filename)
+      expect(llm_user_message.attachments.first.content).to eq(File.binread(image_path))
       expect(response.content).to eq('I can see it')
     end
 
@@ -123,7 +123,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       image_bytes = File.binread(image_path)
 
       allow_any_instance_of(RubyLLM::Providers::Gemini).to receive(:complete) do |_provider, *_args, **_kwargs| # rubocop:disable RSpec/AnyInstance
-        content = RubyLLM::Protocols::Gemini.allocate.send(
+        content, attachments = RubyLLM::Protocols::Gemini.allocate.send(
           :build_response_content,
           [
             {
@@ -135,17 +135,16 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
           ]
         )
 
-        RubyLLM::Message.new(role: :assistant, content:)
+        RubyLLM::Message.new(role: :assistant, content:, attachments:)
       end
 
       response = nil
       expect { response = chat.ask('A cute puppy', with: [image_path]) }.not_to raise_error
 
       assistant_message = chat.messages.where(role: 'assistant').last
-      expect(response.content).to be_a(RubyLLM::Content)
-      expect(response.content.attachments.first.content).to eq(image_bytes)
+      expect(response.content).to be_nil
+      expect(response.attachments.first.content).to eq(image_bytes)
       expect(assistant_message.content).to be_nil
-      expect(assistant_message.content_raw).to be_nil
       expect(assistant_message.attachments.count).to eq(1)
       expect(assistant_message.attachments.first.filename.to_s).to eq('gemini_attachment_1.png')
       expect(assistant_message.attachments.first.blob.content_type).to eq('image/png')
@@ -233,7 +232,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       )
 
       llm_message = message.to_llm
-      attachment = llm_message.content.attachments.first
+      attachment = llm_message.attachments.first
       expect(attachment.type).to eq(:image)
     end
 
@@ -249,7 +248,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       )
 
       llm_message = message.to_llm
-      attachment = llm_message.content.attachments.first
+      attachment = llm_message.attachments.first
       expect(attachment.type).to eq(:video)
     end
 
@@ -264,7 +263,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       )
 
       llm_message = message.to_llm
-      attachment = llm_message.content.attachments.first
+      attachment = llm_message.attachments.first
       expect(attachment.type).to eq(:pdf)
     end
   end

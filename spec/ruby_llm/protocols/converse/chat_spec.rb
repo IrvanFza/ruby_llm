@@ -159,15 +159,6 @@ RSpec.describe RubyLLM::Protocols::Converse::Chat do
       expect(payload.dig(:messages, 0, :content).last).to eq(cachePoint: { type: 'default' })
     end
 
-    it 'appends cachePoint to raw content marked as a cache boundary' do
-      content = RubyLLM::Content::Raw.new([{ text: 'Raw context' }])
-      message = RubyLLM::Message.new(role: :user, content: content).cache_until_here!
-
-      payload = render_payload([message])
-
-      expect(payload.dig(:messages, 0, :content)).to eq([{ text: 'Raw context' }, { cachePoint: { type: 'default' } }])
-    end
-
     it 'uses configured ttl for an explicit cache boundary' do
       message = RubyLLM::Message.new(role: :user, content: 'Long context').cache_until_here!
 

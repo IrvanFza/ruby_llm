@@ -52,7 +52,7 @@ module RubyLLM
 
     # rubocop:disable Metrics/ParameterLists
     def complete(messages, tools:, temperature:, model:, params: {}, headers: {}, schema: nil, thinking: nil,
-                 citations: false, caching: nil, tool_prefs: nil, protocol: nil, &)
+                 citations: false, caching: nil, tool_prefs: nil, protocol: nil, before_request: [], &)
       protocol_class = resolve_protocol(protocol, model, tools:, schema:, thinking:, tool_prefs:, citations:)
       protocol_class.new(self, model).complete(
         messages,
@@ -65,6 +65,7 @@ module RubyLLM
         thinking: thinking,
         citations: citations,
         caching: caching,
+        before_request: before_request,
         &
       )
     end
@@ -73,7 +74,7 @@ module RubyLLM
     # The request a completion call would send, without sending it.
     # rubocop:disable Metrics/ParameterLists
     def render(messages, tools:, temperature:, model:, params: {}, schema: nil, thinking: nil,
-               citations: false, caching: nil, tool_prefs: nil, protocol: nil)
+               citations: false, caching: nil, tool_prefs: nil, protocol: nil, before_request: [])
       protocol_class = resolve_protocol(protocol, model, tools:, schema:, thinking:, tool_prefs:, citations:)
       protocol_class.new(self, model).render(
         messages,
@@ -84,7 +85,8 @@ module RubyLLM
         schema: schema,
         thinking: thinking,
         citations: citations,
-        caching: caching
+        caching: caching,
+        before_request: before_request
       )
     end
     # rubocop:enable Metrics/ParameterLists

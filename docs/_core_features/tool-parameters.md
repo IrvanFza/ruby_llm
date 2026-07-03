@@ -131,46 +131,22 @@ end
 
 RubyLLM normalizes symbol keys, deep duplicates the schema, and sends it to providers unchanged. This gives you full control when you need it.
 
-## Returning Rich Content from Tools
+## Returning Structured Results from Tools
 
-Tools can return `RubyLLM::Content` objects with file attachments, allowing you to pass images, documents, or other files from your tools to the AI model:
+Tool results are text. Strings are sent as-is; a Hash or Array return is serialized to JSON, which models read natively and which persists cleanly:
 
 ```ruby
-class AnalyzeTool < RubyLLM::Tool
-  description "Analyzes data and returns results with visualizations"
-  param :query, desc: "Analysis query"
+class InventoryTool < RubyLLM::Tool
+  description "Checks warehouse inventory"
+  param :sku, desc: "Product SKU"
 
-  def execute(query:)
-    chart_path = generate_chart(query)
-
-    RubyLLM::Content.new(
-      "Analysis complete for: #{query}",
-      [chart_path]  # Attach the generated chart (array of paths/blobs)
-    )
-  end
-
-  private
-
-  def generate_chart(query)
-    # Your chart generation logic
-    "/tmp/chart_#{Time.now.to_i}.png"
+  def execute(sku:)
+    { sku: sku, in_stock: 42, warehouse: "AMS-1" }  # sent as JSON
   end
 end
-
-chat = RubyLLM.chat.with_tool(AnalyzeTool)
-response = chat.ask("Analyze sales trends for Q4")
 ```
 
-When a tool returns a `Content` object:
-- The text and attachments are preserved in the conversation history
-- Vision-capable models can see and analyze attached images
-- The AI can reference the attachments in its response
-
-This is particularly useful for:
-- **Data visualization:** Return charts, graphs, or diagrams
-- **Document processing:** Pass PDFs or documents for the AI to analyze
-- **Image generation:** Return generated or processed images
-- **Mixed media workflows:** Combine text results with visual elements
+To make results citable on providers with citation support, return a `RubyLLM::SearchResults`; see [Citations]({% link _core_features/citations.md %}).
 
 ## Custom Initialization
 

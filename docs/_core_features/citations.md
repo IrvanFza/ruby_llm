@@ -104,7 +104,7 @@ response.citations.first.cited_text # => the quoted passage
 
 A single result reads even simpler: `RubyLLM::SearchResults.new(title: "Q4 Report", url: report_url, text: report_text)`.
 
-On Anthropic these become native citable search result blocks. Other providers receive the same results as plain text, so your tools stay provider-agnostic.
+`SearchResults` serializes into the tool message as JSON with a `search_results` key. On Anthropic that shape becomes native citable search result blocks, including after the conversation is reloaded from the database. Other providers receive the same results as JSON text, so your tools stay provider-agnostic. A tool that returns the `{"search_results": [...]}` shape directly gets the same treatment; the class is just the convenient way to build and validate it.
 
 ## Citing the Web
 

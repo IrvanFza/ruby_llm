@@ -28,6 +28,7 @@ module RubyLLM
         RubyLLM::Message.new(
           role: role.to_sym,
           content: extract_content,
+          attachments: extract_attachments,
           thinking: thinking,
           citations: citations,
           tokens: tokens,
@@ -122,18 +123,15 @@ module RubyLLM
       end
 
       def extract_content
-        return RubyLLM::Content::Raw.new(content_raw) if has_attribute?(:content_raw) && content_raw.present?
+        plain_text_content(content)
+      end
 
-        content_value = content
-        content_text = plain_text_content(content_value)
-        action_text_attachments = action_text_attachment_sources(content_value)
+      def extract_attachments
+        action_text_attachments = action_text_attachment_sources(content)
+        return [] unless content_attachments?(action_text_attachments)
 
-        return content_text unless content_attachments?(action_text_attachments)
-
-        RubyLLM::Content.new(content_text).tap do |content_obj|
-          @_tempfiles = []
-          add_content_attachments(content_obj, action_text_attachments)
-        end
+        @_tempfiles = []
+        collect_attachments(action_text_attachments)
       end
     end
   end

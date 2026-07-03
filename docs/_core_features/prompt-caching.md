@@ -135,4 +135,4 @@ Existing apps should run the latest upgrade generator after updating RubyLLM so 
 
 ## Dropping Down
 
-`with_caching` and `cache_until_here!` cover RubyLLM's prompt-caching API. Use `with_params` only when you need another provider request option, and use `Content::Raw` only when the content block itself must be provider-specific.
+`with_caching` and `cache_until_here!` cover RubyLLM's prompt-caching API. Use `with_params` only when you need another provider request option, and use a [`before_request` hook]({% link _core_features/chat-request-control.md %}#request-hooks) only when the rendered payload itself must be adjusted.

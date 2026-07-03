@@ -73,8 +73,8 @@ end
 chat = RubyLLM.chat
 response = chat.with_schema(PersonSchema).ask("Generate a person named Alice who is 30 years old")
 
-puts response.content # => {"name" => "Alice", "age" => 30}
-puts response.content.class # => Hash
+puts response.parsed # => {"name" => "Alice", "age" => 30}
+puts response.content # => '{"name":"Alice","age":30}'
 ```
 
 RubyLLM::Schema classes automatically use their class name (e.g., `PersonSchema`) as the schema name in API requests, which can help the model better understand the expected output structure.
@@ -102,7 +102,7 @@ person_schema = {
 chat = RubyLLM.chat
 response = chat.with_schema(person_schema).ask("Generate a person who likes Ruby")
 
-puts response.content
+puts response.parsed
 # => {"name" => "Bob", "age" => 25, "hobbies" => ["Ruby programming", "Open source"]}
 ```
 
@@ -160,7 +160,7 @@ end
 chat = RubyLLM.chat
 response = chat.with_schema(CompanySchema).ask("Generate a small tech startup")
 
-response.content["employees"].each do |employee|
+response.parsed["employees"].each do |employee|
   puts "#{employee['name']} - #{employee['role']}"
 end
 ```

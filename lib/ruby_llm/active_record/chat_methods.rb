@@ -186,9 +186,8 @@ module RubyLLM
 
       def add_message(message_or_attributes)
         llm_message = message_or_attributes.is_a?(RubyLLM::Message) ? message_or_attributes : RubyLLM::Message.new(message_or_attributes)
-        content_text, attachments, content_raw = prepare_content_for_storage(llm_message.content)
 
-        attrs = { role: llm_message.role, content: content_text }
+        attrs = { role: llm_message.role, content: llm_message.content }
         add_finish_reason_attribute(attrs, llm_message, messages_association.klass)
         attrs[:cache_until_here] = llm_message.cache_until_here?
         parent_tool_call_assoc = messages_association.klass.reflect_on_association(:parent_tool_call)
@@ -197,10 +196,9 @@ module RubyLLM
           attrs[parent_tool_call_assoc.foreign_key] = tool_call_id if tool_call_id
         end
 
-        attrs[:content_raw] = content_raw if messages_association.klass.column_names.include?('content_raw')
         message_record = messages_association.create!(attrs)
 
-        persist_content(message_record, attachments) if attachments.present?
+        persist_content(message_record, llm_message.attachments) if llm_message.attachments.any?
         persist_tool_calls(llm_message.tool_calls, message_record:) if llm_message.tool_calls.present?
 
         message_record
@@ -224,7 +222,7 @@ module RubyLLM
       end
 
       def create_user_message(content, with: nil)
-        add_message(role: :user, content: build_content(content, with))
+        add_message(role: :user, content: content, attachments: with)
       end
 
       def ask(message = nil, with: nil, &)
@@ -235,7 +233,7 @@ module RubyLLM
       alias say ask
 
       def ask_later(message = nil, with: nil)
-        add_message(role: :user, content: build_content(message, with))
+        add_message(role: :user, content: message, attachments: with)
         self
       end
 
@@ -400,11 +398,7 @@ module RubyLLM
       end
 
       def persist_new_message
-        if @message&.persisted? && @message.content.blank? &&
-           !@message.tool_calls_association.exists? &&
-           (!@message.respond_to?(:content_raw) || @message.content_raw.blank?)
-          @message.destroy
-        end
+        @message.destroy if @message&.persisted? && @message.content.blank? && !@message.tool_calls_association.exists?
 
         attrs = { role: :assistant, content: '' }
         attrs[self.class.model_association_name] = current_llm_model_association
@@ -415,15 +409,13 @@ module RubyLLM
         return unless message
 
         tool_call_id = find_tool_call_id(message.tool_call_id) if message.tool_call_id
-        content_text, attachments_to_persist, content_raw = prepare_content_for_storage(message.content)
-        attrs = completion_attributes(message, content_text, tool_call_id)
+        attrs = completion_attributes(message, message.content, tool_call_id)
 
         transaction do
           @message.assign_attributes(attrs)
-          @message.content_raw = content_raw if @message.respond_to?(:content_raw=)
           @message.save!
 
-          persist_content(@message, attachments_to_persist) if attachments_to_persist
+          persist_content(@message, message.attachments) if message.attachments.any?
           persist_tool_calls(message.tool_calls) if message.tool_calls.present?
         end
       end
@@ -479,26 +471,6 @@ module RubyLLM
 
         tool_call = message_with_tool_call.tool_calls_association.find_by(tool_call_id: tool_call_id)
         tool_call&.id
-      end
-
-      def prepare_content_for_storage(content)
-        attachments = nil
-        content_raw = nil
-        content_text = content
-
-        case content
-        when RubyLLM::Content::Raw
-          content_raw = content.value
-          content_text = nil
-        when RubyLLM::Content
-          attachments = content.attachments if content.attachments.any?
-          content_text = content.text
-        when Hash, Array
-          content_raw = content
-          content_text = nil
-        end
-
-        [content_text, attachments, content_raw]
       end
     end
   end

@@ -126,7 +126,7 @@ module RubyLLM
 
         def format_instructions(messages)
           instructions = messages.select { |msg| msg.role == :system }.map do |msg|
-            msg.content.is_a?(Content) ? msg.content.text : msg.content.to_s
+            msg.content.to_s
           end
 
           instructions.empty? ? nil : instructions.join("\n\n")
@@ -147,7 +147,7 @@ module RubyLLM
           when :assistant
             format_assistant_items(msg)
           else
-            { role: 'user', content: format_content(msg.content) }
+            { role: 'user', content: format_content(msg.content, msg.attachments) }
           end
         end
 
@@ -179,15 +179,11 @@ module RubyLLM
         end
 
         def format_output_content(msg)
-          text = msg.content.is_a?(Content) ? msg.content.text : msg.content
-          text = text.to_json if text.is_a?(Hash) || text.is_a?(Array)
-
-          [{ type: 'output_text', text: text }]
+          [{ type: 'output_text', text: msg.content }]
         end
 
         def empty_content?(content)
-          content.nil? || (content.is_a?(String) && content.strip.empty?) ||
-            (content.is_a?(Content) && content.text.nil?)
+          content.nil? || content.strip.empty?
         end
 
         def parse_output_text(output)

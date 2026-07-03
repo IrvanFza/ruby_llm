@@ -14,14 +14,14 @@ module RubyLLM
     private_constant :STOPPED_FINISH_REASONS, :MAX_TOKENS_FINISH_REASONS, :TOOL_CALL_FINISH_REASONS,
                      :CONTENT_FILTERED_FINISH_REASONS
 
-    attr_reader :role, :model_id, :tool_calls, :tool_call_id, :raw, :thinking, :tokens, :citations,
-                :finish_reason
-    attr_writer :content
+    attr_reader :role, :content, :attachments, :model_id, :tool_calls, :tool_call_id, :raw, :thinking, :tokens,
+                :citations, :finish_reason
 
     def initialize(options = {})
       @role = options.fetch(:role).to_sym
       @tool_calls = options[:tool_calls]
-      @content = normalize_content(options.fetch(:content), role: @role, tool_calls: @tool_calls)
+      @content = normalize_content(options.fetch(:content))
+      @attachments = Attachment.wrap(options[:attachments])
       @model_id = options[:model_id]
       @tool_call_id = options[:tool_call_id]
       @tokens = options[:tokens] || Tokens.build(
@@ -40,8 +40,12 @@ module RubyLLM
       ensure_valid_role
     end
 
-    def content
-      @content.is_a?(Content) ? @content.format : @content
+    def parsed
+      @parsed ||= JSON.parse(content) if content
+    end
+
+    def with_attachments(attachments)
+      dup.tap { |message| message.instance_variable_set(:@attachments, Attachment.wrap(attachments)) }
     end
 
     def tool_call?
@@ -117,12 +121,13 @@ module RubyLLM
       {
         role: role,
         content: content,
+        attachments: list_to_h(attachments),
         model_id: model_id,
         tool_calls: tool_calls,
         tool_call_id: tool_call_id,
         thinking: thinking&.text,
         thinking_signature: thinking&.signature,
-        citations: citations.empty? ? nil : citations.map(&:to_h),
+        citations: list_to_h(citations),
         finish_reason: finish_reason,
         cache_until_here: cache_until_here? || nil
       }.merge(tokens ? tokens.to_h : {}).compact
@@ -143,6 +148,10 @@ module RubyLLM
 
     private
 
+    def list_to_h(list)
+      list.empty? ? nil : list.map(&:to_h)
+    end
+
     def finish_reason_in?(reasons)
       reasons.include?(finish_reason_key)
     end
@@ -151,14 +160,13 @@ module RubyLLM
       finish_reason.to_s.downcase.tr('-', '_')
     end
 
-    def normalize_content(content, role:, tool_calls:)
+    def normalize_content(content)
       return '' if role == :assistant && content.nil? && tool_calls && !tool_calls.empty?
+      return content if content.nil? || content.is_a?(String)
 
-      case content
-      when String then Content.new(content)
-      when Hash then Content.new(content[:text], content)
-      else content
-      end
+      raise ArgumentError,
+            "Message content must be a String, got #{content.class}. " \
+            'Pass files via attachments: and structured data as JSON.'
     end
 
     def ensure_valid_role

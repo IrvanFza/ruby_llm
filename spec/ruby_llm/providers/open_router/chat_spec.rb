@@ -86,10 +86,9 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
 
   describe '#format_messages' do
     it 'opts OpenRouter into native file parts for PDF attachments' do
-      content = RubyLLM::Content.new('Summarize this file')
-      content.add_attachment(StringIO.new('pdf bytes'), filename: 'proposal.pdf')
+      attachment = RubyLLM::Attachment.new(StringIO.new('pdf bytes'), filename: 'proposal.pdf')
 
-      messages = [RubyLLM::Message.new(role: :user, content:)]
+      messages = [RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])]
 
       formatted = provider.send(:format_messages, messages)
 
@@ -98,11 +97,11 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
     end
 
     it 'keeps non-PDF documents disabled for OpenRouter chat completions' do
-      content = RubyLLM::Content.new('Summarize this file')
-      content.add_attachment(StringIO.new('docx bytes'), filename: 'proposal.docx')
+      attachment = RubyLLM::Attachment.new(StringIO.new('docx bytes'), filename: 'proposal.docx')
+      message = RubyLLM::Message.new(role: :user, content: 'Summarize this file', attachments: [attachment])
 
       expect do
-        provider.send(:format_messages, [RubyLLM::Message.new(role: :user, content:)])
+        provider.send(:format_messages, [message])
       end.to raise_error(
         RubyLLM::UnsupportedAttachmentError,
         %r{Unsupported attachment type: application/vnd.openxmlformats-officedocument.wordprocessingml.document}
