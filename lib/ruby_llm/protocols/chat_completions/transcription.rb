@@ -11,7 +11,7 @@ module RubyLLM
           'audio/transcriptions'
         end
 
-        def render_transcription_payload(file_part, model:, language:, **options)
+        def render_transcription_payload(file_part, model:, language:, params: {}, **options)
           {
             model: model,
             file: file_part,
@@ -23,7 +23,7 @@ module RubyLLM
             timestamp_granularities: options[:timestamp_granularities],
             known_speaker_names: options[:speaker_names],
             known_speaker_references: encode_speaker_references(options[:speaker_references])
-          }.compact
+          }.compact.merge(params)
         end
 
         def encode_speaker_references(references)

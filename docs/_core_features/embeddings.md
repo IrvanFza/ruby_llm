@@ -114,6 +114,24 @@ This is particularly useful when:
 
 Note that not all models support custom dimensions. If you specify dimensions that aren't supported by the chosen model, RubyLLM will use the model's default dimensions.
 
+## Provider-Specific Params
+
+Use `params:` for provider request fields that are not first-class RubyLLM options. For example, Vertex AI embeddings support `task_type` and `title`:
+
+```ruby
+embedding = RubyLLM.embed(
+  "RubyLLM makes provider APIs feel native to Ruby.",
+  model: "{{ site.models.embedding_google }}",
+  provider: :vertexai,
+  params: {
+    task_type: "RETRIEVAL_DOCUMENT",
+    title: "RubyLLM docs"
+  }
+)
+```
+
+For Vertex AI, RubyLLM applies `task_type` and `title` to each embedding instance. Other `params:` keys are merged into the provider payload.
+
 ## Using Embedding Results
 
 ### Vector Properties

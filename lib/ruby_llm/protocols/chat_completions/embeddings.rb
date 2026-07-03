@@ -11,12 +11,12 @@ module RubyLLM
           'embeddings'
         end
 
-        def render_embedding_payload(text, model:, dimensions:)
+        def render_embedding_payload(text, model:, dimensions:, params: {})
           {
             model: model,
             input: text,
             dimensions: dimensions
-          }.compact
+          }.compact.merge(params)
         end
 
         def parse_embedding_response(response, model:, text:)

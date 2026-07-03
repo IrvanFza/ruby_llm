@@ -12,7 +12,7 @@ module RubyLLM
         def render_image_payload(prompt, model:, size:, with: nil, mask: nil, params: {}) # rubocop:disable Lint/UnusedMethodArgument,Metrics/ParameterLists
           RubyLLM.logger.debug { "Ignoring size #{size}. Gemini does not support image size customization." }
           @model = model
-          {
+          payload = {
             instances: [
               {
                 prompt: prompt
@@ -22,6 +22,8 @@ module RubyLLM
               sampleCount: 1
             }
           }
+
+          Utils.deep_merge(payload, params)
         end
 
         def parse_image_response(response, model:)

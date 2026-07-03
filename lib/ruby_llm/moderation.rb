@@ -12,11 +12,13 @@ module RubyLLM
       @results = results
     end
 
-    def self.moderate(input,
+    def self.moderate(input, # rubocop:disable Metrics/ParameterLists
                       model: nil,
                       provider: nil,
                       assume_model_exists: false,
-                      context: nil)
+                      context: nil,
+                      params: {},
+                      metadata: nil)
       config = context&.config || RubyLLM.config
       model ||= config.default_moderation_model
       model, provider_instance = Models.resolve(model, provider: provider, assume_exists: assume_model_exists,
@@ -26,11 +28,13 @@ module RubyLLM
         provider_class: provider_instance.class.display_name,
         model: model.id,
         model_info: model,
-        input: input
+        input: input,
+        params: params,
+        metadata: metadata
       }
 
       RubyLLM.instrument('moderation.ruby_llm', payload, config: config) do |event|
-        result = provider_instance.moderate(input, model: model.id)
+        result = provider_instance.moderate(input, model: model.id, params:)
         event[:result] = result
         event[:flagged] = result.flagged?
         result

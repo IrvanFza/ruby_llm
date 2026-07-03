@@ -11,8 +11,11 @@ module RubyLLM
           "models/#{model}:batchEmbedContents"
         end
 
-        def render_embedding_payload(text, model:, dimensions:)
-          { requests: [text].flatten.map { |t| single_embedding_payload(t, model:, dimensions:) } }
+        def render_embedding_payload(text, model:, dimensions:, params: {})
+          Utils.deep_merge(
+            { requests: [text].flatten.map { |t| single_embedding_payload(t, model:, dimensions:) } },
+            params
+          )
         end
 
         def parse_embedding_response(response, model:, text:)

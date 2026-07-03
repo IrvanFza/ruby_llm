@@ -16,7 +16,9 @@ module RubyLLM
                    provider: nil,
                    assume_model_exists: false,
                    context: nil,
-                   dimensions: nil)
+                   dimensions: nil,
+                   params: {},
+                   metadata: nil)
       config = context&.config || RubyLLM.config
       model ||= config.default_embedding_model
       model, provider_instance = Models.resolve(model, provider: provider, assume_exists: assume_model_exists,
@@ -29,11 +31,13 @@ module RubyLLM
         model: model_id,
         model_info: model,
         input: text,
-        dimensions: dimensions
+        dimensions: dimensions,
+        params: params,
+        metadata: metadata
       }
 
       RubyLLM.instrument('embedding.ruby_llm', payload, config: config) do |event|
-        result = provider_instance.embed(text, model: model_id, dimensions:)
+        result = provider_instance.embed(text, model: model_id, dimensions:, params:)
         event[:result] = result
         event[:response_model] = result.model
         event[:input_tokens] = result.input_tokens

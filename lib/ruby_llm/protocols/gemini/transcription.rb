@@ -7,9 +7,9 @@ module RubyLLM
       module Transcription
         DEFAULT_PROMPT = 'Transcribe the provided audio and respond with only the transcript text.'
 
-        def transcribe(audio_file, model:, language:, **options)
+        def transcribe(audio_file, model:, language:, params: {}, **options)
           attachment = Attachment.new(audio_file)
-          payload = render_transcription_payload(attachment, language:, **options)
+          payload = render_transcription_payload(attachment, language:, params:, **options)
           response = @connection.post(transcription_url(model), payload)
           parse_transcription_response(response, model:)
         end
@@ -20,7 +20,7 @@ module RubyLLM
           "models/#{model}:generateContent"
         end
 
-        def render_transcription_payload(attachment, language:, **options)
+        def render_transcription_payload(attachment, language:, params: {}, **options)
           prompt = build_prompt(options[:prompt], language)
           audio_part = format_audio_part(attachment)
 
@@ -42,7 +42,7 @@ module RubyLLM
           payload[:generationConfig] = generation_config unless generation_config.empty?
           payload[:safetySettings] = options[:safety_settings] if options[:safety_settings]
 
-          payload
+          Utils.deep_merge(payload, params)
         end
 
         def build_generation_config(options)

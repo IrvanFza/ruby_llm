@@ -11,11 +11,11 @@ module RubyLLM
           'moderations'
         end
 
-        def render_moderation_payload(input, model:)
+        def render_moderation_payload(input, model:, params: {})
           {
             model: model,
             input: input
-          }
+          }.merge(params)
         end
 
         def parse_moderation_response(response, model:)

@@ -56,14 +56,14 @@ module RubyLLM
       parse_list_models_response response, @provider.slug, @provider.capabilities
     end
 
-    def embed(text, model:, dimensions:)
-      payload = render_embedding_payload(text, model:, dimensions:)
+    def embed(text, model:, dimensions:, params: {})
+      payload = render_embedding_payload(text, model:, dimensions:, params:)
       response = @connection.post(embedding_url(model:), payload)
       parse_embedding_response(response, model:, text:)
     end
 
-    def moderate(input, model:)
-      payload = render_moderation_payload(input, model:)
+    def moderate(input, model:, params: {})
+      payload = render_moderation_payload(input, model:, params:)
       response = @connection.post moderation_url, payload
       parse_moderation_response(response, model:)
     end
@@ -81,9 +81,9 @@ module RubyLLM
       parse_speech_response(response, model:, voice:, format:)
     end
 
-    def transcribe(audio_file, model:, language:, **options)
+    def transcribe(audio_file, model:, language:, params: {}, **options)
       file_part = build_audio_file_part(audio_file)
-      payload = render_transcription_payload(file_part, model:, language:, **options)
+      payload = render_transcription_payload(file_part, model:, language:, params:, **options)
       response = @connection.post transcription_url, payload
       parse_transcription_response(response, model:)
     end

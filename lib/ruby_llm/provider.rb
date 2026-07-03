@@ -136,12 +136,12 @@ module RubyLLM
       default_protocol.new(self).list_models
     end
 
-    def embed(text, model:, dimensions:)
-      default_protocol.new(self).embed(text, model:, dimensions:)
+    def embed(text, model:, dimensions:, params: {})
+      default_protocol.new(self).embed(text, model:, dimensions:, params:)
     end
 
-    def moderate(input, model:)
-      default_protocol.new(self).moderate(input, model:)
+    def moderate(input, model:, params: {})
+      default_protocol.new(self).moderate(input, model:, params:)
     end
 
     def paint(prompt, model:, size:, with: nil, mask: nil, params: {}) # rubocop:disable Metrics/ParameterLists
@@ -152,8 +152,8 @@ module RubyLLM
       default_protocol.new(self).speak(input, model:, voice:, format:, params:, **options)
     end
 
-    def transcribe(audio_file, model:, language:, **options)
-      default_protocol.new(self).transcribe(audio_file, model:, language:, **options)
+    def transcribe(audio_file, model:, language:, params: {}, **options)
+      default_protocol.new(self).transcribe(audio_file, model:, language:, params:, **options)
     end
 
     def upload_file(file, **options)

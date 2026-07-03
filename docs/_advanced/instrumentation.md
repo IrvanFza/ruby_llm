@@ -76,6 +76,19 @@ end
 
 You can also set `instrumenter` on a [context]({% link _getting_started/configuration-connection.md %}#contexts-isolated-configurations) when you only want instrumentation around a specific operation.
 
+## Per-Call Metadata
+
+One-shot APIs accept `metadata:` for application observability data:
+
+```ruby
+RubyLLM.embed(
+  "A short document",
+  metadata: { account_id: current_account.id, feature: "search" }
+)
+```
+
+RubyLLM includes that value as `payload[:metadata]` on the emitted event. It is not sent to the provider. Use `params:` for provider request fields, and `metadata:` for values your own instrumentation subscribers need.
+
 ## Events
 
 RubyLLM emits these events:

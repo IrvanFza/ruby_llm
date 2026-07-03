@@ -22,6 +22,8 @@ module RubyLLM
                         provider: nil,
                         assume_model_exists: false,
                         context: nil,
+                        params: {},
+                        metadata: nil,
                         **options)
       config = context&.config || RubyLLM.config
       model ||= config.default_transcription_model
@@ -32,11 +34,13 @@ module RubyLLM
         provider_class: provider_instance.class.display_name,
         model: model.id,
         model_info: model,
-        language: language
+        language: language,
+        params: params,
+        metadata: metadata
       }
 
       RubyLLM.instrument('transcription.ruby_llm', payload, config: config) do |event|
-        result = provider_instance.transcribe(audio_file, model: model.id, language:, **options)
+        result = provider_instance.transcribe(audio_file, model: model.id, language:, params:, **options)
         event[:result] = result
         event[:response_model] = result.model
         event[:input_tokens] = result.input_tokens
