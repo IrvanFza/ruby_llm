@@ -185,4 +185,56 @@ RSpec.describe RubyLLM::Cost do
       expect(aggregate.total).to eq(0.00001)
     end
   end
+
+  describe '.from_h' do
+    it 'reads component amounts and total from a stored breakdown' do
+      cost = described_class.from_h('input' => 0.001, 'output' => 0.004, 'total' => 0.005)
+
+      expect(cost.input).to eq(0.001)
+      expect(cost.output).to eq(0.004)
+      expect(cost.cache_read).to be_nil
+      expect(cost.total).to eq(0.005)
+    end
+
+    it 'accepts symbol keys' do
+      cost = described_class.from_h(input: 0.001, output: 0.004, total: 0.005)
+
+      expect(cost.total).to eq(0.005)
+    end
+
+    it 'round-trips a live cost through to_h' do
+      live = described_class.new(tokens: RubyLLM::Tokens.new(input: 1_000, output: 2_000), model:)
+      restored = described_class.from_h(live.to_h)
+
+      expect(restored.to_h).to eq(live.to_h)
+      expect(restored.total).to eq(live.total)
+    end
+
+    it 'returns a nil total when the stored breakdown recorded no total' do
+      cost = described_class.from_h('input' => 0.001)
+
+      expect(cost.input).to eq(0.001)
+      expect(cost.total).to be_nil
+    end
+
+    it 'aggregates several stored costs' do
+      a = described_class.from_h('input' => 0.001, 'output' => 0.004, 'total' => 0.005)
+      b = described_class.from_h('input' => 0.0005, 'output' => 0.002, 'total' => 0.0025)
+      aggregate = described_class.aggregate([a, b])
+
+      expect(aggregate.input).to be_within(0.0000000001).of(0.0015)
+      expect(aggregate.output).to be_within(0.0000000001).of(0.006)
+      expect(aggregate.total).to be_within(0.0000000001).of(0.0075)
+    end
+
+    it 'aggregates a stored cost mixed with a live cost' do
+      stored = described_class.from_h('input' => 0.001, 'output' => 0.004, 'total' => 0.005)
+      live = described_class.new(tokens: RubyLLM::Tokens.new(input: 1_000), model:)
+      aggregate = described_class.aggregate([stored, live])
+
+      expect(aggregate.input).to be_within(0.0000000001).of(0.002)
+      expect(aggregate.output).to eq(0.004)
+      expect(aggregate.total).to be_within(0.0000000001).of(0.006)
+    end
+  end
 end

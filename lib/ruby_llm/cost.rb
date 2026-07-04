@@ -32,6 +32,21 @@ module RubyLLM
       Aggregate.build(costs)
     end
 
+    # Rebuilds a cost from a stored breakdown Hash, as produced by #to_h and
+    # persisted alongside a message. Keys may be Strings or Symbols. Returns a
+    # Cost::Aggregate whose component readers return the recorded amounts and
+    # whose #total equals the recorded +:total+.
+    #
+    #   RubyLLM::Cost.from_h(message.cost_details).total
+    #
+    def self.from_h(hash)
+      amounts = COMPONENTS.to_h { |component| [component, hash[component] || hash[component.to_s]] }
+      total_recorded = hash.key?(:total) || hash.key?('total')
+      missing = total_recorded ? [] : COMPONENTS.reject { |component| amounts[component] }
+
+      Aggregate.new(amounts:, missing:, tokens: amounts.values.any? { |amount| !amount.nil? })
+    end
+
     def initialize(tokens: nil, model: nil, category: :text_tokens, input_details: nil) # :nodoc:
       @tokens = tokens
       @model = normalize_model(model)

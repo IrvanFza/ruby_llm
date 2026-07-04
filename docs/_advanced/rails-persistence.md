@@ -171,6 +171,31 @@ The `cache_read_tokens` and `cache_write_tokens` helpers read the columns of the
 
 RubyLLM normalizes provider-specific cache accounting before persisting token counts. See [Token Usage and Cost]({% link _core_features/chat-tokens.md %}) for the provider comparison table.
 
+#### Freezing Costs at Completion
+
+New installs add two optional message columns, and the v2.0 upgrade generator adds them to existing apps:
+
+*   `total_cost`, a `decimal(16, 10)` holding the response cost in USD.
+*   `cost_details`, a JSON column holding the per-component breakdown (input, output, cache read, cache write, thinking, total).
+
+When these columns exist, RubyLLM records each assistant message's cost at completion using the pricing in effect at that moment. `message.cost` then returns the recorded cost instead of recomputing it, so a later `RubyLLM.models.refresh!` that changes registry pricing does not rewrite historical costs. `chat_record.cost` sums the recorded per-message costs.
+
+```ruby
+message.total_cost   # => 0.00234 (numeric column, SQL-aggregatable)
+message.cost_details # => {"input" => 0.0012, "output" => 0.00114, "total" => 0.00234}
+message.cost.total   # => 0.00234 (frozen at completion, not recomputed)
+
+chat_record.messages.sum(:total_cost) # aggregate in SQL
+```
+
+Because `total_cost` is a plain numeric column, you can aggregate spend directly in the database:
+
+```ruby
+Chat.joins(:messages).where(messages: { role: 'assistant' }).sum('messages.total_cost')
+```
+
+If the columns are absent, `message.cost` computes live from the associated model record's current pricing, as it always has. Freezing history means stale registry pricing only affects new messages, so refresh the registry on a schedule. See [Model Costs]({% link _reference/model-costs.md %}) for the recommended refresh job.
+
 `finish_reason` is persisted when your message table has a string column with that name. New installs include it, and the upgrade generator adds it for existing apps.
 
 ### Database Model Registry

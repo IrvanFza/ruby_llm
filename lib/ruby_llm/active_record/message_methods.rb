@@ -100,12 +100,17 @@ module RubyLLM
         )
       end
 
-      # Returns a RubyLLM::Cost that prices this message's tokens against
-      # the associated model record.
+      # Returns a RubyLLM::Cost for this message. When the +cost_details+
+      # column recorded a breakdown at completion, returns that frozen cost so
+      # a later Models.refresh! does not rewrite it. Otherwise prices this
+      # message's tokens against the associated model record's current pricing.
       #
       #   message.cost.total
       #
       def cost
+        details = optional_column(:cost_details)
+        return RubyLLM::Cost.from_h(details) if details.present?
+
         RubyLLM::Cost.new(tokens:, model: model_association)
       end
 

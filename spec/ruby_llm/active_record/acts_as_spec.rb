@@ -79,6 +79,134 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
     end
   end
 
+  describe 'cost persistence' do
+    def priced_model(model_id, input:, output:)
+      Model.create!(
+        model_id: model_id, name: model_id, provider: 'openai',
+        pricing: { text_tokens: { standard: { input_per_million: input, output_per_million: output } } }
+      )
+    end
+
+    def complete_assistant_message(chat, input_tokens: 1_000, output_tokens: 2_000, content: 'Hi')
+      llm_message = RubyLLM::Message.new(
+        role: :assistant, content: content, model: chat.model_association.model_id,
+        input_tokens: input_tokens, output_tokens: output_tokens
+      )
+      chat.send(:persist_new_message)
+      chat.send(:persist_message_completion, llm_message)
+      chat.messages.reload.last
+    end
+
+    it 'records total_cost and cost_details when a message completes' do
+      chat = Chat.create!(model: priced_model('cost-write-model', input: 1.0, output: 2.0))
+      message = complete_assistant_message(chat)
+
+      expect(message.total_cost).to be_within(1e-9).of(0.005)
+      expect(message.cost_details).to include(
+        'input' => be_within(1e-9).of(0.001),
+        'output' => be_within(1e-9).of(0.004),
+        'total' => be_within(1e-9).of(0.005)
+      )
+      expect(message.cost.total).to eq(0.005)
+    end
+
+    it 'freezes the recorded cost against later pricing changes' do
+      model_record = priced_model('cost-freeze-model', input: 1.0, output: 2.0)
+      chat = Chat.create!(model: model_record)
+      message = complete_assistant_message(chat)
+
+      recorded_message_total = message.cost.total
+      recorded_chat_total = chat.cost.total
+
+      model_record.update!(
+        pricing: { text_tokens: { standard: { input_per_million: 100.0, output_per_million: 200.0 } } }
+      )
+      message.reload
+      chat.messages.reload
+
+      live_recompute = RubyLLM::Cost.new(tokens: message.tokens, model: message.model_association).total
+      expect(live_recompute).to eq(0.5)
+
+      expect(message.cost.total).to eq(recorded_message_total).and eq(0.005)
+      expect(chat.cost.total).to eq(recorded_chat_total).and eq(0.005)
+    end
+
+    it 'exposes total_cost as a SQL-aggregatable column' do
+      chat = Chat.create!(model: priced_model('cost-sql-model', input: 1.0, output: 2.0))
+      complete_assistant_message(chat)
+      complete_assistant_message(chat, input_tokens: 500, output_tokens: 1_000)
+
+      expect(chat.messages.sum(:total_cost)).to be_within(1e-9).of(0.0075)
+      expect(chat.messages.where('total_cost > 0').count).to eq(2)
+    end
+
+    it 'aggregates the frozen per-message costs into the chat cost' do
+      chat = Chat.create!(model: priced_model('cost-aggregate-model', input: 1.0, output: 2.0))
+      complete_assistant_message(chat)
+      complete_assistant_message(chat, input_tokens: 500, output_tokens: 1_000)
+
+      expect(chat.cost.total).to be_within(1e-9).of(0.0075)
+      expect(chat.cost.to_h).to include(
+        input: be_within(1e-9).of(0.0015),
+        output: be_within(1e-9).of(0.006),
+        total: be_within(1e-9).of(0.0075)
+      )
+    end
+  end
+
+  describe 'cost fallback without cost columns' do
+    before(:all) do # rubocop:disable RSpec/BeforeAfterAll
+      ActiveRecord::Migration.suppress_messages do
+        ActiveRecord::Migration.create_table :costless_chats, force: true do |t|
+          t.integer :model_id
+          t.timestamps
+        end
+
+        ActiveRecord::Migration.create_table :costless_messages, force: true do |t|
+          t.references :costless_chat
+          t.string :role
+          t.text :content
+          t.integer :model_id
+          t.integer :input_tokens
+          t.integer :output_tokens
+          t.integer :tool_call_id
+          t.timestamps
+        end
+      end
+    end
+
+    after(:all) do # rubocop:disable RSpec/BeforeAfterAll
+      ActiveRecord::Migration.suppress_messages do
+        ActiveRecord::Migration.drop_table :costless_messages, if_exists: true
+        ActiveRecord::Migration.drop_table :costless_chats, if_exists: true
+      end
+    end
+
+    class CostlessChat < ActiveRecord::Base # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
+      acts_as_chat messages: :costless_messages, message_class: 'CostlessMessage'
+    end
+
+    class CostlessMessage < ActiveRecord::Base # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
+      acts_as_message chat: :costless_chat, chat_class: 'CostlessChat'
+    end
+
+    it 'prices live from the model association' do
+      model_record = Model.create!(
+        model_id: 'cost-fallback-model', name: 'Fallback Model', provider: 'openai',
+        pricing: { text_tokens: { standard: { input_per_million: 1.0, output_per_million: 2.0 } } }
+      )
+      chat = CostlessChat.create!(model: model_record)
+      message = chat.costless_messages.create!(
+        role: 'assistant', content: 'Hi', model: model_record, input_tokens: 1_000, output_tokens: 2_000
+      )
+
+      expect(message.has_attribute?(:total_cost)).to be(false)
+      expect(message.has_attribute?(:cost_details)).to be(false)
+      expect(message.cost).to be_a(RubyLLM::Cost)
+      expect(message.cost.total).to eq(0.005)
+    end
+  end
+
   describe 'system messages' do
     it 'persists system messages' do
       chat = Chat.create!(model: model)

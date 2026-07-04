@@ -12,6 +12,8 @@ class <%= create_migration_class_name(message_table_name) %> < ActiveRecord::Mig
       t.integer :output_tokens
       t.integer :cache_read_tokens
       t.integer :cache_write_tokens
+      t.decimal :total_cost, precision: 16, scale: 10
+      t.json :cost_details
       t.string :finish_reason
       t.timestamps
     end

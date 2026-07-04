@@ -652,7 +652,9 @@ module RubyLLM
         attrs[:citations] = message.citations.map(&:to_h).presence if @message.has_attribute?(:citations)
         attrs[:finish_reason] = message.finish_reason if @message.has_attribute?(:finish_reason)
         attrs[:cache_until_here] = message.cache_until_here? if @message.has_attribute?(:cache_until_here)
-        attrs[self.class.model_association_name] = current_llm_model_association(message)
+        model_record = current_llm_model_association(message)
+        attrs[self.class.model_association_name] = model_record
+        merge_cost_attributes(attrs, message, model_record)
         if tool_call_id
           parent_tool_call_assoc = @message.class.reflect_on_association(:parent_tool_call)
           attrs[parent_tool_call_assoc.foreign_key] = tool_call_id
@@ -660,6 +662,14 @@ module RubyLLM
         attrs
       end
       # rubocop:enable Metrics/PerceivedComplexity
+
+      def merge_cost_attributes(attrs, message, model_record)
+        return unless @message.has_attribute?(:total_cost) || @message.has_attribute?(:cost_details)
+
+        cost = RubyLLM::Cost.new(tokens: message.tokens, model: model_record)
+        attrs[:total_cost] = cost.total if @message.has_attribute?(:total_cost)
+        attrs[:cost_details] = cost.to_h.presence if @message.has_attribute?(:cost_details)
+      end
 
       def persist_tool_calls(tool_calls, message_record: @message)
         tool_call_klass = message_record.tool_calls_association.klass
