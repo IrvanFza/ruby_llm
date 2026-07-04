@@ -5,10 +5,7 @@ require 'tempfile'
 
 module RubyLLM
   module ActiveRecord
-    # Shared Active Storage handling for ActiveRecord-backed chats and
-    # messages: writing RubyLLM attachments into Active Storage and
-    # rebuilding RubyLLM::Attachment lists from stored attachments.
-    module AttachmentHelpers
+    module AttachmentHelpers # :nodoc:
       private
 
       def persist_content(message_record, attachments)

@@ -6,15 +6,21 @@ RSpec.describe RubyLLM::Chat do
   include_context 'with configured RubyLLM'
 
   describe '#with_thinking' do
-    it 'clears thinking with nil' do
+    it 'clears thinking with without_thinking' do
       chat = RubyLLM.chat.with_thinking(effort: :low)
 
-      chat.with_thinking(nil)
+      chat.without_thinking
 
       expect(chat.instance_variable_get(:@thinking)).to be_nil
     end
 
-    it 'requires thinking options or nil' do
+    it 'rejects nil, pointing to without_thinking' do
+      chat = RubyLLM.chat
+
+      expect { chat.with_thinking(nil) }.to raise_error(ArgumentError, /without_thinking/)
+    end
+
+    it 'requires thinking options' do
       chat = RubyLLM.chat
 
       expect { chat.with_thinking }.to raise_error(ArgumentError, /requires :effort or :budget/)

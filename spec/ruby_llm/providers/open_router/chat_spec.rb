@@ -36,8 +36,8 @@ RSpec.describe RubyLLM::Providers::OpenRouter::Chat do
       message = provider.send(:parse_completion_response, response)
 
       expect(message.input_tokens).to eq(2)
-      expect(message.cached_tokens).to eq(6)
-      expect(message.cache_creation_tokens).to eq(4)
+      expect(message.cache_read_tokens).to eq(6)
+      expect(message.cache_write_tokens).to eq(4)
       expect(message.output_tokens).to eq(4)
     end
 

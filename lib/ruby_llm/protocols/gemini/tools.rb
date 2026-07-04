@@ -93,8 +93,8 @@ module RubyLLM
         private
 
         def function_declaration_for(tool)
-          parameters_schema = tool.params_schema ||
-                              RubyLLM::Tool::SchemaDefinition.from_parameters(tool.parameters)&.json_schema
+          parameters_schema = tool.parameters_schema ||
+                              RubyLLM::Tool::SchemaDefinition.from_parameters(tool.declared_parameters)&.json_schema
 
           declaration = {
             name: tool.name,
@@ -103,9 +103,9 @@ module RubyLLM
 
           declaration[:parameters] = convert_tool_schema_to_gemini(parameters_schema) if parameters_schema
 
-          return declaration if tool.provider_params.empty?
+          return declaration if tool.provider_options.empty?
 
-          RubyLLM::Utils.deep_merge(declaration, tool.provider_params)
+          RubyLLM::Utils.deep_merge(declaration, tool.provider_options)
         end
 
         def convert_tool_schema_to_gemini(schema)

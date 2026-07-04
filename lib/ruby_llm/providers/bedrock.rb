@@ -31,10 +31,6 @@ module RubyLLM
         {}
       end
 
-      def complete(messages, model:, params: {}, **rest, &)
-        super(messages, model:, params: normalize_params(params, model:), **rest, &)
-      end
-
       def parse_error(response)
         body = parse_error_body(response)
         return unless body
@@ -106,23 +102,6 @@ module RubyLLM
         else
           'bedrock_credential_provider or bedrock_api_key + bedrock_secret_key'
         end
-      end
-
-      def normalize_params(params, model:)
-        normalized = RubyLLM::Utils.deep_symbolize_keys(params || {})
-        additional_fields = normalized[:additionalModelRequestFields] || {}
-
-        top_k = normalized.delete(:top_k)
-        if !top_k.nil? && model_supports_top_k?(model)
-          additional_fields = RubyLLM::Utils.deep_merge(additional_fields, { top_k: top_k })
-        end
-
-        normalized[:additionalModelRequestFields] = additional_fields unless additional_fields.empty?
-        normalized
-      end
-
-      def model_supports_top_k?(model)
-        Protocols::Converse.reasoning_embedded?(model)
       end
 
       def embedding_protocol_for(model_id)

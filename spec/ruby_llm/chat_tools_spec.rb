@@ -14,8 +14,8 @@ RSpec.describe RubyLLM::Chat do
 
   class Weather < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Gets current weather for a location'
-    param :latitude, desc: 'Latitude (e.g., 52.5200)'
-    param :longitude, desc: 'Longitude (e.g., 13.4050)'
+    parameter :latitude, description: 'Latitude (e.g., 52.5200)'
+    parameter :longitude, description: 'Longitude (e.g., 13.4050)'
 
     def execute(latitude:, longitude:)
       "Current weather at #{latitude}, #{longitude}: 15°C, Wind: 10 km/h"
@@ -48,7 +48,7 @@ RSpec.describe RubyLLM::Chat do
 
   class ContentReturningTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Returns a processed string result'
-    param :query, desc: 'Query to process'
+    parameter :query, description: 'Query to process'
 
     def execute(query:)
       "Processed: #{query}"
@@ -65,35 +65,27 @@ RSpec.describe RubyLLM::Chat do
 
   class ParamsTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Has provider-specific params'
-    with_params cache_control: { type: 'ephemeral' }
+    provider_options cache_control: { type: 'ephemeral' }
 
     def execute(**)
       'ok'
     end
   end
 
-  describe '.with_params on tools' do
-    it 'clears provider params with nil' do
+  describe '.provider_options on tools' do
+    it 'raises when passed nil' do
       tool_class = Class.new(RubyLLM::Tool) do
-        with_params cache_control: { type: 'ephemeral' }
+        provider_options cache_control: { type: 'ephemeral' }
       end
 
-      tool_class.with_params(nil)
-
-      expect(tool_class.provider_params).to eq({})
-    end
-
-    it 'requires params or nil' do
-      tool_class = Class.new(RubyLLM::Tool)
-
-      expect { tool_class.with_params }.to raise_error(ArgumentError)
+      expect { tool_class.provider_options(nil) }.to raise_error(ArgumentError, /nil/)
     end
   end
 
   class ArrayParamsTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Uses params DSL array support'
 
-    params do
+    parameters do
       array :tags, of: :string, description: 'List of tags to combine'
     end
 
@@ -105,7 +97,7 @@ RSpec.describe RubyLLM::Chat do
   class AnyOfParamsTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Uses params DSL any_of support'
 
-    params do
+    parameters do
       string :task, description: 'Task description'
       any_of :status, description: 'Optional task status' do
         string enum: %w[pending done]
@@ -121,7 +113,7 @@ RSpec.describe RubyLLM::Chat do
   class ObjectParamsTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Uses params DSL object support'
 
-    params do
+    parameters do
       object :window, description: 'Time window to schedule' do
         string :start, description: 'ISO start'
         string :end, description: 'ISO end'
@@ -135,8 +127,8 @@ RSpec.describe RubyLLM::Chat do
 
   class ConcurrentProbeTool < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Records concurrent execution'
-    param :label
-    param :delay, type: :number, required: false
+    parameter :label
+    parameter :delay, type: :number, required: false
 
     State = Struct.new(:running, :max_running, :mutex) # rubocop:disable RSpec/LeakyConstantDeclaration
 
@@ -203,7 +195,7 @@ RSpec.describe RubyLLM::Chat do
 
   describe 'tool choice normalization' do
     it 'accepts a tool class for choice' do
-      chat = RubyLLM.chat.with_tool(Weather, choice: Weather)
+      chat = RubyLLM.chat.with_tools(Weather).with_tool_options(choice: Weather)
 
       expect(chat.tool_prefs[:choice]).to eq(:weather)
     end
@@ -219,9 +211,9 @@ RSpec.describe RubyLLM::Chat do
         skip 'Flaky test for deepseek - model asks for clarification instead of exec tools' if provider == :deepseek
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(Weather)
+                      .with_tools(Weather)
         # Disable thinking mode for qwen models
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
 
         response = chat.ask("What's the weather in Berlin? (52.5200, 13.4050)")
         expect(response.content).to include('15')
@@ -238,7 +230,7 @@ RSpec.describe RubyLLM::Chat do
         tool_results_received = []
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(Weather)
+                      .with_tools(Weather)
                       .after_tool_result { |result| tool_results_received << result }
 
         final_answer = 'The `list_tools` tool is not supported, but I see you have the `weather` tool.'
@@ -276,7 +268,7 @@ RSpec.describe RubyLLM::Chat do
 
           chat = RubyLLM.chat(model: model, provider: provider)
                         .with_thinking(effort: :low)
-                        .with_tool(Weather)
+                        .with_tools(Weather)
 
           response = chat.ask("What's the weather in Berlin? (52.5200, 13.4050)")
           expect(response.content).to include('15')
@@ -299,7 +291,7 @@ RSpec.describe RubyLLM::Chat do
         chat = RubyLLM.chat(model: model, provider: provider)
                       .with_tools(Weather, BestLanguageToLearn)
         # Disable thinking mode for qwen models
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
 
         response = chat.ask("What's the weather in Berlin (52.5200, 13.4050) and what's the best language to learn?")
         expect(response.content).to include('15')
@@ -321,9 +313,9 @@ RSpec.describe RubyLLM::Chat do
         skip 'Flaky test for deepseek' if provider == :deepseek
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(Weather)
+                      .with_tools(Weather)
         # Disable thinking mode for qwen models
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
 
         response = chat.ask("What's the weather in Berlin? (52.5200, 13.4050)")
         expect(response.content).to include('15')
@@ -342,9 +334,9 @@ RSpec.describe RubyLLM::Chat do
         skip_unless_supports_functions(provider, model)
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(BestLanguageToLearn)
+                      .with_tools(BestLanguageToLearn)
         # Disable thinking mode for qwen models
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
         response = chat.ask("What's the best language to learn?")
         expect(response.content).to include('Ruby')
       end
@@ -362,10 +354,10 @@ RSpec.describe RubyLLM::Chat do
         skip 'Mistral has a bug with tool arguments in multi-turn streaming' if provider == :mistral
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(BestLanguageToLearn)
+                      .with_tools(BestLanguageToLearn)
                       .with_instructions('You must use tools whenever possible.')
         # Disable thinking mode for qwen models
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
         chunks = []
 
         response = chat.ask("What's the best language to learn?") do |chunk|
@@ -400,9 +392,9 @@ RSpec.describe RubyLLM::Chat do
         end
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(Weather)
+                      .with_tools(Weather)
         # Disable thinking mode for qwen models
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
         chunks = []
 
         response = chat.ask("What's the weather in Berlin? (52.5200, 13.4050)") do |chunk|
@@ -434,7 +426,7 @@ RSpec.describe RubyLLM::Chat do
         skip 'Flaky test for gpustack/qwen3' if provider == :gpustack && model == 'qwen3'
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(DiceRoll)
+                      .with_tools(DiceRoll)
                       .with_instructions(
                         'You must call the dice_roll tool exactly 3 times when asked to roll dice 3 times.'
                       )
@@ -458,11 +450,11 @@ RSpec.describe RubyLLM::Chat do
         expect(response.content.downcase).to match(/roll|dice|result/) # Mentions rolling or results
       end
 
-      it "#{provider}/#{model} can handle with_params" do
+      it "#{provider}/#{model} can handle tool provider_options" do
         skip_unless_supports_functions(provider, model)
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(ParamsTool)
+                      .with_tools(ParamsTool)
                       .with_instructions('You must call the params tool.')
 
         provider_instance = chat.instance_variable_get(:@provider)
@@ -498,8 +490,8 @@ RSpec.describe RubyLLM::Chat do
         skip_unless_supports_functions(provider, model)
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(ArrayParamsTool)
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+                      .with_tools(ArrayParamsTool)
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
 
         chat.ask_later(
           'Call the array params tool with tags ["red","blue"] and tell me the combined tags.'
@@ -521,8 +513,8 @@ RSpec.describe RubyLLM::Chat do
         skip_unless_supports_functions(provider, model)
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(AnyOfParamsTool)
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+                      .with_tools(AnyOfParamsTool)
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
 
         chat.ask_later(
           'Call the any-of params tool for task "Review PR" with status "pending" and report the result.'
@@ -545,8 +537,8 @@ RSpec.describe RubyLLM::Chat do
         skip_unless_supports_functions(provider, model)
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(ObjectParamsTool)
-        chat = chat.with_params(enable_thinking: false) if model == 'qwen3'
+                      .with_tools(ObjectParamsTool)
+        chat = chat.with_provider_options(enable_thinking: false) if model == 'qwen3'
 
         chat.ask_later(
           'Call the object params tool with window start 2025-01-01 and end 2025-01-02 and include the result.'
@@ -569,7 +561,7 @@ RSpec.describe RubyLLM::Chat do
       tool_calls_received = []
 
       chat = RubyLLM.chat
-                    .with_tool(Weather)
+                    .with_tools(Weather)
                     .before_tool_call { |tool_call| tool_calls_received << tool_call }
 
       response = chat.ask("What's the weather in Berlin? (52.5200, 13.4050)")
@@ -586,7 +578,7 @@ RSpec.describe RubyLLM::Chat do
       tool_results_received = []
 
       chat = RubyLLM.chat
-                    .with_tool(Weather)
+                    .with_tools(Weather)
                     .after_tool_result { |result| tool_results_received << result }
 
       response = chat.ask("What's the weather in Berlin? (52.5200, 13.4050)")
@@ -603,7 +595,7 @@ RSpec.describe RubyLLM::Chat do
       call_order = []
 
       chat = RubyLLM.chat
-                    .with_tool(DiceRoll)
+                    .with_tools(DiceRoll)
                     .before_tool_call { |_| call_order << :tool_call }
                     .after_tool_result { |_| call_order << :tool_result }
 
@@ -634,7 +626,7 @@ RSpec.describe RubyLLM::Chat do
     end
 
     it 'executes multiple tool calls concurrently' do
-      chat = RubyLLM.chat.with_tool(ConcurrentProbeTool, concurrency: true)
+      chat = RubyLLM.chat.with_tools(ConcurrentProbeTool).with_tool_options(concurrency: true)
       stub_tool_response(chat, tool_calls)
 
       chat.ask('Run the tools')
@@ -647,7 +639,7 @@ RSpec.describe RubyLLM::Chat do
     end
 
     it 'executes multiple tool calls with fibers' do
-      chat = RubyLLM.chat.with_tool(ConcurrentProbeTool, concurrency: :fibers)
+      chat = RubyLLM.chat.with_tools(ConcurrentProbeTool).with_tool_options(concurrency: :fibers)
       stub_tool_response(chat, tool_calls)
 
       chat.ask('Run the tools')
@@ -660,7 +652,7 @@ RSpec.describe RubyLLM::Chat do
     end
 
     it 'adds concurrent tool result messages as each call finishes before resuming the model' do
-      chat = RubyLLM.chat.with_tool(ConcurrentProbeTool, concurrency: true)
+      chat = RubyLLM.chat.with_tools(ConcurrentProbeTool).with_tool_options(concurrency: true)
       provider = chat.instance_variable_get(:@provider)
       events = []
       complete_calls = 0
@@ -701,7 +693,7 @@ RSpec.describe RubyLLM::Chat do
         # No cassettes yet: local server was not running at recording time
         skip "#{provider} has no cassette for this example" if provider.in?(%i[gpustack ollama])
 
-        chat = RubyLLM.chat(model: model, provider: provider).with_tool(FileFetchTool)
+        chat = RubyLLM.chat(model: model, provider: provider).with_tools(FileFetchTool)
 
         response = chat.ask('Use the file_fetch tool, then tell me exactly what the fetched file says.')
 
@@ -724,7 +716,7 @@ RSpec.describe RubyLLM::Chat do
         skip "#{provider} has no cassette for this example" if provider.in?(%i[deepseek gpustack bedrock])
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(ContentReturningTool)
+                      .with_tools(ContentReturningTool)
 
         chat.ask('Process this query: test data')
 
@@ -750,7 +742,7 @@ RSpec.describe RubyLLM::Chat do
         skip "Bedrock doesn't support :none tool choice" if provider == :bedrock
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(Weather, choice: :none)
+                      .with_tools(Weather).with_tool_options(choice: :none)
 
         tool_called = false
         chat.before_tool_call do |_tool_call|
@@ -770,7 +762,7 @@ RSpec.describe RubyLLM::Chat do
         skip "#{provider} doesn't support tool choice" unless provider_class&.capabilities&.supports_tool_choice?(model)
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(Weather, choice: :required)
+                      .with_tools(Weather).with_tool_options(choice: :required)
 
         tool_called = false
         chat.before_tool_call do |_tool_call|
@@ -790,7 +782,7 @@ RSpec.describe RubyLLM::Chat do
         skip "#{provider} doesn't support tool choice" unless provider_class&.capabilities&.supports_tool_choice?(model)
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tool(Weather, choice: :weather)
+                      .with_tools(Weather).with_tool_options(choice: :weather)
 
         tool_called = false
         chat.before_tool_call do |_tool_call|
@@ -816,7 +808,7 @@ RSpec.describe RubyLLM::Chat do
         end
 
         chat = RubyLLM.chat(model: model, provider: provider)
-                      .with_tools(Weather, BestLanguageToLearn, calls: :one)
+                      .with_tools(Weather, BestLanguageToLearn).with_tool_options(calls: :one)
                       .with_instructions(
                         'You must use both the weather tool for Berlin (52.5200, 13.4050) and the best language tool.'
                       )
@@ -832,7 +824,7 @@ RSpec.describe RubyLLM::Chat do
 
   describe 'error handling' do
     it 'raises an error when tool execution fails' do
-      chat = RubyLLM.chat.with_tool(BrokenTool)
+      chat = RubyLLM.chat.with_tools(BrokenTool)
 
       expect { chat.ask('What is the weather?') }.to raise_error(RuntimeError) do |error|
         expect(error.message).to include('This tool is broken')

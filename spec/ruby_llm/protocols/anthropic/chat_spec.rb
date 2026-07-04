@@ -427,8 +427,8 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Chat do
 
       expect(message.input_tokens).to eq(42)
       expect(message.output_tokens).to eq(5)
-      expect(message.cached_tokens).to eq(21)
-      expect(message.cache_creation_tokens).to eq(7)
+      expect(message.cache_read_tokens).to eq(21)
+      expect(message.cache_write_tokens).to eq(7)
     end
   end
 end

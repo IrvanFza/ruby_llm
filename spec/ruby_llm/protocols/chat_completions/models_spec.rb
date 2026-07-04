@@ -87,7 +87,14 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Models do
       model = parsed_model('omni-moderation-latest', capabilities)
 
       expect(model.capabilities).to eq(['vision'])
-      expect(model.pricing.to_h).to eq({})
+      expect(model.pricing.to_h).to eq(
+        text_tokens: {
+          standard: {
+            input_per_million: 0.0,
+            output_per_million: 0.0
+          }
+        }
+      )
     end
   end
 end

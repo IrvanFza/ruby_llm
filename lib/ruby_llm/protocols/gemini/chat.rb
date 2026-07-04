@@ -48,7 +48,8 @@ module RubyLLM
         def warn_unsupported_citations(model)
           RubyLLM.logger.warn(
             "#{model.id} does not support citations according to the model registry. " \
-            'Gemini citations come from Google Search grounding: with_params(tools: [{ google_search: {} }]).'
+            'Gemini citations come from Google Search grounding: ' \
+            'with_provider_options(tools: [{ google_search: {} }]).'
           )
         end
 
@@ -143,10 +144,10 @@ module RubyLLM
             tool_calls: tool_calls,
             input_tokens: input_tokens(data),
             output_tokens: calculate_output_tokens(data),
-            cached_tokens: data.dig('usageMetadata', 'cachedContentTokenCount'),
+            cache_read_tokens: data.dig('usageMetadata', 'cachedContentTokenCount'),
             thinking_tokens: data.dig('usageMetadata', 'thoughtsTokenCount'),
             finish_reason: data.dig('candidates', 0, 'finishReason'),
-            model_id: data['modelVersion'] || @model&.id,
+            model: data['modelVersion'] || @model&.id,
             raw: raw
           )
         end

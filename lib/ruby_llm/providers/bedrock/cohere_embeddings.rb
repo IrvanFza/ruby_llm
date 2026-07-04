@@ -5,18 +5,20 @@ module RubyLLM
     class Bedrock
       # Cohere embedding models over Bedrock InvokeModel.
       class CohereEmbeddings < EmbeddingProtocol
-        def embed(text, model:, dimensions:, params: {})
-          payload = render_embedding_payload(text, model:, dimensions:, params:)
+        # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+        def embed(text, model:, dimensions:, task_type: nil, title: nil, provider_options: {})
+          payload = render_embedding_payload(text, model:, dimensions:, task_type:, provider_options:)
           response = signed_post(embedding_url(model:), payload)
 
           parse_embedding_response(response, model:, text:)
         end
+        # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
         private
 
-        def render_embedding_payload(text, model:, dimensions:, params:)
+        def render_embedding_payload(text, model:, dimensions:, provider_options:, task_type: nil)
           payload = {
-            input_type: 'search_document'
+            input_type: task_type || 'search_document'
           }
           texts = [text].flatten.compact.map(&:to_s).reject(&:empty?)
           payload[:texts] = texts unless texts.empty?
@@ -27,7 +29,7 @@ module RubyLLM
             payload[:output_dimension] = dimensions
           end
 
-          deep_merge_params(payload, params)
+          deep_merge_provider_options(payload, provider_options)
         end
 
         def parse_embedding_response(response, model:, text:)

@@ -22,8 +22,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
         t.references :model
         t.integer :input_tokens
         t.integer :output_tokens
-        t.integer :cached_tokens
-        t.integer :cache_creation_tokens
+        t.integer :cache_read_tokens
+        t.integer :cache_write_tokens
         t.text :thinking_signature
         t.text :thinking_text
         t.integer :thinking_tokens

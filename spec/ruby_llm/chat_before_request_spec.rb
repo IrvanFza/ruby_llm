@@ -40,7 +40,7 @@ RSpec.describe RubyLLM::Chat do
     end
 
     it 'runs hooks in registration order after params merging' do
-      chat.with_params(metadata: { user_id: 'from-params' })
+      chat.with_provider_options(metadata: { user_id: 'from-params' })
       chat.before_request { |payload| payload[:metadata][:user_id] = 'from-hook' }
       chat.ask_later('Hello')
 

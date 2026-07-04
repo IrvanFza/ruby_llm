@@ -6,18 +6,24 @@ RSpec.describe RubyLLM::Chat do
   include_context 'with configured RubyLLM'
 
   describe 'with params' do
-    it 'clears params with nil' do
-      chat = RubyLLM.chat.with_params(max_tokens: 100)
+    it 'clears provider options with without_provider_options' do
+      chat = RubyLLM.chat.with_provider_options(max_tokens: 100)
 
-      chat.with_params(nil)
+      chat.without_provider_options
 
-      expect(chat.params).to eq({})
+      expect(chat.provider_options).to eq({})
     end
 
-    it 'requires params or nil' do
+    it 'rejects nil, pointing to without_provider_options' do
       chat = RubyLLM.chat
 
-      expect { chat.with_params }.to raise_error(ArgumentError)
+      expect { chat.with_provider_options(nil) }.to raise_error(ArgumentError, /without_provider_options/)
+    end
+
+    it 'requires provider options' do
+      chat = RubyLLM.chat
+
+      expect { chat.with_provider_options }.to raise_error(ArgumentError)
     end
 
     # Supported params vary by provider, and to lesser degree, by model.
@@ -37,7 +43,7 @@ RSpec.describe RubyLLM::Chat do
       it "#{provider}/#{model} supports response_format param" do
         chat = RubyLLM
                .chat(model: model, provider: provider)
-               .with_params(**json_object_params)
+               .with_provider_options(**json_object_params)
 
         response = chat.ask('What is the square root of 64? Answer with a JSON object with the key `result`.')
 
@@ -54,7 +60,7 @@ RSpec.describe RubyLLM::Chat do
       it "#{provider}/#{model} supports responseSchema param" do
         chat = RubyLLM
                .chat(model: model, provider: provider)
-               .with_params(
+               .with_provider_options(
                  generationConfig: {
                    responseMimeType: 'application/json',
                    responseSchema: {
@@ -78,7 +84,7 @@ RSpec.describe RubyLLM::Chat do
       it "#{provider}/#{model} supports service_tier param" do
         chat = RubyLLM
                .chat(model: model, provider: provider)
-               .with_params(service_tier: 'standard_only')
+               .with_provider_options(service_tier: 'standard_only')
 
         chat.add_message(
           role: :user,
@@ -100,14 +106,22 @@ RSpec.describe RubyLLM::Chat do
       end
     end
 
-    # Providers [:openrouter, :bedrock] supports a {top_k: ...} param to remove low-probability next tokens.
+    # Providers [:openrouter, :bedrock] support a top_k param to remove low-probability next tokens.
+    # OpenRouter takes {top_k: ...} at the top level. The Bedrock Converse API takes model-specific
+    # inference fields in additionalModelRequestFields, and Amazon Nova nests them under inferenceConfig
+    # as {additionalModelRequestFields: {inferenceConfig: {topK: ...}}}.
     CHAT_MODELS.select { |model_info| %i[openrouter bedrock].include?(model_info[:provider]) }.each do |model_info|
       model = model_info[:model]
       provider = model_info[:provider]
+      top_k_params = if provider == :bedrock
+                       { additionalModelRequestFields: { inferenceConfig: { topK: 5 } } }
+                     else
+                       { top_k: 5 }
+                     end
       it "#{provider}/#{model} supports top_k param" do
         chat = RubyLLM
                .chat(model: model, provider: provider)
-               .with_params(top_k: 5)
+               .with_provider_options(**top_k_params)
 
         chat.add_message(
           role: :user,

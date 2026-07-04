@@ -18,8 +18,8 @@ module RubyLLM
         }.freeze
 
         def parameters_schema_for(tool)
-          tool.params_schema ||
-            schema_from_parameters(tool.parameters)
+          tool.parameters_schema ||
+            schema_from_parameters(tool.declared_parameters)
         end
 
         def schema_from_parameters(parameters)
@@ -39,9 +39,9 @@ module RubyLLM
             }
           }
 
-          return definition if tool.provider_params.empty?
+          return definition if tool.provider_options.empty?
 
-          RubyLLM::Utils.deep_merge(definition, tool.provider_params)
+          RubyLLM::Utils.deep_merge(definition, tool.provider_options)
         end
 
         def format_tool_calls(tool_calls)

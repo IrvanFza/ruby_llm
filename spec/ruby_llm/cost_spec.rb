@@ -23,7 +23,7 @@ RSpec.describe RubyLLM::Cost do
 
   describe '#total' do
     it 'calculates input, output, cache read, and cache write costs from normalized token buckets' do
-      tokens = RubyLLM::Tokens.new(input: 1_000, output: 2_000, cached: 300, cache_creation: 100)
+      tokens = RubyLLM::Tokens.new(input: 1_000, output: 2_000, cache_read: 300, cache_write: 100)
       cost = described_class.new(tokens:, model:)
 
       expect(cost.input).to be_within(0.0000000001).of(0.001)
@@ -34,7 +34,7 @@ RSpec.describe RubyLLM::Cost do
     end
 
     it 'trusts input tokens as the standard input bucket' do
-      tokens = RubyLLM::Tokens.new(input: 700, cached: 300)
+      tokens = RubyLLM::Tokens.new(input: 700, cache_read: 300)
       cost = described_class.new(tokens:, model:)
 
       expect(cost.input).to be_within(0.0000000001).of(0.0007)

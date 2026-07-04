@@ -77,11 +77,11 @@ module RubyLLM
             tool_calls: parse_tool_calls(content_blocks),
             input_tokens: input_tokens(usage),
             output_tokens: usage['outputTokens'],
-            cached_tokens: usage['cacheReadInputTokens'],
-            cache_creation_tokens: usage['cacheWriteInputTokens'],
+            cache_read_tokens: usage['cacheReadInputTokens'],
+            cache_write_tokens: usage['cacheWriteInputTokens'],
             thinking_tokens: reasoning_tokens(usage),
             finish_reason: data['stopReason'],
-            model_id: data['modelId'],
+            model: data['modelId'],
             raw: raw
           )
         end
@@ -266,7 +266,8 @@ module RubyLLM
         end
 
         def format_tool(tool)
-          input_schema = tool.params_schema || RubyLLM::Tool::SchemaDefinition.from_parameters(tool.parameters)&.json_schema
+          input_schema = tool.parameters_schema ||
+                         RubyLLM::Tool::SchemaDefinition.from_parameters(tool.declared_parameters)&.json_schema
 
           tool_spec = {
             toolSpec: {
@@ -278,9 +279,9 @@ module RubyLLM
             }
           }
 
-          return tool_spec if tool.provider_params.empty?
+          return tool_spec if tool.provider_options.empty?
 
-          RubyLLM::Utils.deep_merge(tool_spec, tool.provider_params)
+          RubyLLM::Utils.deep_merge(tool_spec, tool.provider_options)
         end
 
         def format_additional_model_request_fields(thinking)

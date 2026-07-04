@@ -22,7 +22,7 @@ RSpec.describe RubyLLM::Providers::Bedrock::EmbeddingProtocol do
         :render_embedding_payload,
         'Ruby',
         dimensions: 256,
-        params: { embeddingTypes: ['float'] }
+        provider_options: { embeddingTypes: ['float'] }
       )
 
       expect(payload).to eq(
@@ -55,7 +55,7 @@ RSpec.describe RubyLLM::Providers::Bedrock::EmbeddingProtocol do
     subject(:protocol) { described_class.new(provider) }
 
     it 'renders Titan multimodal embedding payloads' do
-      payload = protocol.send(:render_embedding_payload, 'Ruby', dimensions: 384, params: {})
+      payload = protocol.send(:render_embedding_payload, 'Ruby', dimensions: 384, provider_options: {})
 
       expect(payload).to eq(
         inputText: 'Ruby',
@@ -63,12 +63,12 @@ RSpec.describe RubyLLM::Providers::Bedrock::EmbeddingProtocol do
       )
     end
 
-    it 'allows Titan multimodal image params without text' do
+    it 'allows Titan multimodal image options without text' do
       payload = protocol.send(
         :render_embedding_payload,
         nil,
         dimensions: nil,
-        params: { inputImage: 'base64-image' }
+        provider_options: { inputImage: 'base64-image' }
       )
 
       expect(payload).to eq(inputImage: 'base64-image')
@@ -78,13 +78,13 @@ RSpec.describe RubyLLM::Providers::Bedrock::EmbeddingProtocol do
   describe RubyLLM::Providers::Bedrock::CohereEmbeddings do
     subject(:protocol) { described_class.new(provider) }
 
-    it 'renders Cohere v4 embedding payloads with Bedrock-specific params' do
+    it 'renders Cohere v4 embedding payloads with Bedrock-specific options' do
       payload = protocol.send(
         :render_embedding_payload,
         %w[Ruby Python],
         model: 'us.cohere.embed-v4:0',
         dimensions: 512,
-        params: { input_type: 'search_query', embedding_types: ['float'] }
+        provider_options: { input_type: 'search_query', embedding_types: ['float'] }
       )
 
       expect(payload).to eq(
@@ -95,13 +95,38 @@ RSpec.describe RubyLLM::Providers::Bedrock::EmbeddingProtocol do
       )
     end
 
-    it 'allows Cohere image params without text' do
+    it 'maps task_type to input_type' do
+      payload = protocol.send(
+        :render_embedding_payload,
+        'Ruby',
+        model: 'us.cohere.embed-v4:0',
+        dimensions: nil,
+        task_type: 'search_query',
+        provider_options: {}
+      )
+
+      expect(payload).to eq(input_type: 'search_query', texts: ['Ruby'])
+    end
+
+    it 'defaults input_type to search_document without a task_type' do
+      payload = protocol.send(
+        :render_embedding_payload,
+        'Ruby',
+        model: 'us.cohere.embed-v4:0',
+        dimensions: nil,
+        provider_options: {}
+      )
+
+      expect(payload).to eq(input_type: 'search_document', texts: ['Ruby'])
+    end
+
+    it 'allows Cohere image options without text' do
       payload = protocol.send(
         :render_embedding_payload,
         nil,
         model: 'us.cohere.embed-v4:0',
         dimensions: nil,
-        params: { input_type: 'image', images: ['base64-image'] }
+        provider_options: { input_type: 'image', images: ['base64-image'] }
       )
 
       expect(payload).to eq(input_type: 'image', images: ['base64-image'])
@@ -114,7 +139,7 @@ RSpec.describe RubyLLM::Providers::Bedrock::EmbeddingProtocol do
           'Ruby',
           model: 'cohere.embed-english-v3',
           dimensions: 512,
-          params: {}
+          provider_options: {}
         )
       end.to raise_error(RubyLLM::Error, /does not support custom dimensions/)
     end

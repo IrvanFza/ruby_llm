@@ -4,7 +4,7 @@ require 'spec_helper'
 
 class KnowledgeBase < RubyLLM::Tool
   description 'Searches the company knowledge base'
-  param :query, desc: 'What to look for'
+  parameter :query, description: 'What to look for'
 
   def execute(**)
     RubyLLM::SearchResults.new(
@@ -28,10 +28,10 @@ RSpec.describe RubyLLM::Chat do
       expect(chat.instance_variable_get(:@citations)).to be(true)
     end
 
-    it 'clears citations with nil' do
+    it 'disables citations with without_citations' do
       chat = RubyLLM.chat.with_citations
 
-      chat.with_citations(nil)
+      chat.without_citations
 
       expect(chat.instance_variable_get(:@citations)).to be(false)
     end
@@ -62,7 +62,7 @@ RSpec.describe RubyLLM::Chat do
       end
 
       it 'cites tool results returned as search results' do
-        chat = RubyLLM.chat(model: 'claude-haiku-4-5', provider: :anthropic).with_tool(KnowledgeBase)
+        chat = RubyLLM.chat(model: 'claude-haiku-4-5', provider: :anthropic).with_tools(KnowledgeBase)
 
         response = chat.ask('Who created Ruby? Search the knowledge base first and cite your sources.')
 
@@ -111,7 +111,7 @@ RSpec.describe RubyLLM::Chat do
     context 'with gemini/gemini-2.5-flash' do
       it 'returns grounding citations when search is enabled' do
         response = RubyLLM.chat(model: 'gemini-2.5-flash', provider: :gemini)
-                          .with_params(tools: [{ google_search: {} }])
+                          .with_provider_options(tools: [{ google_search: {} }])
                           .ask('What is the latest stable version of Ruby?')
 
         expect(response.citations).not_to be_empty
@@ -133,7 +133,7 @@ RSpec.describe RubyLLM::Chat do
     context 'with openai/gpt-4o-mini-search-preview' do
       it 'returns url citations when web search is enabled' do
         response = RubyLLM.chat(model: 'gpt-4o-mini-search-preview', provider: :openai)
-                          .with_params(web_search_options: {})
+                          .with_provider_options(web_search_options: {})
                           .ask('What is the latest stable version of Ruby? Cite your sources.')
 
         expect(response.citations).not_to be_empty

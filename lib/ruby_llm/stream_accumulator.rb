@@ -4,9 +4,8 @@ require 'json'
 require 'securerandom'
 
 module RubyLLM
-  # Assembles streaming responses from LLMs into complete messages.
-  class StreamAccumulator
-    attr_reader :content, :model_id, :tool_calls
+  class StreamAccumulator # :nodoc:
+    attr_reader :content, :model, :tool_calls
 
     def initialize
       @content = +''
@@ -16,8 +15,8 @@ module RubyLLM
       @tool_calls = {}
       @input_tokens = nil
       @output_tokens = nil
-      @cached_tokens = nil
-      @cache_creation_tokens = nil
+      @cache_read_tokens = nil
+      @cache_write_tokens = nil
       @thinking_tokens = nil
       @finish_reason = nil
       @inside_think_tag = false
@@ -28,7 +27,7 @@ module RubyLLM
 
     def add(chunk)
       RubyLLM.logger.debug { chunk.inspect } if RubyLLM.config.log_stream_debug
-      @model_id = chunk.model_id if @model_id.to_s.empty?
+      @model = chunk.model if @model.to_s.empty?
 
       handle_chunk_content(chunk)
       accumulate_citations(chunk.citations)
@@ -50,12 +49,12 @@ module RubyLLM
         tokens: Tokens.build(
           input: @input_tokens,
           output: @output_tokens,
-          cached: @cached_tokens,
-          cache_creation: @cache_creation_tokens,
+          cache_read: @cache_read_tokens,
+          cache_write: @cache_write_tokens,
           thinking: @thinking_tokens
         ),
         finish_reason: @finish_reason,
-        model_id: model_id,
+        model: model,
         tool_calls: tool_calls_from_stream,
         raw: response
       )
@@ -153,8 +152,8 @@ module RubyLLM
     def count_tokens(chunk)
       @input_tokens = chunk.input_tokens if chunk.input_tokens
       @output_tokens = chunk.output_tokens if chunk.output_tokens
-      @cached_tokens = chunk.cached_tokens if chunk.cached_tokens
-      @cache_creation_tokens = chunk.cache_creation_tokens if chunk.cache_creation_tokens
+      @cache_read_tokens = chunk.cache_read_tokens if chunk.cache_read_tokens
+      @cache_write_tokens = chunk.cache_write_tokens if chunk.cache_write_tokens
       @thinking_tokens = chunk.thinking_tokens if chunk.thinking_tokens
     end
 

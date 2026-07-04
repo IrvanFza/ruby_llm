@@ -63,7 +63,7 @@ RSpec.describe RubyLLM::Protocols::Responses::Chat do
 
     it 'uses flat function definitions' do
       tool = instance_double(RubyLLM::Tool, name: 'weather', description: 'Looks up weather',
-                                            params_schema: { 'type' => 'object' }, provider_params: {})
+                                            parameters_schema: { 'type' => 'object' }, provider_options: {})
 
       payload = render_payload([RubyLLM::Message.new(role: :user, content: 'hi')], tools: { weather: tool })
 
@@ -127,7 +127,7 @@ RSpec.describe RubyLLM::Protocols::Responses::Chat do
       message = protocol.send(:parse_completion_response, response)
 
       expect(message.content).to eq('Hello world')
-      expect(message.model_id).to eq('gpt-5-nano')
+      expect(message.model).to eq('gpt-5-nano')
     end
 
     it 'parses function calls keyed by call_id' do
@@ -168,7 +168,7 @@ RSpec.describe RubyLLM::Protocols::Responses::Chat do
 
       expect(message.input_tokens).to eq(6)
       expect(message.output_tokens).to eq(7)
-      expect(message.cached_tokens).to eq(4)
+      expect(message.cache_read_tokens).to eq(4)
       expect(message.thinking_tokens).to eq(3)
     end
 

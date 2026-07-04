@@ -48,7 +48,7 @@ module RubyLLM
         # rubocop:enable Metrics/ParameterLists,Metrics/PerceivedComplexity
 
         def parse_completion_body(data, raw:)
-          raise Error.new(raw, data.dig('error', 'message')) if data.dig('error', 'message')
+          raise Error.new(data.dig('error', 'message'), response: raw) if data.dig('error', 'message')
 
           output = data['output'] || []
           content = parse_output_text(output)
@@ -62,7 +62,7 @@ module RubyLLM
               signature: parse_reasoning_signature(output)
             ),
             tool_calls: parse_function_calls(output),
-            model_id: data['model'],
+            model: data['model'],
             raw: raw,
             finish_reason: data.dig('incomplete_details', 'reason'),
             **parse_usage(data['usage'] || {})
@@ -110,7 +110,7 @@ module RubyLLM
           {
             input_tokens: input && [input.to_i - cached.to_i, 0].max,
             output_tokens: usage['output_tokens'],
-            cached_tokens: cached,
+            cache_read_tokens: cached,
             thinking_tokens: usage.dig('output_tokens_details', 'reasoning_tokens')
           }
         end

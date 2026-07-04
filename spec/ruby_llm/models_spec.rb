@@ -392,14 +392,14 @@ RSpec.describe RubyLLM::Models do
       expect(provider_instance).to be_a(RubyLLM::Provider)
     end
 
-    it 'resolves with assume_exists option' do
+    it 'resolves with assume_model_exists option' do
       model_id = 'custom-model'
       provider = 'openai'
 
       model_info, provider_instance = RubyLLM.models.resolve(
         model_id,
         provider: provider,
-        assume_exists: true
+        assume_model_exists: true
       )
 
       expect(model_info).to be_a(RubyLLM::Model)

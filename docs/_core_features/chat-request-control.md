@@ -22,7 +22,7 @@ description: Reach provider-specific features with custom parameters, wire proto
 
 After reading this guide, you will know:
 
-* How to pass provider-specific parameters with `with_params`.
+* How to pass options in the provider's request vocabulary with `with_provider_options`.
 * How to choose the wire protocol a provider speaks.
 * How to modify the final request payload with `before_request`.
 * How to add custom HTTP headers to a request.
@@ -34,49 +34,60 @@ Chat configuration methods use a chainable `with_*` style:
 ```ruby
 chat = RubyLLM.chat
               .with_temperature(0.2)
-              .with_params(max_output_tokens: 200)
+              .with_provider_options(max_output_tokens: 200)
 ```
 
-Scalar `with_*` methods replace the setting when called again. Collection helpers keep their add/replace behavior: `with_tool` adds a tool and ignores `nil`, while passing `nil` to `with_tools` clears the tool list. Reset uses `nil` instead of a separate `without_*` method:
+Calling a `with_*` method again replaces the setting. Every clearable setting has a matching `without_*` method that returns it to its default:
 
 ```ruby
-chat.with_caching(ttl: "1h")
-chat.with_caching(nil)
+chat.with_temperature(0.2)
+chat.without_temperature
 
-chat.with_params(max_output_tokens: 200)
-chat.with_params(nil)
+chat.with_caching(ttl: "1h")
+chat.without_caching
+
+chat.with_provider_options(max_output_tokens: 200)
+chat.without_provider_options
 
 chat.with_headers("X-Custom-Feature" => "enabled")
-chat.with_headers(nil)
+chat.without_headers
 
 chat.with_thinking(effort: :high)
-chat.with_thinking(nil)
+chat.without_thinking
 
-chat.with_tool(SearchDocs)
-chat.with_tools(nil)
+chat.with_tools(SearchDocs)
+chat.without_tools
+
+chat.with_citations
+chat.without_citations
+
+chat.with_instructions "Be terse."
+chat.without_instructions
 ```
 
-False is reserved for features where an explicit disabled state is meaningful, such as boolean toggles. Methods with no arguments only enable a feature when there is a clear default behavior, like provider-default prompt caching with `with_caching` or document citations with `with_citations`. Hash-style settings such as `with_params` and `with_headers` require either options or `nil`.
+The same pattern covers `with_schema`/`without_schema`, `with_fallbacks`/`without_fallbacks`, and `with_context`/`without_context`. Passing `nil` to a `with_*` method raises `ArgumentError` pointing at its `without_*` sibling.
 
-## Provider-Specific Parameters
+Methods with no arguments enable a feature with its default behavior, like provider-default prompt caching with `with_caching` or document citations with `with_citations`.
 
-Different providers offer unique features and parameters. The `with_params` method lets you access these provider-specific capabilities while maintaining RubyLLM's unified interface. Parameters passed via `with_params` will override any defaults set by RubyLLM, giving you full control over the API request payload.
+## Provider Options
+
+Different providers offer unique features and request fields. The `with_provider_options` method takes options written in the provider's own request vocabulary and merges them into the request as-is, overriding any defaults set by RubyLLM. It is the escape hatch for anything RubyLLM does not model as a first-class option.
 
 ```ruby
 # JSON object mode on the Responses API (OpenAI's default protocol)
-chat = RubyLLM.chat.with_params(text: { format: { type: 'json_object' } })
+chat = RubyLLM.chat.with_provider_options(text: { format: { type: 'json_object' } })
 response = chat.ask "What is the square root of 64? Answer with a JSON object with the key `result`."
 puts JSON.parse(response.content)
 
 # The same option on Chat Completions providers like :ollama and :deepseek
 chat = RubyLLM.chat(model: 'qwen3', provider: :ollama)
-              .with_params(response_format: { type: 'json_object' })
+              .with_provider_options(response_format: { type: 'json_object' })
 ```
 
-**With great power comes great responsibility:** The `with_params` method can override any part of the request payload, including critical parameters like model, max_tokens, or tools. Use it carefully to avoid unintended behavior. Always verify that your overrides are compatible with the provider's API. To debug and see the exact request being sent, set the environment variable `RUBYLLM_DEBUG=true`.
+**With great power comes great responsibility:** The `with_provider_options` method can override any part of the request payload, including critical parameters like model, max_tokens, or tools. Use it carefully to avoid unintended behavior. Always verify that your overrides are compatible with the provider's API. To debug and see the exact request being sent, set the environment variable `RUBYLLM_DEBUG=true`.
 {: .warning }
 
-Available parameters vary by provider and model. Always consult the provider's documentation for supported features. RubyLLM passes these parameters through without validation, so incorrect parameters may cause API errors. Parameters from `with_params` take precedence over RubyLLM's defaults, allowing you to override any aspect of the request payload.
+Available options vary by provider and model. Always consult the provider's documentation for supported fields. RubyLLM passes these options through without validation, so incorrect options may cause API errors. Options from `with_provider_options` take precedence over RubyLLM's defaults, allowing you to override any aspect of the request payload.
 {: .warning }
 
 ## Choosing the Wire Protocol
@@ -92,21 +103,22 @@ chat = RubyLLM.chat(model: 'claude-opus-4-6', provider: :vertexai)              
 chat = RubyLLM.chat(model: 'meta/llama-3.3-70b-instruct-maas', provider: :vertexai) # speaks Chat Completions
 ```
 
-Override it per chat or app-wide:
+Override it per chat with the `protocol:` model option, or app-wide with configuration:
 
 ```ruby
-chat = RubyLLM.chat(model: 'gpt-5.4').with_protocol(:chat_completions)
+chat = RubyLLM.chat(model: 'gpt-5.4', protocol: :chat_completions)
+chat = RubyLLM.chat(model: 'gpt-5.4').with_model('gpt-5.4', protocol: :chat_completions)
 
 RubyLLM.configure do |config|
   config.openai_protocol = :chat_completions
 end
 ```
 
-Unknown protocol names raise immediately, listing what the provider speaks.
+The `protocol:` option sits alongside `provider:` in model selection: a model is identified by its name, its provider, and its protocol. Unknown protocol names raise immediately, listing what the provider speaks. A bare `with_model` returns the chat to the provider's default protocol, just as it re-resolves the provider.
 
 ## Request Hooks
 
-Most of the time you can rely on RubyLLM to format messages for each provider. When a provider ships a block type RubyLLM has not wrapped yet, use `before_request` to see the fully rendered payload and adjust it before it is sent. The hook runs on every request, after all RubyLLM formatting and `with_params` merging.
+Most of the time you can rely on RubyLLM to format messages for each provider. When a provider ships a block type RubyLLM has not wrapped yet, use `before_request` to see the fully rendered payload and adjust it before it is sent. The hook runs on every request, after all RubyLLM formatting and `with_provider_options` merging.
 
 ```ruby
 chat = RubyLLM.chat
@@ -125,9 +137,9 @@ The same idea applies to tool definitions:
 ```ruby
 class ChangelogTool < RubyLLM::Tool
   description "Formats commits into human-readable changelog entries."
-  param :commits, type: :array, desc: "List of commits to summarize"
+  parameter :commits, type: :array, description: "List of commits to summarize"
 
-  with_params cache_control: { type: 'ephemeral' }
+  provider_options cache_control: { type: 'ephemeral' }
 
   def execute(commits:)
     # ...
@@ -155,7 +167,7 @@ Headers are merged with provider defaults, with provider headers taking preceden
 chat = RubyLLM.chat
       .with_temperature(0.5)
       .with_headers('X-Custom-Feature' => 'enabled')
-      .with_params(max_tokens: 1000)
+      .with_provider_options(max_tokens: 1000)
 ```
 
 Use custom headers with caution. They may enable experimental features that could change or be removed without notice. Always refer to your provider's documentation for supported headers and their behavior.

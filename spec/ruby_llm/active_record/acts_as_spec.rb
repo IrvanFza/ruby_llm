@@ -10,7 +10,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
   class Calculator < RubyLLM::Tool # rubocop:disable Lint/ConstantDefinitionInBlock,RSpec/LeakyConstantDeclaration
     description 'Performs basic arithmetic'
-    param :expression, type: :string, desc: 'Math expression to evaluate'
+    parameter :expression, type: :string, description: 'Math expression to evaluate'
 
     def execute(expression:)
       eval(expression).to_s # rubocop:disable Security/Eval
@@ -45,7 +45,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       chat.ask('Hello')
 
       message = chat.messages.last
-      total_input_tokens = message.input_tokens.to_i + message.cached_tokens.to_i + message.cache_creation_tokens.to_i
+      total_input_tokens = message.input_tokens.to_i + message.cache_read_tokens.to_i + message.cache_write_tokens.to_i
       expect(total_input_tokens).to be_positive
       expect(message.output_tokens).to be_positive
     end
@@ -97,11 +97,11 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       expect(chat.messages.find_by(role: 'system').content).to eq('Be concise')
     end
 
-    it 'clears persisted system instructions with nil' do
+    it 'clears persisted system instructions with without_instructions' do
       chat = Chat.create!(model: model)
 
       chat.with_instructions('Be helpful')
-      chat.with_instructions(nil)
+      chat.without_instructions
 
       expect(chat.messages.where(role: 'system')).to be_empty
       expect(chat.to_llm.messages.select { |msg| msg.role == :system }).to be_empty
@@ -159,10 +159,10 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
       expect(chat.to_llm.concurrency).to eq(:threads)
 
-      chat.with_tools(Calculator, concurrency: :fibers)
+      chat.with_tools(Calculator).with_tool_options(concurrency: :fibers)
       expect(chat.to_llm.concurrency).to eq(:fibers)
 
-      chat.with_tools(Calculator, concurrency: false)
+      chat.with_tools(Calculator).with_tool_options(concurrency: false)
       expect(chat.to_llm.concurrency).to be_nil
     ensure
       RubyLLM.config.tool_concurrency = original_tool_concurrency
@@ -170,7 +170,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
     it 'persists tool calls' do
       chat = Chat.create!(model: model)
-      chat.with_tool(Calculator)
+      chat.with_tools(Calculator)
 
       chat.ask("What's 123 * 456?")
 
@@ -181,19 +181,19 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
     it 'returns the chat instance for chaining' do
       chat = Chat.create!(model: model)
 
-      result = chat.with_tool(Calculator)
+      result = chat.with_tools(Calculator)
       expect(result).to eq(chat)
     end
 
     it 'supports dynamically adding tools during tool execution' do
       dynamic_tool = Class.new(RubyLLM::Tool) do
         description 'Searches for tools and makes them available'
-        param :query, type: :string, desc: 'Search query'
+        parameter :query, type: :string, description: 'Search query'
 
         attr_accessor :chat_ref
 
         def execute(query:)
-          chat_ref.with_tool(Calculator)
+          chat_ref.with_tools(Calculator)
           "Found calculator tool for: #{query}"
         end
       end
@@ -201,7 +201,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       chat = Chat.create!(model: model)
       tool_instance = dynamic_tool.new
       tool_instance.chat_ref = chat
-      chat.with_tool(tool_instance)
+      chat.with_tools(tool_instance)
 
       llm_chat = chat.instance_variable_get(:@chat)
       provider = llm_chat.instance_variable_get(:@provider)
@@ -338,15 +338,15 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
   end
 
   describe 'parameter passing' do
-    it 'supports with_params for provider-specific parameters' do
+    it 'supports with_provider_options for provider request options' do
       chat = Chat.create!(model: model)
 
-      result = chat.with_params(max_tokens: 100, temperature: 0.5)
+      result = chat.with_provider_options(max_tokens: 100, temperature: 0.5)
       expect(result).to eq(chat) # Should return self for chaining
 
-      # Verify params are passed through
+      # Verify provider options are passed through
       llm_chat = chat.instance_variable_get(:@chat)
-      expect(llm_chat.params).to eq(max_tokens: 100, temperature: 0.5)
+      expect(llm_chat.provider_options).to eq(max_tokens: 100, temperature: 0.5)
     end
   end
 
@@ -376,12 +376,12 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
     it 'round-trips cached token metrics through ActiveRecord models' do
       chat = Chat.create!(model: anthropic_model)
       message = chat.messages.create!(role: 'assistant', content: 'Hi there',
-                                      cached_tokens: 42, cache_creation_tokens: 7)
+                                      cache_read_tokens: 42, cache_write_tokens: 7)
 
       llm_message = message.to_llm
 
-      expect(llm_message.cached_tokens).to eq(42)
-      expect(llm_message.cache_creation_tokens).to eq(7)
+      expect(llm_message.cache_read_tokens).to eq(42)
+      expect(llm_message.cache_write_tokens).to eq(7)
       expect(message.cache_read_tokens).to eq(42)
       expect(message.cache_write_tokens).to eq(7)
     end
@@ -414,16 +414,14 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
     it 'clears runtime prompt caching config from the LLM chat' do
       chat = Chat.create!(model: anthropic_model).with_caching(ttl: '1h')
 
-      expect(chat.with_caching(nil)).to eq(chat)
+      expect(chat.without_caching).to eq(chat)
       expect(chat.to_llm.caching).to be_nil
     end
 
-    it 'keeps create_user_message as a convenience wrapper for add_message' do
+    it 'rejects nil caching, pointing to without_caching' do
       chat = Chat.create!(model: anthropic_model)
 
-      message = chat.create_user_message('hello')
-      expect(message.role).to eq('user')
-      expect(message.content).to eq('hello')
+      expect { chat.with_caching(nil) }.to raise_error(ArgumentError, /without_caching/)
     end
   end
 
@@ -436,7 +434,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
       batch = RubyLLM.batch(chats)
       40.times do
-        break if batch.complete?
+        break if batch.refresh.complete?
 
         sleep 15 if VCR.current_cassette.recording?
       end
@@ -456,7 +454,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       expect(chat.messages.pluck(:role)).to eq(['user'])
 
       chat.to_llm.add_completion(
-        RubyLLM::Message.new(role: :assistant, content: '4', input_tokens: 10, output_tokens: 1, model_id: model)
+        RubyLLM::Message.new(role: :assistant, content: '4', input_tokens: 10, output_tokens: 1, model: model)
       )
 
       expect(chat.messages.reload.pluck(:role)).to eq(%w[user assistant])
@@ -484,7 +482,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       result = chat
                .with_temperature(0.5)
                .with_headers('X-Test' => 'value')
-               .with_tool(Calculator)
+               .with_tools(Calculator)
 
       expect(result).to eq(chat)
 
@@ -527,8 +525,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
           t.string :model_id
           t.integer :input_tokens
           t.integer :output_tokens
-          t.integer :cached_tokens
-          t.integer :cache_creation_tokens
+          t.integer :cache_read_tokens
+          t.integer :cache_write_tokens
           t.string :finish_reason
           t.references :bot_tool_call
           t.timestamps
@@ -583,7 +581,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
       it 'persists tool calls with custom classes' do
         bot_chat = Assistants::BotChat.create!(model: model)
-        bot_chat.with_tool(Calculator)
+        bot_chat.with_tools(Calculator)
 
         bot_chat.ask("What's 123 * 456?")
 
@@ -923,7 +921,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       tool_result_received = nil
 
       chat = Chat.create!(model: model)
-                 .with_tool(Calculator)
+                 .with_tools(Calculator)
                  .before_tool_call { |tc| tool_call_received = tc }
                  .after_tool_result { |result| tool_result_received = result }
 
@@ -1058,8 +1056,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
             t.string :model_id
             t.integer :input_tokens
             t.integer :output_tokens
-            t.integer :cached_tokens
-            t.integer :cache_creation_tokens
+            t.integer :cache_read_tokens
+            t.integer :cache_write_tokens
             t.references :clanker_tool_call
             t.timestamps
           end

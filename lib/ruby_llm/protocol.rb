@@ -1,13 +1,44 @@
 # frozen_string_literal: true
 
 module RubyLLM
-  # Base class for wire protocols. A protocol knows how to talk to a family
-  # of APIs: rendering payloads, parsing responses, streaming chunks, and the
-  # endpoints involved. Providers know where to talk and who they are.
+  # A Protocol knows how to talk to a family of provider APIs: rendering
+  # request payloads, parsing responses, streaming chunks, and naming the
+  # endpoints involved. Its counterpart, Provider, knows where to talk and
+  # who it is. The protocols that ship with the gem live under
+  # RubyLLM::Protocols.
+  #
+  # Subclass Protocol, or a shipped subclass such as
+  # RubyLLM::Protocols::ChatCompletions, to support a new wire format.
+  # Implement the seam methods the base operations call, such as
+  # +render_payload+ and +completion_url+:
+  #
+  #   class ChatCompletions < RubyLLM::Protocols::ChatCompletions
+  #     def completion_url
+  #       'v2/chat'
+  #     end
+  #   end
+  #
+  # A protocol instance is constructed by its Provider and borrows the
+  # provider's Connection, so subclasses never build HTTP clients
+  # themselves.
   class Protocol
     include Streaming
 
-    attr_reader :provider, :config, :connection, :model
+    # The Provider this protocol talks through.
+    attr_reader :provider
+
+    # The provider's Configuration.
+    attr_reader :config
+
+    # The provider's HTTP connection. Subclasses use it to reach their
+    # endpoints.
+    attr_reader :connection
+
+    # The Model this instance targets, or +nil+ for model-less operations
+    # such as listing models.
+    attr_reader :model
+
+    # :stopdoc:
 
     def initialize(provider, model = nil)
       @provider = provider
@@ -17,10 +48,11 @@ module RubyLLM
     end
 
     # rubocop:disable Metrics/ParameterLists
-    def complete(messages, tools:, temperature:, params: {}, headers: {}, schema: nil, thinking: nil,
+
+    def complete(messages, tools:, temperature:, provider_options: {}, headers: {}, schema: nil, thinking: nil,
                  citations: false, caching: nil, tool_prefs: nil, before_request: [], &)
       payload = render(
-        messages, tools:, tool_prefs:, temperature:, params:, schema:, thinking:, citations:, caching:,
+        messages, tools:, tool_prefs:, temperature:, provider_options:, schema:, thinking:, citations:, caching:,
                   before_request:, stream: block_given?
       )
 
@@ -31,7 +63,7 @@ module RubyLLM
       end
     end
 
-    def render(messages, tools:, temperature:, params: {}, schema: nil, thinking: nil,
+    def render(messages, tools:, temperature:, provider_options: {}, schema: nil, thinking: nil,
                citations: false, caching: nil, tool_prefs: nil, before_request: [], stream: false)
       payload = Utils.deep_merge(
         render_payload(
@@ -46,7 +78,7 @@ module RubyLLM
           citations: citations,
           caching: caching
         ),
-        params
+        provider_options
       )
       apply_before_request_hooks(payload, before_request)
     end
@@ -57,48 +89,37 @@ module RubyLLM
       parse_list_models_response response, @provider.slug, @provider.capabilities
     end
 
-    def embed(text, model:, dimensions:, params: {})
-      payload = render_embedding_payload(text, model:, dimensions:, params:)
+    def embed(text, model:, dimensions:, task_type: nil, title: nil, provider_options: {}) # rubocop:disable Metrics/ParameterLists
+      payload = render_embedding_payload(text, model:, dimensions:, task_type:, title:, provider_options:)
       response = @connection.post(embedding_url(model:), payload)
       parse_embedding_response(response, model:, text:)
     end
 
-    def moderate(input, model:, params: {})
-      payload = render_moderation_payload(input, model:, params:)
+    def moderate(input, model:, provider_options: {})
+      payload = render_moderation_payload(input, model:, provider_options:)
       response = @connection.post moderation_url, payload
       parse_moderation_response(response, model:)
     end
 
-    def paint(prompt, model:, size:, with: nil, mask: nil, params: {}) # rubocop:disable Metrics/ParameterLists
+    def paint(prompt, model:, size:, with: nil, mask: nil, provider_options: {}) # rubocop:disable Metrics/ParameterLists
       validate_paint_inputs!(with:, mask:)
-      payload = render_image_payload(prompt, model:, size:, with:, mask:, params:)
+      payload = render_image_payload(prompt, model:, size:, with:, mask:, provider_options:)
       response = @connection.post images_url(with:, mask:), payload
       parse_image_response(response, model:)
     end
 
-    def speak(input, model:, voice:, format:, params: {}, instructions: nil, speed: nil) # rubocop:disable Metrics/ParameterLists
-      payload = render_speech_payload(input, model:, voice:, format:, params:, instructions:, speed:)
+    def speak(input, model:, voice:, format:, provider_options: {})
+      payload = render_speech_payload(input, model:, voice:, format:, provider_options:)
       response = @connection.post speech_url(model:), payload
       parse_speech_response(response, model:, voice:, format:)
     end
 
-    def transcribe(audio_file, model:, language:, params: {}, prompt: nil, temperature: nil, response_format: nil, # rubocop:disable Metrics/ParameterLists
-                   timestamp_granularities: nil, speaker_names: nil, speaker_references: nil, chunking_strategy: nil,
-                   response_mime_type: nil, max_output_tokens: nil, safety_settings: nil)
+    def transcribe(audio_file, model:, language:, format: nil, speaker_names: nil, # rubocop:disable Metrics/ParameterLists
+                   speaker_references: nil, provider_options: {}, prompt: nil, temperature: nil)
       file_part = build_audio_file_part(audio_file)
-      options = {
-        prompt: prompt,
-        temperature: temperature,
-        response_format: response_format,
-        timestamp_granularities: timestamp_granularities,
-        speaker_names: speaker_names,
-        speaker_references: speaker_references,
-        chunking_strategy: chunking_strategy,
-        response_mime_type: response_mime_type,
-        max_output_tokens: max_output_tokens,
-        safety_settings: safety_settings
-      }.compact
-      payload = render_transcription_payload(file_part, model:, language:, params:, **options)
+      payload = render_transcription_payload(file_part, model:, language:, format:, speaker_names:,
+                                                        speaker_references:, provider_options:, prompt:,
+                                                        temperature:)
       response = @connection.post transcription_url, payload
       parse_transcription_response(response, model:)
     end
@@ -211,7 +232,7 @@ module RubyLLM
     def parse_completion_response(response)
       body = response.body
       if body.nil? || (body.respond_to?(:empty?) && body.empty?)
-        raise Error.new(response, 'Provider returned an empty response body')
+        raise Error.new('Provider returned an empty response body', response:)
       end
 
       parse_completion_body(body, raw: response)

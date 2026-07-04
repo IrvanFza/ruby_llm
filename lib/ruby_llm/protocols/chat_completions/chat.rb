@@ -65,7 +65,7 @@ module RubyLLM
         end
 
         def parse_completion_body(data, raw:)
-          raise Error.new(raw, data.dig('error', 'message')) if data.dig('error', 'message')
+          raise Error.new(data.dig('error', 'message'), response: raw) if data.dig('error', 'message')
 
           message_data = data.dig('choices', 0, 'message')
           return unless message_data
@@ -84,11 +84,11 @@ module RubyLLM
             tool_calls: parse_tool_calls(message_data['tool_calls']),
             input_tokens: input_tokens(usage),
             output_tokens: output_tokens(usage),
-            cached_tokens: cache_read_tokens(usage),
-            cache_creation_tokens: cache_write_tokens(usage),
+            cache_read_tokens: cache_read_tokens(usage),
+            cache_write_tokens: cache_write_tokens(usage),
             thinking_tokens: thinking_tokens,
             finish_reason: data.dig('choices', 0, 'finish_reason'),
-            model_id: data['model'],
+            model: data['model'],
             raw: raw
           )
         end

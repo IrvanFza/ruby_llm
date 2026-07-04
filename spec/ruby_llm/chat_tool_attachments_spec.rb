@@ -61,8 +61,8 @@ RSpec.describe RubyLLM::Chat do
       ]
     end
 
-    def chat_with_tool_attachment(model, provider)
-      chat = RubyLLM.chat(model: model, provider: provider)
+    def chat_with_tool_attachment(model, provider, protocol: nil)
+      chat = RubyLLM.chat(model: model, provider: provider, protocol: protocol)
       chat.messages = messages_with_tool_attachment
       chat
     end
@@ -102,7 +102,7 @@ RSpec.describe RubyLLM::Chat do
     end
 
     it 'splices a user message after Chat Completions tool results' do
-      chat = chat_with_tool_attachment('gpt-5-nano', 'openai').with_protocol(:chat_completions)
+      chat = chat_with_tool_attachment('gpt-5-nano', 'openai', protocol: :chat_completions)
 
       messages = chat.render[:messages]
       tool_message = messages.find { |message| message[:role] == 'tool' }

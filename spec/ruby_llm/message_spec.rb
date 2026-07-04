@@ -114,7 +114,7 @@ RSpec.describe RubyLLM::Message do
       expect(message.cost(model: model).to_h).to include(input: 0.001, output: 0.004, total: 0.005)
     end
 
-    it 'uses model_id for cost lookup' do
+    it 'uses the message model for cost lookup' do
       allow(RubyLLM.models).to receive(:find).and_call_original
       allow(RubyLLM.models).to receive(:find).with('priced-model').and_return(model)
 
@@ -123,7 +123,7 @@ RSpec.describe RubyLLM::Message do
         content: 'Hello',
         input_tokens: 1_000,
         output_tokens: 2_000,
-        model_id: 'priced-model'
+        model: 'priced-model'
       )
 
       expect(message.cost.total).to eq(0.005)
@@ -134,7 +134,7 @@ RSpec.describe RubyLLM::Message do
         role: :assistant,
         content: 'Hello',
         input_tokens: 1_000,
-        model_id: 'missing-model'
+        model: 'missing-model'
       )
 
       expect(message.cost.total).to be_nil
@@ -146,8 +146,8 @@ RSpec.describe RubyLLM::Message do
       message = described_class.new(
         role: :assistant,
         content: 'Hello',
-        cached_tokens: 42,
-        cache_creation_tokens: 7
+        cache_read_tokens: 42,
+        cache_write_tokens: 7
       )
 
       expect(message.cache_read_tokens).to eq(42)

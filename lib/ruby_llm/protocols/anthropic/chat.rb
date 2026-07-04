@@ -185,11 +185,11 @@ module RubyLLM
             tool_calls: Tools.parse_tool_calls(tool_use_blocks),
             input_tokens: usage['input_tokens'],
             output_tokens: usage['output_tokens'],
-            cached_tokens: extract_cached_tokens(data),
-            cache_creation_tokens: extract_cache_creation_tokens(data),
+            cache_read_tokens: extract_cache_read_tokens(data),
+            cache_write_tokens: extract_cache_write_tokens(data),
             thinking_tokens: thinking_tokens,
             finish_reason: data['stop_reason'],
-            model_id: data['model'],
+            model: data['model'],
             raw: raw
           )
         end

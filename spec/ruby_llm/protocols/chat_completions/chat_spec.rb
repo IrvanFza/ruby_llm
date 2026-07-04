@@ -27,10 +27,10 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
 
       message = described_class.parse_completion_body(response_body, raw: response)
 
-      expect(message.cached_tokens).to eq(6)
+      expect(message.cache_read_tokens).to eq(6)
       expect(message.input_tokens).to eq(2)
       expect(message.output_tokens).to eq(4)
-      expect(message.cache_creation_tokens).to eq(0)
+      expect(message.cache_write_tokens).to eq(0)
     end
 
     it 'preserves raw finish reasons' do
@@ -88,9 +88,9 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Chat do
       message = described_class.parse_completion_body(response_body, raw: response)
 
       expect(message.input_tokens).to eq(14)
-      expect(message.cached_tokens).to eq(192)
+      expect(message.cache_read_tokens).to eq(192)
       expect(message.output_tokens).to eq(4)
-      expect(message.cache_creation_tokens).to eq(0)
+      expect(message.cache_write_tokens).to eq(0)
     end
 
     it 'keeps OpenAI reasoning tokens inside completion output tokens' do

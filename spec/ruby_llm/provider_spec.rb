@@ -301,7 +301,7 @@ RSpec.describe RubyLLM::Provider do
         RubyLLM::Protocols::ChatCompletions,
         embed: RubyLLM::Embedding.new(vectors: [0.1], model: routed_model.id),
         moderate: RubyLLM::Moderation.new(id: 'modr_1', model: routed_model.id, results: []),
-        paint: RubyLLM::Image.new(model_id: routed_model.id),
+        paint: RubyLLM::Image.new(model: routed_model.id),
         speak: RubyLLM::Speech.new(data: 'audio', model: routed_model.id),
         transcribe: RubyLLM::Transcription.new(text: 'transcript', model: routed_model.id)
       )
@@ -315,30 +315,34 @@ RSpec.describe RubyLLM::Provider do
       provider.transcribe('audio.mp3', model: routed_model, language: nil)
 
       expect(RubyLLM::Protocols::ChatCompletions).to have_received(:new).with(provider, routed_model).exactly(5).times
-      expect(protocol).to have_received(:embed).with('hello', model: routed_model.id, dimensions: nil, params: {})
-      expect(protocol).to have_received(:moderate).with('hello', model: routed_model.id, params: {})
+      expect(protocol).to have_received(:embed)
+        .with('hello', model: routed_model.id, dimensions: nil, task_type: nil, title: nil, provider_options: {})
+      expect(protocol).to have_received(:moderate).with('hello', model: routed_model.id, provider_options: {})
       expect(protocol).to have_received(:paint).with(
         'hello',
         model: routed_model.id,
         size: '1024x1024',
         with: nil,
         mask: nil,
-        params: {}
+        provider_options: {}
       )
       expect(protocol).to have_received(:speak).with(
         'hello',
         model: routed_model.id,
         voice: nil,
         format: nil,
-        params: {},
-        instructions: nil,
-        speed: nil
+        provider_options: {}
       )
       expect(protocol).to have_received(:transcribe).with(
         'audio.mp3',
         model: routed_model.id,
         language: nil,
-        params: {}
+        provider_options: {},
+        prompt: nil,
+        temperature: nil,
+        format: nil,
+        speaker_names: nil,
+        speaker_references: nil
       )
     end
 
@@ -359,14 +363,14 @@ RSpec.describe RubyLLM::Provider do
     end
 
     it 'routes OpenAI batches by rendered payload shape' do
-      expect(provider.send(:batch_protocol_for, [{ params: { input: 'hi' } }]))
+      expect(provider.send(:batch_protocol_for, [{ payload: { input: 'hi' } }]))
         .to be < RubyLLM::Protocols::Responses
-      expect(provider.send(:batch_protocol_for, [{ params: { messages: [] } }]))
+      expect(provider.send(:batch_protocol_for, [{ payload: { messages: [] } }]))
         .to be < RubyLLM::Protocols::ChatCompletions
       expect do
         provider.send(:batch_protocol_for, [
-                        { params: { input: 'hi' } },
-                        { params: { messages: [] } }
+                        { payload: { input: 'hi' } },
+                        { payload: { messages: [] } }
                       ])
       end.to raise_error(RubyLLM::Error, /one endpoint/)
     end

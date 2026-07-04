@@ -277,6 +277,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
         expect(RubyLLM).to receive(:chat).with( # rubocop:disable RSpec/MessageSpies,RSpec/StubbedMock
           model: 'test-gpt',
           provider: :openai,
+          protocol: nil,
           assume_model_exists: false
         ).and_return(
           instance_double(RubyLLM::Chat, 'messages=': nil, before_message: nil, after_message: nil)
@@ -293,6 +294,7 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
         expect(RubyLLM).to receive(:chat).with( # rubocop:disable RSpec/MessageSpies,RSpec/StubbedMock
           model: 'test-claude',
           provider: :anthropic,
+          protocol: nil,
           assume_model_exists: false
         ).and_return(
           instance_double(RubyLLM::Chat, 'messages=': nil, before_message: nil, after_message: nil)

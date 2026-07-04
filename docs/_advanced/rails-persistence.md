@@ -28,7 +28,7 @@ After reading this guide, you will know:
 *   How to customize model and association names, including for namespaced models.
 *   How to override the persistence flow when you need content validations.
 
-The `acts_as` helpers turn ordinary ActiveRecord models into RubyLLM chats and messages. Once a model `acts_as_chat`, it gains the full chat API - `ask`, `with_tool`, `with_schema`, and the rest - while persisting every message to your database automatically. Start by declaring the helpers, then everything else in this guide builds on those four models.
+The `acts_as` helpers turn ordinary ActiveRecord models into RubyLLM chats and messages. Once a model `acts_as_chat`, it gains the full chat API - `ask`, `with_tools`, `with_schema`, and the rest - while persisting every message to your database automatically. Start by declaring the helpers, then everything else in this guide builds on those four models.
 
 ## Setting Up Models with `acts_as` Helpers
 
@@ -167,7 +167,7 @@ message.cost.thinking # When the model has distinct reasoning-token pricing
 chat_record.cost.total
 ```
 
-`cache_read_tokens` and `cache_write_tokens` are aliases for the existing v1.9 `cached_tokens` and `cache_creation_tokens` columns, so apps that already ran the v1.9 migration do not need another migration for these names.
+The `cache_read_tokens` and `cache_write_tokens` helpers read the columns of the same names. The v2.0 upgrade generator renames the v1.9 `cached_tokens` and `cache_creation_tokens` columns for you.
 
 RubyLLM normalizes provider-specific cache accounting before persisting token counts. See [Token Usage and Cost]({% link _core_features/chat-tokens.md %}) for the provider comparison table.
 
@@ -223,7 +223,7 @@ Tools are Ruby classes that the AI can call. While the tool classes themselves a
 ```ruby
 class Weather < RubyLLM::Tool
   description "Gets current weather for a location"
-  param :city, desc: "City name"
+  parameter :city, description: "City name"
 
   def execute(city:)
     "The weather in #{city} is sunny and 22°C."
@@ -231,7 +231,7 @@ class Weather < RubyLLM::Tool
 end
 
 chat_record = Chat.create!(model: '{{ site.models.default_chat }}')
-chat_record.with_tool(Weather)
+chat_record.with_tools(Weather)
 
 response = chat_record.ask("What's the weather in Paris?")
 
@@ -305,7 +305,7 @@ chat_record.with_schema(PersonSchema)
 person = chat_record.ask("Generate a French person")
 
 # Remove the schema for analysis
-chat_record.with_schema(nil)
+chat_record.without_schema
 analysis = chat_record.ask("What's interesting about this person?")
 
 puts chat_record.messages.count # => 4
@@ -456,11 +456,11 @@ class Chat < ApplicationRecord
     # Fill in attributes and save once we have content
     @message.assign_attributes(
       content: message.content,
-      model: Model.find_by(model_id: message.model_id),
+      model: Model.find_by(model_id: message.model),
       input_tokens: message.tokens.input,
       output_tokens: message.tokens.output,
-      cached_tokens: message.tokens.cache_read,
-      cache_creation_tokens: message.tokens.cache_write
+      cache_read_tokens: message.tokens.cache_read,
+      cache_write_tokens: message.tokens.cache_write
     )
 
     @message.save!

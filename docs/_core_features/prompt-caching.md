@@ -68,10 +68,10 @@ If you switch to a provider that needs different caching options, call `with_cac
 chat.with_caching(ttl: "1h")
 ```
 
-To disable caching for later requests, clear the policy explicitly with `nil`:
+To disable caching for later requests, call `without_caching`:
 
 ```ruby
-chat.with_caching(nil)
+chat.without_caching
 ```
 
 ## Explicit Cache Boundaries
@@ -135,4 +135,4 @@ Existing apps should run the latest upgrade generator after updating RubyLLM so 
 
 ## Dropping Down
 
-`with_caching` and `cache_until_here!` cover RubyLLM's prompt-caching API. Use `with_params` only when you need another provider request option, and use a [`before_request` hook]({% link _core_features/chat-request-control.md %}#request-hooks) only when the rendered payload itself must be adjusted.
+`with_caching` and `cache_until_here!` cover RubyLLM's prompt-caching API. Use `with_provider_options` only when you need another provider request option, and use a [`before_request` hook]({% link _core_features/chat-request-control.md %}#request-hooks) only when the rendered payload itself must be adjusted.

@@ -32,11 +32,11 @@ After reading this guide, you will know:
 
 When building applications, you often need AI responses in a specific format for parsing and processing. RubyLLM provides two approaches: JSON mode for valid JSON output, and structured output for guaranteed schema compliance.
 
-JSON mode (using `with_params(response_format: { type: 'json_object' })`) guarantees valid JSON but not any specific structure. Structured output (`with_schema`) guarantees the response matches your exact schema with required fields and types. Use structured output when you need predictable, validated responses.
+JSON mode (using `with_provider_options(response_format: { type: 'json_object' })`) guarantees valid JSON but not any specific structure. Structured output (`with_schema`) guarantees the response matches your exact schema with required fields and types. Use structured output when you need predictable, validated responses.
 {: .note }
 
 ```ruby
-chat = RubyLLM.chat.with_params(response_format: { type: 'json_object' })
+chat = RubyLLM.chat.with_provider_options(response_format: { type: 'json_object' })
 response = chat.ask("List 3 programming languages with their year created. Return as JSON.")
 
 class LanguagesSchema < RubyLLM::Schema
@@ -191,7 +191,7 @@ chat.with_schema(PersonSchema)
 person = chat.ask("Generate a person")
 
 # Remove the schema for free-form responses
-chat.with_schema(nil)
+chat.without_schema
 analysis = chat.ask("Tell me about this person's potential career paths")
 
 class CareerPlanSchema < RubyLLM::Schema

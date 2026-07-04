@@ -120,12 +120,12 @@ When building LLM applications, you may need custom monitoring, analytics, or lo
 
 ### Supported Events
 
-- `complete_chat.ruby_llm` when `RubyLLM::Chat#ask` is called
-- `execute_tool.ruby_llm` when a tool call is executed
-- `embed_text.ruby_llm` when `RubyLLM::Embedding.embed` is called
-- `paint_image.ruby_llm` when `RubyLLM::Image.paint` is called
-- `moderate_text.ruby_llm` when `RubyLLM::Moderation.moderate` is called
-- `transcribe_audio.ruby_llm` when `RubyLLM::Transcription.transcribe` is called
+- `chat.ruby_llm` when `RubyLLM::Chat#ask` is called
+- `tool_call.ruby_llm` when a tool call is executed
+- `embedding.ruby_llm` when `RubyLLM::Embedding.embed` is called
+- `image.ruby_llm` when `RubyLLM::Image.paint` is called
+- `moderation.ruby_llm` when `RubyLLM::Moderation.moderate` is called
+- `transcription.ruby_llm` when `RubyLLM::Transcription.transcribe` is called
 
 ### Installation
 

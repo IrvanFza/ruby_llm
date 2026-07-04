@@ -246,6 +246,22 @@ RSpec.describe RubyLLM::Agent do
     expect { SpecAssumeExistsInitAgent.new(chat: reloaded) }.not_to raise_error
   end
 
+  it 'forwards the protocol model option to created and found Rails chat records' do
+    agent_class = Class.new(RubyLLM::Agent) do
+      chat_model Chat
+      model 'gpt-5-nano', protocol: :chat_completions
+      instructions 'Hello'
+    end
+
+    stub_const('SpecProtocolAgent', agent_class)
+
+    created = SpecProtocolAgent.create!
+    expect(created.to_llm.instance_variable_get(:@protocol)).to eq(:chat_completions)
+
+    found = SpecProtocolAgent.find(created.id)
+    expect(found.to_llm.instance_variable_get(:@protocol)).to eq(:chat_completions)
+  end
+
   it 'raises when .sync_instructions! is used without chat_model' do
     agent_class = Class.new(RubyLLM::Agent) do
       model 'gpt-4.1-nano'

@@ -21,10 +21,10 @@ module RubyLLM
           Embedding.new(vectors:, model:, input_tokens:)
         end
 
-        def deep_merge_params(payload, params)
-          return payload if params.empty?
+        def deep_merge_provider_options(payload, provider_options)
+          return payload if provider_options.empty?
 
-          Utils.deep_merge(payload, params)
+          Utils.deep_merge(payload, provider_options)
         end
 
         def extract_embedding(body)

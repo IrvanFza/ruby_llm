@@ -5,25 +5,27 @@ module RubyLLM
     class Bedrock
       # Amazon Titan text embedding models over Bedrock InvokeModel.
       class TitanTextEmbeddings < EmbeddingProtocol
-        def embed(text, model:, dimensions:, params: {})
+        # rubocop:disable Lint/UnusedMethodArgument, Metrics/ParameterLists
+        def embed(text, model:, dimensions:, task_type: nil, title: nil, provider_options: {})
           responses = [text].flatten.map do |value|
-            payload = render_embedding_payload(value, dimensions:, params:)
+            payload = render_embedding_payload(value, dimensions:, provider_options:)
             signed_post(embedding_url(model:), payload)
           end
 
           parse_single_embedding_responses(responses, model:, text:)
         end
+        # rubocop:enable Lint/UnusedMethodArgument, Metrics/ParameterLists
 
         private
 
-        def render_embedding_payload(text, dimensions:, params:)
-          deep_merge_params(
+        def render_embedding_payload(text, dimensions:, provider_options:)
+          deep_merge_provider_options(
             {
               inputText: text.to_s,
               dimensions: dimensions,
               normalize: true
             }.compact,
-            params
+            provider_options
           )
         end
       end

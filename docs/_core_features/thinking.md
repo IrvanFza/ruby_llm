@@ -57,10 +57,10 @@ chat.with_thinking(budget: 10_000)
 chat.with_thinking(effort: :none)
 ```
 
-Pass `nil` to clear the thinking configuration and return to the model's default behavior:
+Call `without_thinking` to clear the thinking configuration and return to the model's default behavior:
 
 ```ruby
-chat.with_thinking(nil)
+chat.without_thinking
 ```
 
 ### Effort and Budget
@@ -127,7 +127,7 @@ end
 - OpenAI reasoning models accept `effort` but may not return thinking text or signatures.
 - Perplexity sonar reasoning models stream `<think>` blocks inside content; RubyLLM extracts them after the response completes.
 - Mistral Magistral models always think and ignore `with_thinking` params. Non-magistral models warn if you pass them.
-- Ollama and GPUStack local-model thinking controls vary by backend and model. RubyLLM does not translate them; pass backend params explicitly with `with_params`.
+- Ollama and GPUStack local-model thinking controls vary by backend and model. RubyLLM does not translate them; pass backend params explicitly with `with_provider_options`.
 - Anthropic and Ollama integrations currently do not report thinking token counts.
 
 ## Next Steps

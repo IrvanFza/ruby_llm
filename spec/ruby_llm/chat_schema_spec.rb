@@ -24,6 +24,20 @@ RSpec.describe RubyLLM::Chat do
       }
     end
 
+    it 'removes the schema with without_schema' do
+      chat = RubyLLM.chat.with_schema(person_schema)
+
+      chat.without_schema
+
+      expect(chat.schema).to be_nil
+    end
+
+    it 'rejects nil, pointing to without_schema' do
+      chat = RubyLLM.chat
+
+      expect { chat.with_schema(nil) }.to raise_error(ArgumentError, /without_schema/)
+    end
+
     # Test providers that support structured output with JSON schema
     # Note: Only test models that have json_schema support, not just json_object
     STRUCTURED_OUTPUT_MODELS.each do |model_info|
@@ -55,7 +69,7 @@ RSpec.describe RubyLLM::Chat do
           end.not_to raise_error
         end
 
-        it 'allows removing schema with nil mid-conversation' do
+        it 'allows removing schema mid-conversation' do
           # First, ask with schema - content is a JSON string, #parsed gives the Hash
           chat.with_schema(person_schema)
           response1 = chat.ask('Generate a person named Bob')
@@ -67,7 +81,7 @@ RSpec.describe RubyLLM::Chat do
           expect(response1.parsed['age']).to be_a(Integer)
 
           # Remove schema and ask again - should get plain string
-          chat.with_schema(nil)
+          chat.without_schema
           response2 = chat.ask('Now just tell me about Ruby')
 
           expect(response2.content).to be_a(String)
@@ -141,7 +155,7 @@ RSpec.describe RubyLLM::Chat do
       before do
         stub_const('SchemaToolTestWeather', Class.new(RubyLLM::Tool) do
           description 'Gets current weather for a location'
-          param :location, desc: 'City name'
+          parameter :location, description: 'City name'
 
           def execute(location:)
             "Weather in #{location}: 20°C"
@@ -150,7 +164,7 @@ RSpec.describe RubyLLM::Chat do
       end
 
       it 'does not parse tool-call response content as JSON when schema is set' do
-        chat = RubyLLM.chat.with_tool(SchemaToolTestWeather).with_schema(person_schema)
+        chat = RubyLLM.chat.with_tools(SchemaToolTestWeather).with_schema(person_schema)
         provider = chat.instance_variable_get(:@provider)
 
         tool_call = RubyLLM::ToolCall.new(
