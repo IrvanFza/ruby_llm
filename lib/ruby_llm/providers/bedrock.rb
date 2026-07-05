@@ -13,6 +13,10 @@ module RubyLLM
       protocol :cohere_embeddings, Bedrock::CohereEmbeddings
       files Bedrock::Files
 
+      def self.resolve_registry_id(model_id, models)
+        Models.resolve_registry_id(model_id, models, RubyLLM.config)
+      end
+
       def protocol_for(model, operation: nil, **)
         return embedding_protocol_for(model_id_for(model)) if operation == :embed
 

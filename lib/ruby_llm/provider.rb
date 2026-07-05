@@ -424,6 +424,13 @@ module RubyLLM
           raise(Error, "Unknown provider: #{name.inspect}. Available providers: #{providers.keys.join(', ')}")
       end
 
+      # Resolves +model_id+ to the id the registry stores it under for this
+      # provider. Defaults to the id unchanged; providers whose catalog ids
+      # differ from their request ids (Bedrock's region prefixes) override it.
+      def resolve_registry_id(model_id, _models)
+        model_id
+      end
+
       # Returns the global registry of providers, a hash mapping slug
       # symbols to provider classes.
       def providers

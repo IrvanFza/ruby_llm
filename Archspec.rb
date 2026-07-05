@@ -16,7 +16,6 @@ component :domain, in: %w[
   lib/ruby_llm/chat.rb
   lib/ruby_llm/chunk.rb
   lib/ruby_llm/citation.rb
-  lib/ruby_llm/content.rb
   lib/ruby_llm/context.rb
   lib/ruby_llm/cost.rb
   lib/ruby_llm/embedding.rb
@@ -106,3 +105,13 @@ protocol_contract.cannot_reference_constants 'RubyLLM::Providers'
 # Protocols render and parse provider wire formats. They may create domain
 # objects, but should not reach into concrete provider adapters.
 protocols.cannot_reference_constants 'RubyLLM::Providers'
+
+# The plain-Ruby library must never reach into the Rails integration; this is
+# what keeps `require "ruby_llm"` free of ActiveRecord. Support is a leaf layer
+# that also must not know protocols or concrete providers.
+domain.cannot_reference_constants 'RubyLLM::ActiveRecord'
+support.cannot_reference_constants 'RubyLLM::ActiveRecord', 'RubyLLM::Protocols', 'RubyLLM::Providers'
+
+# The Rails integration builds on the domain and support layers and delegates
+# through the Provider contract, not wire protocols or concrete adapters.
+rails_integration.cannot_reference_constants 'RubyLLM::Protocols', 'RubyLLM::Providers'

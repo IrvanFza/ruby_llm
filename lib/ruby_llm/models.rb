@@ -556,24 +556,17 @@ module RubyLLM
 
     def find_with_provider(model_id, provider)
       resolved_id = Aliases.resolve(model_id, provider)
-      resolved_id = resolve_bedrock_region_id(resolved_id) if provider.to_s == 'bedrock'
+      resolved_id = resolve_provider_registry_id(resolved_id, provider)
       all.find { |m| m.id == resolved_id && m.provider == provider.to_s } ||
         all.find { |m| m.id == model_id && m.provider == provider.to_s } ||
         raise_model_not_found(model_id, provider: provider)
     end
 
-    def resolve_bedrock_region_id(model_id)
-      region = RubyLLM.config.bedrock_region.to_s
-      return model_id if region.empty?
+    def resolve_provider_registry_id(model_id, provider)
+      provider_class = Provider.resolve(provider)
+      return model_id unless provider_class
 
-      candidate_id = Providers::Bedrock::Models.with_region_prefix(model_id, region)
-      return model_id if candidate_id == model_id
-
-      candidate = all.find { |m| m.provider == 'bedrock' && m.id == candidate_id }
-      return model_id unless candidate
-
-      inference_types = Array(candidate.metadata[:inference_types] || candidate.metadata['inference_types'])
-      Providers::Bedrock::Models.normalize_inference_profile_id(model_id, inference_types, region)
+      provider_class.resolve_registry_id(model_id, self)
     end
 
     # A name can be one provider's exact id and another's alias:
