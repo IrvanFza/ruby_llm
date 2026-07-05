@@ -8,6 +8,7 @@ repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 case "$out" in /*) ;; *) out="$repo/$out" ;; esac
 
 ( cd "$repo" && bundle exec rdoc --output "$out" --quiet lib )
+( cd "$repo" && bundle exec ruby docs/bin/export-api-markdown.rb "$out" )
 
 # RDoc's main page must be a file, so the curated landing lives in the RubyLLM
 # module doc and the index redirects there.
