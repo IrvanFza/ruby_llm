@@ -119,64 +119,18 @@ module RubyLLM
       # <tt>"embedding"</tt>. See Model#type.
 
       ##
-      # :method: input_price_per_million
+      # :method: supports?
+      # :call-seq: supports?(capability)
       #
-      # Returns the USD price per million input text tokens, or +nil+
-      # if unknown. See Model#input_price_per_million.
+      # Returns whether the model has +capability+. See Model#supports?.
 
       ##
-      # :method: output_price_per_million
+      # :method: price
+      # :call-seq: price(kind)
       #
-      # Returns the USD price per million output text tokens, or +nil+
-      # if unknown. See Model#output_price_per_million.
-
-      ##
-      # :method: cache_read_input_price_per_million
-      #
-      # Returns the USD price per million cache read input tokens, or +nil+
-      # if unknown. See Model#cache_read_input_price_per_million.
-
-      ##
-      # :method: cache_write_input_price_per_million
-      #
-      # Returns the USD price per million cache write input tokens, or +nil+
-      # if unknown. See Model#cache_write_input_price_per_million.
-
-      ##
-      # :method: function_calling?
-      #
-      # Returns whether the model supports tool calling.
-      # See Model#function_calling?.
-
-      ##
-      # :method: structured_output?
-      #
-      # Returns whether the model supports structured output.
-      # See Model#structured_output?.
-
-      ##
-      # :method: batch?
-      #
-      # Returns whether the model supports batch processing.
-      # See Model#batch?.
-
-      ##
-      # :method: reasoning?
-      #
-      # Returns whether the model supports extended reasoning.
-      # See Model#reasoning?.
-
-      ##
-      # :method: citations?
-      #
-      # Returns whether the model supports citations.
-      # See Model#citations?.
-
-      ##
-      # :method: streaming?
-      #
-      # Returns whether the model supports streaming responses.
-      # See Model#streaming?.
+      # Returns the standard text-token price for +kind+ (+:input+,
+      # +:output+, +:cache_read+, or +:cache_write+) in USD per million
+      # tokens, or +nil+ if unknown. See Model#price.
 
       ##
       # :method: provider_class
@@ -197,9 +151,7 @@ module RubyLLM
       # Builds a Cost for +tokens+ using this model's pricing.
       # See Model#cost_for.
 
-      delegate :supports?, :type,
-               :input_price_per_million, :output_price_per_million,
-               :cache_read_input_price_per_million, :cache_write_input_price_per_million,
+      delegate :supports?, :price, :type,
                :provider_class, :label, :cost_for,
                to: :to_llm
     end

@@ -131,7 +131,7 @@ RSpec.describe RubyLLM::Protocols::Anthropic::Chat do
   end
 
   describe '.render_payload' do
-    let(:model) { instance_double(RubyLLM::Model, id: 'claude-sonnet-4-5', max_tokens: nil) }
+    let(:model) { instance_double(RubyLLM::Model, id: 'claude-sonnet-4-5', max_output_tokens: nil) }
 
     it 'adds top-level automatic cache_control when caching is enabled without explicit boundaries' do
       payload = described_class.render_payload(

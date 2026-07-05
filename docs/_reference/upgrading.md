@@ -77,7 +77,7 @@ end
 schema -> { strict ? StrictSchema : LooseSchema }    # dynamic - evaluated per run
 ```
 
-**Cache naming is `cache_read` / `cache_write` everywhere.** The `cached_input*` / `cache_creation*` aliases on `Cost`, `Model`, and `acts_as_model` records were removed in favor of `cache_read*` / `cache_write*` (e.g. `model.cache_read_input_price_per_million`, `cost.cache_read`). Token counts now follow: `tokens.cached` and `tokens.cache_creation` are gone (`tokens.cache_read` / `tokens.cache_write`), and `message.cached_tokens` / `message.cache_creation_tokens` are gone (`message.cache_read_tokens` / `message.cache_write_tokens`). The upgrade generator renames the Rails columns to match.
+**Cache naming is `cache_read` / `cache_write` everywhere.** The `cached_input*` / `cache_creation*` aliases on `Cost`, `Model`, and `acts_as_model` records were removed in favor of `cache_read*` / `cache_write*` (e.g. `model.price(:cache_read)`, `cost.cache_read`). Token counts now follow: `tokens.cached` and `tokens.cache_creation` are gone (`tokens.cache_read` / `tokens.cache_write`), and `message.cached_tokens` / `message.cache_creation_tokens` are gone (`message.cache_read_tokens` / `message.cache_write_tokens`). The upgrade generator renames the Rails columns to match.
 
 **One name per concept.** 2.0 renames the remaining stragglers so each concept has a single name across the gem:
 

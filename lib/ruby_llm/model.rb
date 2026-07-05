@@ -92,21 +92,11 @@ module RubyLLM
       capabilities.include?(capability.to_s)
     end
 
-    # Returns the model #name.
-    def display_name
-      name
-    end
-
     # Returns the provider display name and model name combined,
     # e.g. <tt>"OpenAI - GPT-5.4"</tt>.
     def label
       provider_name = provider_class&.display_name || provider
-      "#{provider_name} - #{display_name}"
-    end
-
-    # Returns #max_output_tokens.
-    def max_tokens
-      max_output_tokens
+      "#{provider_name} - #{name}"
     end
 
     def reasoning_option(type) # :nodoc:
@@ -117,28 +107,28 @@ module RubyLLM
       Array(reasoning_option(type)&.fetch(:values, nil))
     end
 
-    # Returns the USD price per million input text tokens, or +nil+
-    # if the registry has no pricing for the model.
-    def input_price_per_million
-      pricing.text_tokens.input
-    end
+    # The standard text-token price columns, keyed by the symbol #price
+    # accepts.
+    PRICES = {
+      input: :input,
+      output: :output,
+      cache_read: :cache_read_input,
+      cache_write: :cache_write_input
+    }.freeze
+    private_constant :PRICES
 
-    # Returns the USD price per million output text tokens, or +nil+
-    # if the registry has no pricing for the model.
-    def output_price_per_million
-      pricing.text_tokens.output
-    end
-
-    # Returns the USD price per million cache read input tokens, or +nil+
-    # if the model has no cache read pricing.
-    def cache_read_input_price_per_million
-      pricing.text_tokens.cache_read_input
-    end
-
-    # Returns the USD price per million cache write input tokens, or +nil+
-    # if the model has no cache write pricing.
-    def cache_write_input_price_per_million
-      pricing.text_tokens.cache_write_input
+    # Returns the standard text-token price for +kind+ in USD per million
+    # tokens, or +nil+ if the registry has no such price. Valid kinds are
+    # +:input+, +:output+, +:cache_read+, and +:cache_write+.
+    #
+    #   model.price(:input)   # => 2.5
+    #   model.price(:output)  # => 10.0
+    #
+    def price(kind)
+      column = PRICES.fetch(kind) do
+        raise ArgumentError, "Unknown price kind: #{kind.inspect}. Valid kinds: #{PRICES.keys.join(', ')}"
+      end
+      pricing.text_tokens.public_send(column)
     end
 
     # Builds a Cost for +tokens+ (a Tokens object, or anything responding

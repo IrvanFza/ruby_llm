@@ -62,7 +62,7 @@ module RubyLLM
               format_message(msg, thinking: thinking, citations: citations, caching:)
             end,
             stream: stream,
-            max_tokens: model.max_tokens || 4096
+            max_tokens: model.max_output_tokens || 4096
           }
 
           add_thinking_fields(payload, thinking, model)
