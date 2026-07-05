@@ -71,6 +71,10 @@ module RubyLLM
     # <tt>"MAX_TOKENS"</tt>.
     attr_reader :finish_reason
 
+    # The Chat this message belongs to, set when it is added to a
+    # conversation. Backs #tool_results.
+    attr_accessor :conversation # :nodoc:
+
     def initialize(options = {}) # :nodoc:
       @role = options.fetch(:role).to_sym
       @tool_calls = options[:tool_calls]
@@ -120,9 +124,15 @@ module RubyLLM
       !tool_call_id.nil? && !tool_call_id.empty?
     end
 
-    # Returns #content if the message is a tool result, +nil+ otherwise.
+    # Returns the tool result messages answering this message's tool calls,
+    # or an empty array when it made none. Mirrors the +tool_results+
+    # association on acts_as_message records.
     def tool_results
-      content if tool_result?
+      return [] unless tool_call? && conversation
+
+      conversation.messages.select do |message|
+        message.tool_result? && tool_calls.key?(message.tool_call_id)
+      end
     end
 
     # Returns +true+ if #finish_reason indicates the model finished
@@ -223,7 +233,7 @@ module RubyLLM
     end
 
     def pretty_print_instance_variables # :nodoc:
-      super - [:@raw]
+      super - %i[@raw @conversation]
     end
 
     # Returns the Model record for #model from the model registry, or

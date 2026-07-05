@@ -207,4 +207,32 @@ RSpec.describe RubyLLM::Message do
       expect(chunk.max_tokens?).to be(true)
     end
   end
+
+  describe '#tool_results' do
+    let(:call) do
+      described_class.new(
+        role: :assistant,
+        content: '',
+        tool_calls: {
+          'call_1' => RubyLLM::ToolCall.new(id: 'call_1', name: 'weather', arguments: {}),
+          'call_2' => RubyLLM::ToolCall.new(id: 'call_2', name: 'time', arguments: {})
+        }
+      )
+    end
+    let(:weather_result) { described_class.new(role: :tool, content: 'sunny', tool_call_id: 'call_1') }
+    let(:time_result) { described_class.new(role: :tool, content: 'noon', tool_call_id: 'call_2') }
+
+    before do
+      conversation = instance_double(RubyLLM::Chat, messages: [call, weather_result, time_result])
+      [call, weather_result, time_result].each { |message| message.conversation = conversation }
+    end
+
+    it 'returns the tool result messages answering the calls' do
+      expect(call.tool_results).to eq([weather_result, time_result])
+    end
+
+    it 'returns an empty array for messages that made no tool calls' do
+      expect(weather_result.tool_results).to eq([])
+    end
+  end
 end

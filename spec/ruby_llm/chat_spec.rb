@@ -161,4 +161,18 @@ RSpec.describe RubyLLM::Chat do
       expect(chat.cost.total).to eq(0.005)
     end
   end
+
+  describe '#tool_results' do
+    it 'links added messages so a call resolves its result messages' do
+      chat = RubyLLM.chat(model: RubyLLM.config.default_model)
+      call = chat.add_message(
+        role: :assistant,
+        content: '',
+        tool_calls: { 'call_1' => RubyLLM::ToolCall.new(id: 'call_1', name: 'weather', arguments: {}) }
+      )
+      result = chat.add_message(role: :tool, content: 'sunny', tool_call_id: 'call_1')
+
+      expect(call.tool_results).to eq([result])
+    end
+  end
 end

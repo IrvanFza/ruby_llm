@@ -614,7 +614,9 @@ module RubyLLM
                   message_or_attributes
                 end
 
-      message.is_a?(Message) ? message : Message.new(message)
+      message = Message.new(message) unless message.is_a?(Message)
+      message.conversation = self
+      message
     end
 
     def normalize_schema_payload(raw_schema)
