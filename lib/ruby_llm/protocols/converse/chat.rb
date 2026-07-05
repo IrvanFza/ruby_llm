@@ -17,7 +17,7 @@ module RubyLLM
         end
 
         # rubocop:disable Metrics/ParameterLists,Lint/UnusedMethodArgument
-        def render_payload(messages, tools:, temperature:, model:, stream: false,
+        def render_payload(messages, tools:, temperature:, model:, stream: false, max_output_tokens: nil,
                            schema: nil, thinking: nil, citations: false, caching: nil, tool_prefs: nil)
           warn_unsupported_citations(model) if citations
           tool_prefs ||= {}
@@ -32,7 +32,7 @@ module RubyLLM
           system_blocks = format_system(system_messages, caching:, automatic_cache_target:)
           payload[:system] = system_blocks unless system_blocks.empty?
 
-          payload[:inferenceConfig] = format_inference_config(model, temperature)
+          payload[:inferenceConfig] = format_inference_config(model, temperature, max_output_tokens)
 
           tool_config = format_tool_config(tools, tool_prefs)
           payload[:toolConfig] = tool_config if tool_config
@@ -232,9 +232,10 @@ module RubyLLM
           keys.map { |key| ":#{key}" }.join(', ')
         end
 
-        def format_inference_config(_model, temperature)
+        def format_inference_config(_model, temperature, max_output_tokens = nil)
           config = {}
           config[:temperature] = temperature unless temperature.nil?
+          config[:maxTokens] = max_output_tokens unless max_output_tokens.nil?
           config
         end
 

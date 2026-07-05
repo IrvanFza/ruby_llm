@@ -852,7 +852,7 @@ module RubyLLM
 
     def_delegators :chat, :model, :messages, :tools, :provider_options, :headers, :schema, :caching, :ask, :say,
                    :with_tools, :without_tools, :with_tool_options, :without_tool_options, :with_model,
-                   :with_temperature, :without_temperature,
+                   :with_temperature, :without_temperature, :with_max_output_tokens, :without_max_output_tokens,
                    :with_thinking, :without_thinking, :with_citations, :without_citations, :with_caching,
                    :without_caching, :with_context, :without_context, :with_provider_options,
                    :without_provider_options, :with_headers, :without_headers, :with_schema, :without_schema,

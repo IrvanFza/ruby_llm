@@ -225,6 +225,20 @@ module RubyLLM
         self
       end
 
+      # Caps the number of tokens the model may generate. See
+      # RubyLLM::Chat#with_max_output_tokens. Returns +self+.
+      def with_max_output_tokens(...)
+        to_llm.with_max_output_tokens(...)
+        self
+      end
+
+      # Removes the output token limit from the underlying chat. See
+      # RubyLLM::Chat#without_max_output_tokens. Returns +self+.
+      def without_max_output_tokens
+        to_llm.without_max_output_tokens
+        self
+      end
+
       # Removes the temperature override from the underlying chat. See
       # RubyLLM::Chat#without_temperature. Returns +self+.
       def without_temperature

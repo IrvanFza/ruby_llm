@@ -17,7 +17,7 @@ module RubyLLM
         end
 
         # rubocop:disable Metrics/ParameterLists
-        def render_payload(messages, tools:, temperature:, model:, stream: false,
+        def render_payload(messages, tools:, temperature:, model:, stream: false, max_output_tokens: nil,
                            schema: nil, thinking: nil, citations: false, caching: nil, tool_prefs: nil)
           warn_unsupported_citations(model) if citations && !model.supports?(:citations)
           tool_prefs ||= {}
@@ -26,6 +26,7 @@ module RubyLLM
           system_content = build_system_content(system_messages, caching:)
 
           build_base_payload(chat_messages, model, stream, thinking, citations: citations, caching:).tap do |payload|
+            payload[:max_tokens] = max_output_tokens if max_output_tokens
             add_optional_fields(payload, system_content:, tools:, tool_prefs:, temperature:, schema:)
             payload[:cache_control] = prompt_cache_control(caching) if caching && !explicit_boundaries
           end

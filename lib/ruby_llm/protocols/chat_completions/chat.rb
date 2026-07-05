@@ -16,7 +16,7 @@ module RubyLLM
         module_function
 
         # rubocop:disable Metrics/ParameterLists,Metrics/PerceivedComplexity
-        def render_payload(messages, tools:, temperature:, model:, stream: false, schema: nil,
+        def render_payload(messages, tools:, temperature:, model:, stream: false, max_output_tokens: nil, schema: nil,
                            thinking: nil, citations: false, caching: nil, tool_prefs: nil)
           warn_unsupported_citations(model) if citations && !model.supports?(:citations)
           tool_prefs ||= {}
@@ -27,6 +27,7 @@ module RubyLLM
           }
 
           payload[:temperature] = temperature unless temperature.nil?
+          payload[:max_tokens] = max_output_tokens unless max_output_tokens.nil?
           if tools.any?
             payload[:tools] = tools.map { |_, tool| tool_for(tool) }
             payload[:tool_choice] = build_tool_choice(tool_prefs[:choice]) unless tool_prefs[:choice].nil?

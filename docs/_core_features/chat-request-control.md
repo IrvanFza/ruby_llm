@@ -34,7 +34,7 @@ Chat configuration methods use a chainable `with_*` style:
 ```ruby
 chat = RubyLLM.chat
               .with_temperature(0.2)
-              .with_provider_options(max_output_tokens: 200)
+              .with_max_output_tokens(200)
 ```
 
 Calling a `with_*` method again replaces the setting. Every clearable setting has a matching `without_*` method that returns it to its default:
@@ -46,8 +46,8 @@ chat.without_temperature
 chat.with_caching(ttl: "1h")
 chat.without_caching
 
-chat.with_provider_options(max_output_tokens: 200)
-chat.without_provider_options
+chat.with_max_output_tokens(200)
+chat.without_max_output_tokens
 
 chat.with_headers("X-Custom-Feature" => "enabled")
 chat.without_headers

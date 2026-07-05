@@ -19,7 +19,7 @@ module RubyLLM
         end
 
         # rubocop:disable Metrics/ParameterLists,Metrics/PerceivedComplexity,Lint/UnusedMethodArgument
-        def render_payload(messages, tools:, temperature:, model:, stream: false, schema: nil,
+        def render_payload(messages, tools:, temperature:, model:, stream: false, max_output_tokens: nil, schema: nil,
                            thinking: nil, citations: false, caching: nil, tool_prefs: nil)
           warn_unsupported_citations(model) if citations && !model.supports?(:citations)
           tool_prefs ||= {}
@@ -31,6 +31,7 @@ module RubyLLM
           payload[:systemInstruction] = system_instruction if system_instruction
 
           payload[:generationConfig][:temperature] = temperature unless temperature.nil?
+          payload[:generationConfig][:maxOutputTokens] = max_output_tokens unless max_output_tokens.nil?
 
           payload[:generationConfig].merge!(structured_output_config(schema, model)) if schema
           payload[:generationConfig][:thinkingConfig] = build_thinking_config(model, thinking) if thinking&.enabled?

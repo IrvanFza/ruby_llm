@@ -75,6 +75,7 @@ module RubyLLM
       @config = context&.config || RubyLLM.config
       with_model(model, provider: provider, protocol: protocol, assume_model_exists: assume_model_exists)
       @temperature = nil
+      @max_output_tokens = nil
       @messages = []
       @tools = {}
       reset_tools
@@ -305,6 +306,26 @@ module RubyLLM
     # default sampling behavior. Returns +self+.
     def without_temperature
       @temperature = nil
+      self
+    end
+
+    # Caps the number of tokens the model may generate, mapping to each
+    # provider's request field (+max_tokens+, +max_output_tokens+,
+    # +maxOutputTokens+, and so on). Returns +self+.
+    #
+    #   chat.with_max_output_tokens(1000)
+    #
+    def with_max_output_tokens(max_output_tokens)
+      raise ArgumentError, 'To clear the limit, use without_max_output_tokens' if max_output_tokens.nil?
+
+      @max_output_tokens = max_output_tokens
+      self
+    end
+
+    # Removes the output token limit, letting the provider use its default.
+    # Returns +self+.
+    def without_max_output_tokens
+      @max_output_tokens = nil
       self
     end
 
@@ -580,6 +601,7 @@ module RubyLLM
         tools: @tools,
         tool_prefs: @tool_prefs,
         temperature: @temperature,
+        max_output_tokens: @max_output_tokens,
         model: @model,
         provider_options: @provider_options,
         schema: @schema,
@@ -686,6 +708,7 @@ module RubyLLM
         tool_choice: tool_prefs[:choice],
         tool_call_limit: tool_prefs[:calls],
         temperature: @temperature,
+        max_output_tokens: @max_output_tokens,
         provider_options: provider_options,
         schema: schema,
         thinking: @thinking,
@@ -802,6 +825,7 @@ module RubyLLM
         tools: @tools,
         tool_prefs: @tool_prefs,
         temperature: @temperature,
+        max_output_tokens: @max_output_tokens,
         model: @model,
         provider_options: @provider_options,
         headers: @headers,
