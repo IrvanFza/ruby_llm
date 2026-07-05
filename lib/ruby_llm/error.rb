@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 module RubyLLM
-  # Error is the base class for API errors raised by RubyLLM. It wraps the
-  # provider's HTTP error response and normalizes the message across
-  # providers. Subclasses map common HTTP status codes: BadRequestError
-  # (400), UnauthorizedError (401), PaymentRequiredError (402),
-  # ForbiddenError (403), RateLimitError (429), ServerError (500),
-  # ServiceUnavailableError (502 to 504), and OverloadedError (529).
+  # Error is the base class for provider-operation errors raised by
+  # RubyLLM, including API, network, capability, and provider response-shape
+  # failures. When an HTTP response is available, it wraps that response and
+  # normalizes the message across providers. Subclasses map common HTTP
+  # status codes: BadRequestError (400), UnauthorizedError (401),
+  # PaymentRequiredError (402), ForbiddenError (403), RateLimitError (429),
+  # ServerError (500), ServiceUnavailableError (502 to 504), and
+  # OverloadedError (529).
   #
   #   begin
   #     RubyLLM.chat.ask "Translate 'hello' to French."
@@ -17,9 +19,9 @@ module RubyLLM
   #     puts e.response&.status
   #   end
   #
-  # Errors that do not come from an HTTP response, such as
-  # ConfigurationError and ModelNotFoundError, inherit from StandardError
-  # directly and are not caught by rescuing Error.
+  # Local setup and programming errors, such as ConfigurationError and
+  # ModelNotFoundError, inherit from StandardError directly and are not
+  # caught by rescuing Error.
   class Error < StandardError
     # The HTTP response that caused the error, or +nil+ when none is
     # available. Its +status+ and +body+ carry the provider's reply.
@@ -57,7 +59,7 @@ module RubyLLM
 
   # Raised when an attachment cannot be formatted for the selected provider,
   # for example an audio file sent to a model without audio input.
-  class UnsupportedAttachmentError < StandardError
+  class UnsupportedAttachmentError < Error
     GUIDANCE = 'Consider using a model that supports this attachment type.' # :nodoc:
 
     def initialize(type = nil) # :nodoc:
@@ -87,6 +89,19 @@ module RubyLLM
   class ContextLengthExceededError < Error
     def self.default_message # :nodoc:
       'Context length exceeded'
+    end
+  end
+
+  # Raised when a provider returns tool-call arguments that are not valid
+  # JSON, often because the response was truncated mid-tool-call.
+  class ToolCallParseError < Error
+    attr_reader :finish_reason
+
+    def initialize(message = nil, response: nil, finish_reason: nil) # :nodoc:
+      @finish_reason = finish_reason
+      message ||= 'Provider returned malformed tool call arguments'
+      message = "#{message} (finish_reason: #{finish_reason})" if finish_reason
+      super(message, response: response)
     end
   end
 

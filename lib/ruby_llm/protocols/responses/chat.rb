@@ -54,6 +54,8 @@ module RubyLLM
           output = data['output'] || []
           content = parse_output_text(output)
 
+          finish_reason = data.dig('incomplete_details', 'reason')
+
           Message.new(
             role: :assistant,
             content: content,
@@ -62,10 +64,10 @@ module RubyLLM
               text: parse_reasoning_summary(output),
               signature: parse_reasoning_signature(output)
             ),
-            tool_calls: parse_function_calls(output),
+            tool_calls: parse_function_calls(output, response: raw, finish_reason: finish_reason),
             model: data['model'],
             raw: raw,
-            finish_reason: data.dig('incomplete_details', 'reason'),
+            finish_reason: finish_reason,
             **parse_usage(data['usage'] || {})
           )
         end
@@ -209,7 +211,7 @@ module RubyLLM
           texts.empty? ? nil : texts.join
         end
 
-        def parse_function_calls(output)
+        def parse_function_calls(output, response: nil, finish_reason: nil)
           calls = output.select { |item| item['type'] == 'function_call' }
           return nil if calls.empty?
 
@@ -221,10 +223,18 @@ module RubyLLM
               ToolCall.new(
                 id: call['call_id'],
                 name: call['name'],
-                arguments: arguments.nil? || arguments.empty? ? {} : JSON.parse(arguments)
+                arguments: parse_function_call_arguments(arguments, response: response, finish_reason: finish_reason)
               )
             ]
           end
+        end
+
+        def parse_function_call_arguments(arguments, response: nil, finish_reason: nil)
+          return {} if arguments.nil? || arguments.empty?
+
+          JSON.parse(arguments)
+        rescue JSON::ParserError => e
+          raise ToolCallParseError.new(response: response, finish_reason: finish_reason), cause: e
         end
 
         def parse_reasoning_summary(output)

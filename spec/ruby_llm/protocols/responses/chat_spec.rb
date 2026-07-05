@@ -143,6 +143,35 @@ RSpec.describe RubyLLM::Protocols::Responses::Chat do
       expect(message.tool_calls['call_1'].arguments).to eq({ 'city' => 'Berlin' })
     end
 
+    it 'wraps malformed function-call arguments in a RubyLLM error' do
+      response = instance_double(
+        Faraday::Response,
+        body: {
+          'model' => 'gpt-5-nano',
+          'output' => [
+            { 'type' => 'function_call', 'call_id' => 'call_1', 'name' => 'weather',
+              'arguments' => '{"city":"Berlin"' }
+          ],
+          'status' => 'incomplete',
+          'incomplete_details' => { 'reason' => 'max_output_tokens' }
+        }
+      )
+
+      error = nil
+
+      expect do
+        protocol.send(:parse_completion_response, response)
+      rescue RubyLLM::ToolCallParseError => e
+        error = e
+        raise
+      end.to raise_error(RubyLLM::ToolCallParseError)
+
+      expect(error).to be_a(RubyLLM::Error)
+      expect(error.response).to eq(response)
+      expect(error.finish_reason).to eq('max_output_tokens')
+      expect(error.cause).to be_a(JSON::ParserError)
+    end
+
     it 'parses reasoning summaries and encrypted content into thinking' do
       response = response_with([
                                  { 'type' => 'reasoning',

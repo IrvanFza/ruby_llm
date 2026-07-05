@@ -55,7 +55,7 @@ module RubyLLM
         ),
         finish_reason: @finish_reason,
         model: model,
-        tool_calls: tool_calls_from_stream,
+        tool_calls: tool_calls_from_stream(response),
         raw: response
       )
     end
@@ -80,10 +80,10 @@ module RubyLLM
       span ? Citation.new(citation.to_h.merge(text: span)) : citation
     end
 
-    def tool_calls_from_stream
+    def tool_calls_from_stream(response)
       tool_calls.transform_values do |tc|
         arguments = if tc.arguments.is_a?(String) && !tc.arguments.empty?
-                      JSON.parse(tc.arguments)
+                      parse_tool_call_arguments(tc.arguments, response)
                     elsif tc.arguments.is_a?(String)
                       {}
                     else
@@ -97,6 +97,12 @@ module RubyLLM
           thought_signature: tc.thought_signature
         )
       end
+    end
+
+    def parse_tool_call_arguments(arguments, response)
+      JSON.parse(arguments)
+    rescue JSON::ParserError => e
+      raise ToolCallParseError.new(response: response, finish_reason: @finish_reason), cause: e
     end
 
     def accumulate_tool_calls(new_tool_calls)

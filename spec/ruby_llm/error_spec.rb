@@ -55,9 +55,38 @@ RSpec.describe RubyLLM::Error do
       expect(error.message).to eq('bad request')
       expect(error.response).to be_nil
     end
+
+    it 'keeps local setup and programming errors outside RubyLLM::Error' do
+      local_errors = [
+        RubyLLM::ConfigurationError,
+        RubyLLM::PromptNotFoundError,
+        RubyLLM::InvalidRoleError,
+        RubyLLM::InvalidToolChoiceError,
+        RubyLLM::ModelNotFoundError
+      ]
+
+      expect(local_errors).to all(be < StandardError)
+      expect(local_errors.any? { |error_class| error_class < described_class }).to be(false)
+    end
+  end
+
+  describe RubyLLM::ToolCallParseError do
+    it 'stores the finish reason when available' do
+      error = described_class.new(finish_reason: 'length')
+
+      expect(error.finish_reason).to eq('length')
+      expect(error.message).to include('finish_reason: length')
+    end
   end
 
   describe RubyLLM::UnsupportedAttachmentError do
+    it 'is a RubyLLM operation error' do
+      error = described_class.new('audio/wav')
+
+      expect(error).to be_a(RubyLLM::Error)
+      expect(error.response).to be_nil
+    end
+
     it 'uses a simple standard message with the unsupported type and guidance' do
       error = described_class.new('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
 

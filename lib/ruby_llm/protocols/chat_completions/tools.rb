@@ -65,7 +65,7 @@ module RubyLLM
           end
         end
 
-        def parse_tool_call_arguments(tool_call)
+        def parse_tool_call_arguments(tool_call, response: nil, finish_reason: nil)
           arguments = tool_call.dig('function', 'arguments')
 
           if arguments.nil? || arguments.empty?
@@ -73,9 +73,11 @@ module RubyLLM
           else
             JSON.parse(arguments)
           end
+        rescue JSON::ParserError => e
+          raise ToolCallParseError.new(response: response, finish_reason: finish_reason), cause: e
         end
 
-        def parse_tool_calls(tool_calls, parse_arguments: true)
+        def parse_tool_calls(tool_calls, parse_arguments: true, response: nil, finish_reason: nil)
           return nil unless tool_calls&.any?
 
           tool_calls.to_h do |tc|
@@ -85,7 +87,7 @@ module RubyLLM
                 id: tc['id'],
                 name: tc.dig('function', 'name'),
                 arguments: if parse_arguments
-                             parse_tool_call_arguments(tc)
+                             parse_tool_call_arguments(tc, response: response, finish_reason: finish_reason)
                            else
                              tc.dig('function', 'arguments')
                            end,

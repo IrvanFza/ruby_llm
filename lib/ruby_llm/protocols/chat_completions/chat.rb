@@ -77,18 +77,20 @@ module RubyLLM
           thinking_text = thinking_from_blocks || extract_thinking_text(message_data)
           thinking_signature = extract_thinking_signature(message_data)
 
+          finish_reason = data.dig('choices', 0, 'finish_reason')
+
           Message.new(
             role: :assistant,
             content: content,
             citations: extract_citations(message_data, data, content),
             thinking: Thinking.build(text: thinking_text, signature: thinking_signature),
-            tool_calls: parse_tool_calls(message_data['tool_calls']),
+            tool_calls: parse_tool_calls(message_data['tool_calls'], response: raw, finish_reason: finish_reason),
             input_tokens: input_tokens(usage),
             output_tokens: output_tokens(usage),
             cache_read_tokens: cache_read_tokens(usage),
             cache_write_tokens: cache_write_tokens(usage),
             thinking_tokens: thinking_tokens,
-            finish_reason: data.dig('choices', 0, 'finish_reason'),
+            finish_reason: finish_reason,
             model: data['model'],
             raw: raw
           )

@@ -63,6 +63,34 @@ RSpec.describe RubyLLM::StreamAccumulator do
       )
     end
 
+    it 'wraps malformed streamed tool call arguments in a RubyLLM error' do
+      accumulator = described_class.new
+      response = instance_double(Faraday::Response)
+
+      accumulator.add(
+        RubyLLM::Chunk.new(
+          role: :assistant,
+          content: nil,
+          tool_calls: { 0 => RubyLLM::ToolCall.new(id: 'call_1', name: 'weather', arguments: '{"city":"Berlin"') }
+        )
+      )
+      accumulator.add(RubyLLM::Chunk.new(role: :assistant, content: nil, finish_reason: 'length'))
+
+      error = nil
+
+      expect do
+        accumulator.to_message(response)
+      rescue RubyLLM::ToolCallParseError => e
+        error = e
+        raise
+      end.to raise_error(RubyLLM::ToolCallParseError)
+
+      expect(error).to be_a(RubyLLM::Error)
+      expect(error.response).to eq(response)
+      expect(error.finish_reason).to eq('length')
+      expect(error.cause).to be_a(JSON::ParserError)
+    end
+
     it 'deduplicates citations repeated across chunks' do
       accumulator = described_class.new
       citation = RubyLLM::Citation.new(url: 'https://example.com', title: 'Example')
