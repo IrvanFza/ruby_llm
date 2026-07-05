@@ -53,6 +53,7 @@ module RubyLLM
     COPIED_INHERITED_CONFIG = %i[
       @instructions
       @temperature
+      @max_output_tokens
       @thinking
       @citations
       @schema
@@ -136,6 +137,17 @@ module RubyLLM
         return @temperature if value.nil?
 
         @temperature = value
+      end
+
+      # Caps the number of tokens chats this agent builds may generate.
+      # Called with no argument, returns the configured value.
+      #
+      #   max_output_tokens 1000
+      #
+      def max_output_tokens(value = nil)
+        return @max_output_tokens if value.nil?
+
+        @max_output_tokens = value
       end
 
       # Sets the thinking effort or budget for chats this agent builds,
@@ -379,6 +391,7 @@ module RubyLLM
         apply_instructions(chat_object, runtime, inputs: input_values, persist: persist_instructions)
         apply_tools(llm_chat, runtime)
         apply_temperature(llm_chat)
+        apply_max_output_tokens(llm_chat)
         apply_thinking(llm_chat)
         apply_citations(llm_chat)
         apply_caching(llm_chat, runtime)
@@ -434,6 +447,10 @@ module RubyLLM
 
       def apply_temperature(llm_chat)
         llm_chat.with_temperature(temperature) unless temperature.nil?
+      end
+
+      def apply_max_output_tokens(llm_chat)
+        llm_chat.with_max_output_tokens(max_output_tokens) unless max_output_tokens.nil?
       end
 
       def apply_thinking(llm_chat)

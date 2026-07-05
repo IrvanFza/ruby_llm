@@ -75,7 +75,7 @@ class WorkAssistant < RubyLLM::Agent
   instructions "You are a helpful assistant."
   tools SearchDocs, LookupAccount
   temperature 0.2
-  provider_options max_output_tokens: 256
+  max_output_tokens 256
 end
 ```
 
@@ -89,6 +89,7 @@ For example, `model` maps to `RubyLLM.chat(model:, provider:, ...)`, `tools` map
 * `tool_options` (see [Controlling Tool Execution]({% link _core_features/tool-execution.md %}))
 * `instructions` (see [Chat Basics]({% link _core_features/chat.md %}))
 * `temperature` (see [Chat Basics]({% link _core_features/chat.md %}))
+* `max_output_tokens` (see [Request Control]({% link _core_features/chat-request-control.md %}))
 * `thinking` (see [Thinking]({% link _core_features/thinking.md %}))
 * `citations` (see [Citations]({% link _core_features/citations.md %}))
 * `provider_options` (see [Request Control]({% link _core_features/chat-request-control.md %}))

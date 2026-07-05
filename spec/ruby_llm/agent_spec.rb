@@ -42,6 +42,15 @@ RSpec.describe RubyLLM::Agent do
     expect(chat.provider_options).to eq(max_tokens: 12)
   end
 
+  it 'applies max_output_tokens from the DSL macro' do
+    agent_class = Class.new(RubyLLM::Agent) do
+      model 'gpt-4.1-nano'
+      max_output_tokens 1000
+    end
+
+    expect(agent_class.chat.render[:max_output_tokens]).to eq(1000)
+  end
+
   it 'applies tool_options separately from the declared tools' do
     tool_class = Class.new(RubyLLM::Tool) do
       def name = 'echo_tool'
