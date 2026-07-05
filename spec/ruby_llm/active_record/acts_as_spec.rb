@@ -363,6 +363,33 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
     end
   end
 
+  describe 'message tool predicates and rendering' do
+    let(:chat) { Chat.create!(model: model) }
+
+    it 'answers the tool predicates and partial path from the associations' do
+      user = chat.messages.create!(role: 'user', content: 'Hi')
+      call_msg = chat.messages.create!(role: 'assistant', content: nil)
+      tool_call = call_msg.tool_calls.create!(tool_call_id: 'call_1', name: 'search', arguments: {}.to_json)
+      result = chat.messages.create!(role: 'tool', content: 'done', parent_tool_call: tool_call)
+
+      expect([user.tool_call?, user.tool_result?, user.to_partial_path])
+        .to eq([false, false, 'messages/user'])
+      expect([call_msg.tool_call?, call_msg.tool_result?, call_msg.to_partial_path])
+        .to eq([true, false, 'messages/tool_calls'])
+      expect([result.tool_call?, result.tool_result?, result.to_partial_path])
+        .to eq([false, true, 'messages/tool'])
+    end
+
+    it 'renders the partial without building a RubyLLM::Message' do
+      call_msg = chat.messages.create!(role: 'assistant', content: nil)
+      call_msg.tool_calls.create!(tool_call_id: 'call_1', name: 'search', arguments: {}.to_json)
+      allow(call_msg).to receive(:to_llm)
+
+      expect(call_msg.to_partial_path).to eq('messages/tool_calls')
+      expect(call_msg).not_to have_received(:to_llm)
+    end
+  end
+
   describe 'model switching' do
     it 'allows changing models mid-conversation' do
       chat = Chat.create!(model: model)

@@ -179,8 +179,6 @@ module RubyLLM
                      class_name: self.model_class,
                      foreign_key: model_foreign_key,
                      optional: true
-
-          delegate :tool_call?, :tool_result?, to: :to_llm
         end
 
         # Turns the model into a persisted batch. Includes BatchMethods

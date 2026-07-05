@@ -126,6 +126,19 @@ module RubyLLM
         optional_column(:cache_write_tokens)
       end
 
+      # Returns whether this message recorded tool calls for the model to run.
+      # Answered from the associations, without building a RubyLLM::Message.
+      def tool_call?
+        tool_calls_association.any?
+      end
+
+      # Returns whether this message is a tool result answering an earlier
+      # tool call. Answered from the associations, without building a
+      # RubyLLM::Message.
+      def tool_result?
+        parent_tool_call.present?
+      end
+
       # Returns the partial path Rails uses to render this message. The
       # prefix comes from the model class name. The suffix is the role,
       # with +tool_calls+ for assistant messages that invoke tools and
@@ -136,7 +149,7 @@ module RubyLLM
       #
       def to_partial_path
         partial_prefix = self.class.name.underscore.pluralize
-        role_partial = if to_llm.tool_call?
+        role_partial = if tool_call?
                          'tool_calls'
                        elsif role.to_s == 'tool'
                          'tool'
