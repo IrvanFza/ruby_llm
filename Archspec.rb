@@ -115,3 +115,6 @@ support.cannot_reference_constants 'RubyLLM::ActiveRecord', 'RubyLLM::Protocols'
 # The Rails integration builds on the domain and support layers and delegates
 # through the Provider contract, not wire protocols or concrete adapters.
 rails_integration.cannot_reference_constants 'RubyLLM::Protocols', 'RubyLLM::Providers'
+
+# The domain is plain Ruby; it must not call ActiveRecord persistence.
+domain.cannot_call :save!, :update!, :create!, :destroy!, :transaction
