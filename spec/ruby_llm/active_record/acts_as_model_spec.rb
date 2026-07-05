@@ -121,10 +121,8 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
       it 'delegates capability checks' do
         expect(model.supports?('function_calling')).to be true
         expect(model.supports?('batch')).to be false
-        expect(model.supports_vision?).to be true
-        expect(model.supports_functions?).to be true
-        expect(model.function_calling?).to be true
-        expect(model.streaming?).to be true
+        expect(model.supports?('vision')).to be true
+        expect(model.supports?('streaming')).to be true
       end
 
       it 'delegates type detection' do

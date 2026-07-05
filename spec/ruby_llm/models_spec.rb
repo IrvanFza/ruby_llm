@@ -46,13 +46,14 @@ RSpec.describe RubyLLM::Models do
     end
 
     it 'filters by vision support' do
-      vision_models = RubyLLM.models.select(&:supports_vision?)
-      expect(vision_models).to all(have_attributes(supports_vision?: true))
+      vision_models = RubyLLM.models.select { |m| m.supports?(:vision) }
+      expect(vision_models).not_to be_empty
+      expect(vision_models).to all(satisfy { |m| m.supports?(:vision) })
     end
 
     it 'filters by video support' do
-      video_models = RubyLLM.models.select(&:supports_video?)
-      expect(video_models).to all(have_attributes(supports_video?: true))
+      video_models = RubyLLM.models.select { |m| m.supports?(:video) }
+      expect(video_models).to all(satisfy { |m| m.supports?(:video) })
     end
   end
 

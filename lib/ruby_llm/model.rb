@@ -9,7 +9,7 @@ module RubyLLM
   #   model.name              # => "GPT-5.4"
   #   model.provider          # => "openai"
   #   model.context_window    # => 1050000
-  #   model.supports_vision?  # => true
+  #   model.supports?(:vision) # => true
   #
   class Model
     # The provider's identifier for the model, e.g. <tt>"gpt-5.4"</tt>.
@@ -92,48 +92,6 @@ module RubyLLM
       capabilities.include?(capability.to_s)
     end
 
-    ##
-    # :method: function_calling?
-    #
-    # Returns whether the model supports tool calling.
-    # Same as <tt>supports?(:function_calling)</tt>.
-
-    ##
-    # :method: structured_output?
-    #
-    # Returns whether the model supports structured output.
-    # Same as <tt>supports?(:structured_output)</tt>.
-
-    ##
-    # :method: batch?
-    #
-    # Returns whether the model supports batch processing.
-    # Same as <tt>supports?(:batch)</tt>.
-
-    ##
-    # :method: reasoning?
-    #
-    # Returns whether the model supports extended reasoning.
-    # Same as <tt>supports?(:reasoning)</tt>.
-
-    ##
-    # :method: citations?
-    #
-    # Returns whether the model supports citations.
-    # Same as <tt>supports?(:citations)</tt>.
-
-    ##
-    # :method: streaming?
-    #
-    # Returns whether the model supports streaming responses.
-    # Same as <tt>supports?(:streaming)</tt>.
-
-    %w[function_calling structured_output batch reasoning citations streaming].each do |cap|
-      define_method "#{cap}?" do
-        supports?(cap)
-      end
-    end
-
     # Returns the model #name.
     def display_name
       name
@@ -151,28 +109,12 @@ module RubyLLM
       max_output_tokens
     end
 
-    # Returns whether the model accepts image input.
-    def supports_vision?
-      modalities.input.include?('image')
-    end
-
     def reasoning_option(type) # :nodoc:
       reasoning_options.find { |option| option[:type] == type.to_s }
     end
 
     def reasoning_option_values(type) # :nodoc:
       Array(reasoning_option(type)&.fetch(:values, nil))
-    end
-
-    # Returns whether the model accepts video input.
-    def supports_video?
-      modalities.input.include?('video')
-    end
-
-    # Returns whether the model supports tool calling.
-    # Same as #function_calling?.
-    def supports_functions?
-      function_calling?
     end
 
     # Returns the USD price per million input text tokens, or +nil+

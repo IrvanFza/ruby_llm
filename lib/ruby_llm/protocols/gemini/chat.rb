@@ -21,7 +21,7 @@ module RubyLLM
         # rubocop:disable Metrics/ParameterLists,Metrics/PerceivedComplexity,Lint/UnusedMethodArgument
         def render_payload(messages, tools:, temperature:, model:, stream: false, schema: nil,
                            thinking: nil, citations: false, caching: nil, tool_prefs: nil)
-          warn_unsupported_citations(model) if citations && !model.citations?
+          warn_unsupported_citations(model) if citations && !model.supports?(:citations)
           tool_prefs ||= {}
           payload = {
             contents: format_messages(messages.reject { |msg| msg.role == :system }),

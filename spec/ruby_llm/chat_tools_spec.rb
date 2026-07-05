@@ -6,7 +6,7 @@ def skip_unless_supports_functions(provider, model)
   return if RubyLLM::Provider.providers[provider]&.local?
 
   model_info = RubyLLM.models.find(model)
-  skip "#{model} doesn't support function calling" unless model_info&.supports_functions?
+  skip "#{model} doesn't support function calling" unless model_info&.supports?(:function_calling)
 end
 
 RSpec.describe RubyLLM::Chat do

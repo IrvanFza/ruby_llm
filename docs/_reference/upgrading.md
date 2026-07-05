@@ -432,7 +432,7 @@ Chat.create!(model: "{{ site.models.anthropic_current }}", provider: "bedrock")
 **Model associations and queries**
 ```ruby
 Chat.joins(:model).where(models: { provider: 'anthropic' })
-Model.select { |m| m.supports_functions? }  # Use delegated methods
+Model.select { |m| m.supports?(:function_calling) }  # Use delegated methods
 ```
 
 **Model alias resolution**

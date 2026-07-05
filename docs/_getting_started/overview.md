@@ -168,9 +168,9 @@ Different models have different capabilities. Some support vision, others suppor
 
 ```ruby
 model_info = RubyLLM.models.find("{{ site.models.openai_tools }}")
-model_info.capabilities       # => ["function_calling", "streaming", "vision", "structured_output", ...]
-model_info.supports_vision?   # => true
-model_info.function_calling?  # => true
+model_info.capabilities          # => ["function_calling", "streaming", "vision", "structured_output", ...]
+model_info.supports?(:vision)    # => true
+model_info.supports?(:function_calling)  # => true
 ```
 
 ### Response Normalization

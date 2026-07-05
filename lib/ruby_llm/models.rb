@@ -372,6 +372,7 @@ module RubyLLM
         capabilities << 'structured_output' if model_data[:structured_output]
         capabilities << 'reasoning' if model_data[:reasoning] || model_data[:reasoning_options]
         capabilities << 'vision' if modalities[:input].intersect?(%w[image video pdf])
+        capabilities << 'video' if modalities[:input].include?('video')
         capabilities.uniq
       end
 

@@ -16,7 +16,7 @@ module RubyLLM
     #
     #   Model.refresh!
     #   model = Model.find_by(model_id: 'claude-sonnet-4-6')
-    #   model.supports_vision? # => true
+    #   model.supports?(:vision) # => true
     #
     module ModelMethods
       extend ActiveSupport::Concern
@@ -197,12 +197,10 @@ module RubyLLM
       # Builds a Cost for +tokens+ using this model's pricing.
       # See Model#cost_for.
 
-      delegate :supports?, :supports_vision?, :supports_functions?, :type,
+      delegate :supports?, :type,
                :input_price_per_million, :output_price_per_million,
                :cache_read_input_price_per_million, :cache_write_input_price_per_million,
-               :function_calling?, :structured_output?, :batch?,
-               :reasoning?, :citations?, :streaming?, :provider_class, :label,
-               :cost_for,
+               :provider_class, :label, :cost_for,
                to: :to_llm
     end
   end

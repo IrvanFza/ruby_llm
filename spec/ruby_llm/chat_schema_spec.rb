@@ -48,7 +48,7 @@ RSpec.describe RubyLLM::Chat do
         let(:chat) { RubyLLM.chat(model: model, provider: provider) }
 
         it 'accepts a JSON schema and returns structured output' do
-          skip 'Model does not support structured output' unless chat.model.structured_output?
+          skip 'Model does not support structured output' unless chat.model.supports?(:structured_output)
 
           response = chat
                      .with_schema(person_schema)
@@ -89,7 +89,7 @@ RSpec.describe RubyLLM::Chat do
         end
 
         it 'accepts RubyLLM::Schema class instances and returns structured output' do
-          skip 'Model does not support structured output' unless chat.model.structured_output?
+          skip 'Model does not support structured output' unless chat.model.supports?(:structured_output)
 
           response = chat
                      .with_schema(PersonSchemaClass)
@@ -244,7 +244,7 @@ RSpec.describe RubyLLM::Chat do
 
         it "#{provider}/#{model} handles complex nested schemas" do
           chat = RubyLLM.chat(model: model, provider: provider)
-          skip 'Model does not support structured output' unless chat.model.structured_output?
+          skip 'Model does not support structured output' unless chat.model.supports?(:structured_output)
 
           response = chat
                      .with_schema(complex_schema)

@@ -85,34 +85,17 @@ RSpec.describe RubyLLM::Model do
   end
 
   describe '#supports?' do
-    it 'returns true for included capabilities' do
+    it 'returns true for included capabilities, as symbol or string' do
       expect(model.supports?(:function_calling)).to be true
       expect(model.supports?('streaming')).to be true
+      expect(model.supports?(:vision)).to be true
     end
 
-    it 'returns false for missing capabilities' do
+    it 'returns false for capabilities absent from the registry data' do
       expect(model.supports?(:batch)).to be false
-    end
-  end
 
-  describe 'capability predicates' do
-    it 'responds to dynamic capability methods' do
-      expect(model.function_calling?).to be true
-      expect(model.structured_output?).to be true
-      expect(model.streaming?).to be true
-      expect(model.batch?).to be false
-      expect(model.reasoning?).to be false
-    end
-  end
-
-  describe '#supports_vision?' do
-    it 'returns true when image is in input modalities' do
-      expect(model.supports_vision?).to be true
-    end
-
-    it 'returns false when image is not in input modalities' do
-      text_only = described_class.new(data.merge(modalities: { input: %w[text], output: %w[text] }))
-      expect(text_only.supports_vision?).to be false
+      text_only = described_class.new(data.merge(capabilities: %w[function_calling streaming structured_output]))
+      expect(text_only.supports?(:vision)).to be false
     end
   end
 
