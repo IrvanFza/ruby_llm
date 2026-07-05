@@ -77,6 +77,8 @@ RSpec.describe RubyLLM::Protocols::ChatCompletions::Models do
 
       expect(reasoning_model.capabilities).to contain_exactly(
         'function_calling',
+        'tool_choice',
+        'parallel_tool_calls',
         'structured_output',
         'vision',
         'reasoning'

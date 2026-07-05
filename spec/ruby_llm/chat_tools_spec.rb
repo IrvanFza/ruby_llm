@@ -9,6 +9,13 @@ def skip_unless_supports_functions(provider, model)
   skip "#{model} doesn't support function calling" unless model_info&.supports?(:function_calling)
 end
 
+def skip_unless_capable(provider, model, capability, message)
+  model_info = RubyLLM.models.find(model, provider)
+  skip message unless model_info&.supports?(capability)
+rescue RubyLLM::ModelNotFoundError
+  skip message
+end
+
 RSpec.describe RubyLLM::Chat do
   include_context 'with configured RubyLLM'
 
@@ -736,8 +743,7 @@ RSpec.describe RubyLLM::Chat do
       it "#{provider}/#{model} respects choice: :none" do
         skip_unless_supports_functions(provider, model)
 
-        provider_class = provider ? RubyLLM::Provider.providers[provider.to_sym] : nil
-        skip "#{provider} doesn't support tool choice" unless provider_class&.capabilities&.supports_tool_choice?(model)
+        skip_unless_capable(provider, model, :tool_choice, "#{provider} doesn't support tool choice")
 
         skip "Bedrock doesn't support :none tool choice" if provider == :bedrock
 
@@ -758,8 +764,7 @@ RSpec.describe RubyLLM::Chat do
       it "#{provider}/#{model} respects choice: :required for unrelated queries" do
         skip_unless_supports_functions(provider, model)
 
-        provider_class = provider ? RubyLLM::Provider.providers[provider.to_sym] : nil
-        skip "#{provider} doesn't support tool choice" unless provider_class&.capabilities&.supports_tool_choice?(model)
+        skip_unless_capable(provider, model, :tool_choice, "#{provider} doesn't support tool choice")
 
         chat = RubyLLM.chat(model: model, provider: provider)
                       .with_tools(Weather).with_tool_options(choice: :required)
@@ -778,8 +783,7 @@ RSpec.describe RubyLLM::Chat do
       it "#{provider}/#{model} respects specific tool choice" do
         skip_unless_supports_functions(provider, model)
 
-        provider_class = provider ? RubyLLM::Provider.providers[provider.to_sym] : nil
-        skip "#{provider} doesn't support tool choice" unless provider_class&.capabilities&.supports_tool_choice?(model)
+        skip_unless_capable(provider, model, :tool_choice, "#{provider} doesn't support tool choice")
 
         chat = RubyLLM.chat(model: model, provider: provider)
                       .with_tools(Weather).with_tool_options(choice: :weather)
@@ -802,10 +806,7 @@ RSpec.describe RubyLLM::Chat do
           skip 'Azure rate-limits this multi-turn tool-control scenario under the parallel live suite'
         end
 
-        provider_class = provider ? RubyLLM::Provider.providers[provider.to_sym] : nil
-        unless provider_class&.capabilities&.supports_tool_parallel_control?(model)
-          skip "#{provider} doesn't support tool parallel control"
-        end
+        skip_unless_capable(provider, model, :parallel_tool_calls, "#{provider} doesn't support tool parallel control")
 
         chat = RubyLLM.chat(model: model, provider: provider)
                       .with_tools(Weather, BestLanguageToLearn).with_tool_options(calls: :one)
