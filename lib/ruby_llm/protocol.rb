@@ -8,9 +8,20 @@ module RubyLLM
   # RubyLLM::Protocols.
   #
   # Subclass Protocol, or a shipped subclass such as
-  # RubyLLM::Protocols::ChatCompletions, to support a new wire format.
-  # Implement the seam methods the base operations call, such as
-  # +render_payload+ and +completion_url+:
+  # RubyLLM::Protocols::ChatCompletions, to support a new wire format. Each
+  # operation (chat, embeddings, moderation, image generation, speech,
+  # transcription, and model listing) is served by three kinds of seam method
+  # you override:
+  #
+  # - <tt>render_*</tt> serializes a RubyLLM request into the wire payload,
+  #   such as +render_payload+ for chat or +render_embedding_payload+.
+  # - <tt>*_url</tt> names the endpoint, such as +completion_url+ or
+  #   +embedding_url+.
+  # - <tt>parse_*</tt> turns the wire response back into RubyLLM objects, such
+  #   as +parse_completion_body+ or +parse_embedding_response+.
+  #
+  # Override the seams for the operations you support; the rest raise
+  # NotImplementedError. For example:
   #
   #   class ChatCompletions < RubyLLM::Protocols::ChatCompletions
   #     def completion_url
@@ -39,6 +50,25 @@ module RubyLLM
     attr_reader :model
 
     # :stopdoc:
+
+    # Declares seam methods that raise NotImplementedError until a subclass
+    # overrides them: render_* serializes a request to wire form, *_url names an
+    # endpoint, and parse_* reads a wire response back into RubyLLM objects.
+    def self.abstract(*names)
+      names.each do |name|
+        define_method(name) do |*_args, **_opts|
+          raise NotImplementedError, "#{self.class} must implement ##{name}"
+        end
+      end
+    end
+
+    abstract :render_payload, :completion_url, :parse_completion_body
+    abstract :models_url, :parse_list_models_response
+    abstract :render_embedding_payload, :embedding_url, :parse_embedding_response
+    abstract :render_moderation_payload, :moderation_url, :parse_moderation_response
+    abstract :render_image_payload, :images_url, :parse_image_response
+    abstract :render_speech_payload, :speech_url, :parse_speech_response
+    abstract :render_transcription_payload, :transcription_url, :parse_transcription_response
 
     def initialize(provider, model = nil)
       @provider = provider
