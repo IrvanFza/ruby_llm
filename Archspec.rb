@@ -74,6 +74,10 @@ component :protocols,
           in: 'lib/ruby_llm/protocols/**/*.rb',
           namespace: 'RubyLLM::Protocols'
 
+# The five wire-protocol family classes themselves (not their helper modules),
+# so the shared wire contract can be enforced on them alone.
+component :protocol_families, in: 'lib/ruby_llm/protocols/*.rb'
+
 # Concrete provider adapters: auth, API bases, provider-specific dialect modules,
 # model catalogs, and provider-owned cloud plumbing.
 component :providers,
@@ -106,6 +110,16 @@ domain.cannot_reference_constants 'RubyLLM::Protocols', 'RubyLLM::Providers'
 # entrypoint, not referenced from the base classes.
 provider_contract.cannot_reference_constants 'RubyLLM::Providers'
 protocol_contract.cannot_reference_constants 'RubyLLM::Providers'
+
+# The chat wire contract every protocol family implements. The Protocol base
+# declares these abstract with define_method, invisible to static analysis, so
+# must_implement is real here: a family that forgets a seam fails the build.
+protocol_families.must_implement :render_payload, :completion_url, :parse_completion_body
+
+# Wire serialization is render_*, deserialization is parse_*. The non-idiomatic
+# serialize_/to_wire_ forms have no place in a protocol.
+protocols.methods.matching(/\A(serialize|deserialize|to_wire|from_wire)_/)
+         .forbidden(because: 'serialize with render_*, deserialize with parse_*')
 
 # Protocols render and parse provider wire formats. They may create domain
 # objects, but should not reach into concrete provider adapters.
