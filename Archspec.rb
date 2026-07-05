@@ -118,3 +118,14 @@ rails_integration.cannot_reference_constants 'RubyLLM::Protocols', 'RubyLLM::Pro
 
 # The domain is plain Ruby; it must not call ActiveRecord persistence.
 domain.cannot_call :save!, :update!, :create!, :destroy!, :transaction
+
+# Generic Ruby naming idioms: no get_/set_ accessors, no is_ predicate prefix.
+preset :ruby_conventions
+
+# Capabilities are one query, supports?(:name), never a supports_*? predicate.
+support.methods.matching(/\Asupports_\w+\?\z/).forbidden(because: 'query capabilities with supports?(:name)')
+
+# Every with_* configuration setter has a without_* that clears it. Excepted:
+# with_model (switches, nothing to clear) and with_attachments (a Message transform).
+domain.methods.matching(/\Awith_(?<option>.+)/)
+      .requires('without_%<option>s', except: %i[with_model with_attachments])
