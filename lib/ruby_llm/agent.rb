@@ -118,13 +118,11 @@ module RubyLLM
       #   instructions { "You are helping #{workspace.name}" }
       #   instructions display_name: -> { chat.user.display_name_or_email }
       #
-      # Called with no arguments, requires the conventional template:
-      # building a chat raises RubyLLM::PromptNotFoundError if it is missing.
+      # A named agent uses its conventional template automatically when it
+      # exists, even without calling this method. Called with no arguments,
+      # returns the configured value.
       def instructions(text = nil, **prompt_locals, &block)
-        if text.nil? && prompt_locals.empty? && !block_given?
-          @instructions ||= { prompt: 'instructions', locals: {} }
-          return @instructions
-        end
+        return @instructions if text.nil? && prompt_locals.empty? && !block_given?
 
         @instructions = block || text || { prompt: 'instructions', locals: prompt_locals }
       end

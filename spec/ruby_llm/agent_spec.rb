@@ -138,10 +138,18 @@ RSpec.describe RubyLLM::Agent do
     expect { agent.with_caching(nil) }.to raise_error(ArgumentError, /without_caching/)
   end
 
-  it 'raises when instructions default prompt is missing' do
+  it 'starts without instructions when the default prompt is missing' do
     agent_class = Class.new(RubyLLM::Agent) do
       model 'gpt-4.1-nano'
-      instructions
+    end
+
+    expect(agent_class.chat.messages).to be_empty
+  end
+
+  it 'raises when an explicitly referenced prompt is missing' do
+    agent_class = Class.new(RubyLLM::Agent) do
+      model 'gpt-4.1-nano'
+      instructions { prompt('instructions') }
     end
 
     expect { agent_class.chat }.to raise_error(RubyLLM::PromptNotFoundError, /Prompt file not found/)

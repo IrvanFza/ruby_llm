@@ -87,11 +87,11 @@ RSpec.describe RubyLLM::Agent do
     expect(chat.messages.where(role: 'system')).to be_empty
   end
 
-  it 'raises when instructions prompt shorthand file is missing' do
+  it 'raises when an explicitly referenced prompt file is missing' do
     agent_class = Class.new(RubyLLM::Agent) do
       chat_model Chat
       model 'gpt-4.1-nano'
-      instructions
+      instructions { prompt('instructions') }
     end
 
     expect { agent_class.create! }.to raise_error(RubyLLM::PromptNotFoundError, /Prompt file not found/)
