@@ -171,10 +171,13 @@ module RubyLLM
 
       def v2_on_data(on_chunk, on_failed_response)
         proc do |chunk, _bytes, env|
-          if env&.status == 200
-            on_chunk.call(chunk, env)
-          else
+          # Some adapters do not expose response status during on_data.
+          status = env&.status
+
+          if status && status != 200
             on_failed_response.call(chunk, env)
+          else
+            on_chunk.call(chunk, env)
           end
         end
       end

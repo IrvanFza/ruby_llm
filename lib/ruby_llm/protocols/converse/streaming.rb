@@ -22,23 +22,22 @@ module RubyLLM
           decoder = event_stream_decoder
           body = JSON.generate(payload)
 
+          faraday_v1 = Faraday::VERSION.start_with?('1')
+          on_data = RubyLLM::Streaming::FaradayHandlers.build(
+            faraday_v1: faraday_v1,
+            on_chunk: ->(chunk, _env) { parse_stream_chunk(decoder, chunk, accumulator, &block) },
+            on_failed_response: ->(chunk, env) { handle_failed_stream(chunk, env) }
+          )
+
           response = @connection.post(stream_url, payload) do |req|
             req.headers.merge!(@provider.sign_headers('POST', stream_url, body))
             req.headers.merge!(additional_headers) unless additional_headers.empty?
             req.headers['Accept'] = 'application/vnd.amazon.eventstream'
 
-            if Faraday::VERSION.start_with?('1')
-              req.options[:on_data] = proc do |chunk, _size|
-                parse_stream_chunk(decoder, chunk, accumulator, &block)
-              end
+            if faraday_v1
+              req.options[:on_data] = on_data
             else
-              req.options.on_data = proc do |chunk, _bytes, env|
-                if env&.status == 200
-                  parse_stream_chunk(decoder, chunk, accumulator, &block)
-                else
-                  handle_failed_stream(chunk, env)
-                end
-              end
+              req.options.on_data = on_data
             end
           end
 
