@@ -1,0 +1,152 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.openai.com/v1/moderations
+    body:
+      encoding: UTF-8
+      string: '{"model":"omni-moderation-latest","input":[{"type":"text","text":"check
+        this image and caption"},{"type":"image_url","image_url":{"url":"https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png"}}]}'
+    headers:
+      User-Agent:
+      - Faraday v2.14.3
+      Authorization:
+      - Bearer <AUTH_TOKEN>
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 07 Jul 2026 18:27:59 GMT
+      Content-Type:
+      - application/json
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Server:
+      - cloudflare
+      Openai-Version:
+      - '2020-10-01'
+      Openai-Organization:
+      - "<OPENAI_ORGANIZATION>"
+      Openai-Project:
+      - "<OPENAI_PROJECT>"
+      X-Request-Id:
+      - "<X_REQUEST_ID>"
+      Openai-Processing-Ms:
+      - '775'
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      Cf-Cache-Status:
+      - DYNAMIC
+      Access-Control-Expose-Headers:
+      - CF-Ray
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      Set-Cookie:
+      - "<COOKIE>"
+      Cf-Ray:
+      - "<CF_RAY>"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+          "id": "modr-9721",
+          "model": "omni-moderation-latest",
+          "results": [
+            {
+              "flagged": false,
+              "categories": {
+                "harassment": false,
+                "harassment/threatening": false,
+                "sexual": false,
+                "hate": false,
+                "hate/threatening": false,
+                "illicit": false,
+                "illicit/violent": false,
+                "self-harm/intent": false,
+                "self-harm/instructions": false,
+                "self-harm": false,
+                "sexual/minors": false,
+                "violence": false,
+                "violence/graphic": false
+              },
+              "category_scores": {
+                "harassment": 0.00010322310367548195,
+                "harassment/threatening": 4.53978687024344e-6,
+                "sexual": 0.00011160142598430911,
+                "hate": 0.00002199533724320648,
+                "hate/threatening": 6.85431721163334e-7,
+                "illicit": 7.967300986103147e-6,
+                "illicit/violent": 2.1112482331487175e-6,
+                "self-harm/intent": 4.264746818557914e-6,
+                "self-harm/instructions": 1.8925148246037342e-6,
+                "self-harm": 0.0004616029028773139,
+                "sexual/minors": 3.024195853395102e-6,
+                "violence": 0.0005121306555705326,
+                "violence/graphic": 7.967300986103147e-6
+              },
+              "category_applied_input_types": {
+                "harassment": [
+                  "text"
+                ],
+                "harassment/threatening": [
+                  "text"
+                ],
+                "sexual": [
+                  "text",
+                  "image"
+                ],
+                "hate": [
+                  "text"
+                ],
+                "hate/threatening": [
+                  "text"
+                ],
+                "illicit": [
+                  "text"
+                ],
+                "illicit/violent": [
+                  "text"
+                ],
+                "self-harm/intent": [
+                  "text",
+                  "image"
+                ],
+                "self-harm/instructions": [
+                  "text",
+                  "image"
+                ],
+                "self-harm": [
+                  "text",
+                  "image"
+                ],
+                "sexual/minors": [
+                  "text"
+                ],
+                "violence": [
+                  "text",
+                  "image"
+                ],
+                "violence/graphic": [
+                  "text",
+                  "image"
+                ]
+              }
+            }
+          ]
+        }
+  recorded_at: Tue, 07 Jul 2026 18:27:59 GMT
+recorded_with: VCR 6.4.0

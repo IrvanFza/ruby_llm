@@ -147,7 +147,7 @@ module RubyLLM
       Embedding.embed(...)
     end
 
-    # Checks text against the provider's moderation model and returns a
+    # Checks text or image attachments against the provider's moderation model and returns a
     # Moderation result. Arguments are forwarded to Moderation.moderate.
     #
     #   result = RubyLLM.moderate("Some user input text")

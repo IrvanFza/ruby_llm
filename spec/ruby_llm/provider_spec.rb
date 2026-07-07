@@ -317,7 +317,8 @@ RSpec.describe RubyLLM::Provider do
       expect(RubyLLM::Protocols::ChatCompletions).to have_received(:new).with(provider, routed_model).exactly(5).times
       expect(protocol).to have_received(:embed)
         .with('hello', model: routed_model.id, dimensions: nil, task_type: nil, title: nil, provider_options: {})
-      expect(protocol).to have_received(:moderate).with('hello', model: routed_model.id, provider_options: {})
+      expect(protocol).to have_received(:moderate).with('hello', model: routed_model.id, with: [],
+                                                                 provider_options: {})
       expect(protocol).to have_received(:paint).with(
         'hello',
         model: routed_model.id,

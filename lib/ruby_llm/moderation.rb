@@ -66,21 +66,26 @@ module RubyLLM
       @results = results
     end
 
-    # Sends +input+ to a moderation model and returns a Moderation with the
+    # Sends +input+ and optional image attachments to a moderation model and returns a Moderation with the
     # provider's verdict. Uses the configured default moderation model when
     # +model+ is not given. Pass +provider:+ and <tt>assume_model_exists: true</tt>
     # to use a model that is not in the registry.
     #
     #   RubyLLM::Moderation.moderate("Your content here")
     #   RubyLLM::Moderation.moderate("User message", model: "omni-moderation-latest")
+    #   RubyLLM::Moderation.moderate("Caption", with: "screenshot.png", provider: "openai")
     #
-    def self.moderate(input, # rubocop:disable Metrics/ParameterLists
+    def self.moderate(input = nil, # rubocop:disable Metrics/ParameterLists
                       model: nil,
+                      with: nil,
                       provider: nil,
                       assume_model_exists: false,
                       context: nil,
                       provider_options: {},
                       metadata: nil)
+      attachments = Attachment.wrap(with)
+      raise ArgumentError, 'must provide input text, image attachment, or both' if input.nil? && attachments.empty?
+
       config = context&.config || RubyLLM.config
       model ||= config.default_moderation_model
       model, provider_instance = Models.resolve(model, provider: provider, assume_model_exists: assume_model_exists,
@@ -91,12 +96,13 @@ module RubyLLM
         model: model.id,
         model_info: model,
         input: input,
+        attachment_count: attachments.size,
         provider_options: provider_options,
         metadata: metadata
       }
 
       RubyLLM.instrument('moderation.ruby_llm', payload, config: config) do |event|
-        result = provider_instance.moderate(input, model:, provider_options:)
+        result = provider_instance.moderate(input, model:, with: attachments, provider_options:)
         event[:result] = result
         event[:flagged] = result.flagged?
         result

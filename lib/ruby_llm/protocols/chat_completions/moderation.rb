@@ -11,10 +11,12 @@ module RubyLLM
           'moderations'
         end
 
-        def render_moderation_payload(input, model:, provider_options: {})
+        def render_moderation_payload(input, model:, with: [], provider_options: {})
+          attachments = Attachment.wrap(with)
+
           {
             model: model,
-            input: input
+            input: moderation_input(input, attachments)
           }.merge(provider_options)
         end
 
@@ -27,6 +29,21 @@ module RubyLLM
             model: model,
             results: Array(data['results']).map { |result| RubyLLM::Moderation::Result.from_h(result) }
           )
+        end
+
+        def moderation_input(input, attachments)
+          return input if attachments.empty?
+
+          parts = []
+          parts << Media.format_text(input) if input
+          parts.concat(attachments.map { |attachment| format_moderation_attachment(attachment) })
+          parts
+        end
+
+        def format_moderation_attachment(attachment)
+          raise UnsupportedAttachmentError, attachment.mime_type unless attachment.image?
+
+          Media.format_image(attachment)
         end
       end
     end

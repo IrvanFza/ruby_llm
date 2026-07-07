@@ -112,7 +112,24 @@ result = RubyLLM.moderate(
   provider: "openai",
   assume_model_exists: true
 )
+
+# Moderating an image with models that support image moderation
+result = RubyLLM.moderate(
+  "Check this image and caption",
+  with: "https://example.com/image.png",
+  model: "omni-moderation-latest",
+  provider: "openai"
+)
+
+result = RubyLLM.moderate(
+  with: ["screenshot.png", "another-image.png"],
+  model: "omni-moderation-latest",
+  provider: "openai"
+)
 ```
+
+Image moderation accepts image attachments. Other file types raise
+`RubyLLM::UnsupportedAttachmentError`.
 
 ## Choosing Models
 

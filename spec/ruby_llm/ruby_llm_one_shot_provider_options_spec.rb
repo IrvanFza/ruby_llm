@@ -73,10 +73,30 @@ RSpec.describe RubyLLM do
                                                 metadata: metadata)
 
     expect(result).to eq(moderation)
-    expect(provider).to have_received(:moderate).with('check this', model: model, provider_options: provider_options)
+    expect(provider).to have_received(:moderate).with('check this', model: model, with: [],
+                                                                    provider_options: provider_options)
     _event_name, payload = instrumenter.events.last
     expect(payload[:provider_options]).to eq(provider_options)
     expect(payload[:metadata]).to eq(metadata)
+  end
+
+  it 'forwards moderation attachments' do
+    moderation = RubyLLM::Moderation.new(id: 'mod_123', model: 'test-model', results: [])
+    allow(provider).to receive(:moderate).and_return(moderation)
+
+    result = api_context.moderate('check this',
+                                  with: ['https://example.com/safe.png', 'https://example.com/also-safe.png'],
+                                  model: 'test-model')
+
+    expect(result).to eq(moderation)
+    expect(provider).to have_received(:moderate).with(
+      'check this',
+      model: model,
+      with: [an_instance_of(RubyLLM::Attachment), an_instance_of(RubyLLM::Attachment)],
+      provider_options: {}
+    )
+    _event_name, payload = instrumenter.events.last
+    expect(payload[:attachment_count]).to eq(2)
   end
 
   it 'forwards speech provider options and includes metadata in the event payload' do

@@ -202,9 +202,9 @@ module RubyLLM
     end
     # rubocop:enable Metrics/ParameterLists
 
-    def moderate(input, model:, provider_options: {}) # :nodoc:
+    def moderate(input, model:, with: [], provider_options: {}) # :nodoc:
       protocol = resolve_protocol(nil, model, operation: :moderate)
-      protocol.new(self, model).moderate(input, model: model_id_for(model), provider_options:)
+      protocol.new(self, model).moderate(input, model: model_id_for(model), with:, provider_options:)
     end
 
     # rubocop:disable Metrics/ParameterLists

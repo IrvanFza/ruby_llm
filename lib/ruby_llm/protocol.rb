@@ -127,8 +127,8 @@ module RubyLLM
       parse_embedding_response(response, model:, text:)
     end
 
-    def moderate(input, model:, provider_options: {})
-      payload = render_moderation_payload(input, model:, provider_options:)
+    def moderate(input, model:, with: [], provider_options: {})
+      payload = render_moderation_payload(input, model:, with: Attachment.wrap(with), provider_options:)
       response = @connection.post moderation_url, payload
       parse_moderation_response(response, model:)
     end
