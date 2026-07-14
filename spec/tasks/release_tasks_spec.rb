@@ -3,7 +3,7 @@
 require 'rake'
 require 'tmpdir'
 
-load File.expand_path('../../../lib/tasks/release.rake', __dir__)
+load File.expand_path('../../tasks/release.rake', __dir__)
 
 RSpec.describe ReleaseTasks do
   let(:cassette_dir) { File.join(tmpdir, 'vcr_cassettes') }

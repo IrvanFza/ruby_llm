@@ -72,19 +72,19 @@ In a Rails app, `cost_for` prices token usage against the model registry's curre
 
 Because recorded costs are frozen at completion, stale registry pricing only affects the cost of new messages, never messages you have already saved. To keep new costs accurate, refresh the registry on a schedule. A daily job is a good default; providers change prices infrequently.
 
-In a Rails app with the database-backed registry, `Model.refresh!` reloads pricing from the provider APIs and writes it to the `models` table:
+In a Rails app with the database-backed registry, the same refresh call writes the new pricing to the `models` table:
 
 ```ruby
 # lib/tasks/ruby_llm.rake
 namespace :ruby_llm do
   desc 'Refresh the model registry pricing and capabilities'
   task refresh_models: :environment do
-    Model.refresh!
+    RubyLLM.models.refresh!
   end
 end
 ```
 
-Run `bin/rails ruby_llm:refresh_models` from cron, or schedule the `Model.refresh!` call with your background job framework (GoodJob, Sidekiq, or similar). Without the database registry, call `RubyLLM.models.refresh!` directly. RubyLLM does not refresh the registry on its own; you choose the cadence.
+Run `bin/rails ruby_llm:refresh_models` from cron, or schedule the call with your background job framework (GoodJob, Sidekiq, or similar). RubyLLM does not refresh the registry on its own; you choose the cadence.
 
 ## Next Steps
 

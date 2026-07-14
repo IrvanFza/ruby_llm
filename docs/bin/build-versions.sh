@@ -15,6 +15,7 @@ docs="$repo_root/docs"
 site="$docs/_site"
 gemfile="$docs/Gemfile"
 versions="$docs/_data/versions.yml"
+registry="${MODEL_REGISTRY_FILE:-$repo_root/lib/ruby_llm/models.json}"
 latest="$(ruby -ryaml -e 'puts YAML.load_file(ARGV[0])["latest"]' "$versions")"
 
 next_src="$(mktemp -d)"; onex_src="$(mktemp -d)"
@@ -25,6 +26,15 @@ set_current() { ruby -ryaml -e 'f=ARGV[0]; d=YAML.load_file(f); d["current"]=ARG
 
 echo "==> Building current docs (2.0 dev) -> /next/"
 rsync -a --exclude='_site' --exclude='_data_serve' --exclude='vendor' --exclude='.jekyll-cache' --exclude='.bundle' "$docs/" "$next_src/"
+cat > "$next_src/_reference/available-models.md" <<'MARKDOWN'
+---
+layout: null
+title: Available Models
+permalink: /available-models/
+redirect_to: https://rubyllm.com/available-models/
+sitemap: false
+---
+MARKDOWN
 set_current "$next_src/_data/versions.yml" next
 ( cd "$next_src" && BUNDLE_GEMFILE="$gemfile" bundle exec jekyll build --baseurl "$BASE/next" -d "$next_out" --quiet )
 
@@ -36,6 +46,7 @@ git -C "$repo_root" archive "$ONE_X_REF" docs/ | tar -x -C "$onex_src"
 cp "$docs/_includes/version_select.html" "$onex_src/docs/_includes/"
 mkdir -p "$onex_src/docs/_data"
 cp "$versions" "$onex_src/docs/_data/versions.yml"
+cp "$docs/_reference/available-models.md" "$onex_src/docs/_reference/available-models.md"
 set_current "$onex_src/docs/_data/versions.yml" "$latest"
 perl -0pi -e 's{(\{% include components/header.html %\}\n)}{$1    {% include version_select.html %}\n}' \
   "$onex_src/docs/_layouts/default.html"
@@ -45,8 +56,9 @@ echo "==> Assembling -> $site"
 rm -rf "$site"; mkdir -p "$site/next"
 cp -a "$onex_out/." "$site/"
 cp -a "$next_out/." "$site/next/"
+cp "$registry" "$site/models.json"
 
-echo "Done.  / = 1.x   /next/ = 2.0 dev"
+echo "Done.  / = 1.x   /next/ = 2.0 dev   /models.json = live registry"
 if [[ "${1:-}" == "--serve" ]]; then
   exec python3 -m http.server "$PORT" --directory "$site"
 fi

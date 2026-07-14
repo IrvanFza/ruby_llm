@@ -4,13 +4,12 @@ require 'spec_helper'
 require 'json-schema'
 
 RSpec.describe RubyLLM::Models do
-  let(:schema_path) { described_class.schema_file }
-  let(:models_json_path) { RubyLLM.config.model_registry_file }
+  let(:models_json_path) { described_class.bundled_registry_file }
 
   it 'validates that models.json conforms to the schema' do
     models_data = JSON.parse(File.read(models_json_path))
 
-    validation_errors = JSON::Validator.fully_validate(schema_path, models_data)
+    validation_errors = JSON::Validator.fully_validate(RubyLLM::ModelSchema.json_schema, models_data, list: true)
 
     expect(validation_errors).to be_empty,
                                  "models.json has validation errors:\n#{validation_errors.join("\n")}"

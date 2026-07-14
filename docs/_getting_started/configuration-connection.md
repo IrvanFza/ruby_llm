@@ -29,24 +29,27 @@ After reading this guide, you will know:
 
 ## Model Registry File
 
-By default, RubyLLM reads model information from the bundled `models.json` file. If your gem directory is read-only, you can configure a writable location:
+RubyLLM ships with a registry snapshot, so a new installation works without a network request. Plain Ruby applications use the registry in the operating system's user cache when one exists:
+
+* Linux: `$XDG_CACHE_HOME/ruby_llm/models.json`, or `~/.cache/ruby_llm/models.json`
+* macOS: `~/Library/Caches/RubyLLM/models.json`
+* Windows: `%LOCALAPPDATA%\RubyLLM\Cache\models.json`
+
+`RubyLLM.models.refresh!` fetches the latest published catalog, merges models discovered from your configured providers, and atomically updates this cache. If the cache cannot be written, it raises `RubyLLM::ModelRegistryError` and leaves the in-memory registry unchanged.
+
+Set `model_registry_file` only when your application needs a specific persistent location:
 
 ```ruby
-# First time: save to writable location
-RubyLLM.models.save_to_json('/var/app/models.json')
-
-# Configure to use new location (Available in v1.9.0+)
 RubyLLM.configure do |config|
   config.model_registry_file = '/var/app/models.json'
 end
+
+RubyLLM.models.refresh!
 ```
 
-After this one-time setup, RubyLLM will read from your configured path automatically.
+RubyLLM falls back to its bundled snapshot until the configured file exists. The first successful refresh creates the file, and later refreshes replace it. Use `RubyLLM.models.save_to_json('/another/path/models.json')` only when you want to export the currently loaded registry elsewhere.
 
-> `RubyLLM.models.refresh!` updates the in-memory registry only. To persist changes, call `RubyLLM.models.save_to_json`.
-{: .note }
-
-> If you're using the ActiveRecord integration, model data is stored in the database. This configuration doesn't apply.
+> With the Active Record integration, the models table is the registry. `RubyLLM.models.refresh!` updates it automatically. While the table is empty, RubyLLM falls back to the registry file, then to the bundled snapshot.
 {: .note }
 
 ## Connection Settings

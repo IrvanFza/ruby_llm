@@ -57,6 +57,9 @@ module RubyLLM
   # Raised when a requested model id is not in the model registry.
   class ModelNotFoundError < StandardError; end
 
+  # Raised when a model registry cannot be fetched, parsed, or persisted.
+  class ModelRegistryError < StandardError; end
+
   # Raised when an attachment cannot be formatted for the selected provider,
   # for example an audio file sent to a model without audio input.
   class UnsupportedAttachmentError < Error

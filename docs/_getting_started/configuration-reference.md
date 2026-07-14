@@ -103,7 +103,7 @@ RubyLLM.configure do |config|
   config.default_transcription_model = String
 
   # Model Registry
-  config.model_registry_file = String  # Path to model registry JSON file (v1.9.0+)
+  config.model_registry_file = String  # Writable registry cache; defaults to the OS user cache directory
   config.model_registry_class = String
 
   # Connection Settings

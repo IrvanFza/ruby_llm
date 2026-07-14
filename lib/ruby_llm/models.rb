@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'date'
-require 'json'
 
 module RubyLLM
   # A Models registry is the catalog of AI models RubyLLM knows about,
@@ -75,44 +74,60 @@ module RubyLLM
         @instance ||= new
       end
 
-      def schema_file # :nodoc:
-        File.expand_path('models_schema.json', __dir__)
+      def bundled_registry_file # :nodoc:
+        File.expand_path('models.json', __dir__)
       end
 
-      def load_models(file = RubyLLM.config.model_registry_file) # :nodoc:
-        source = RubyLLM.config.model_registry_source
-        if source && file == RubyLLM.config.model_registry_file
-          models = source.read
-          return models if models.any?
-
-          RubyLLM.logger.debug { 'Model registry source is empty, falling back to JSON registry' }
-        end
-
-        read_from_json(file)
+      def load_models # :nodoc:
+        models_from_store(RubyLLM.config.model_registry_store) ||
+          models_from_file(RubyLLM.config.model_registry_file) ||
+          models_from_bundle
       end
 
-      def read_from_json(file = RubyLLM.config.model_registry_file) # :nodoc:
-        data = File.exist?(file) ? File.read(file) : '[]'
-        JSON.parse(data, symbolize_names: true).map { |model| Model.new(model) }
-      rescue JSON::ParserError
-        []
+      def models_from_store(store) # :nodoc:
+        return unless store
+
+        models = Array(store.read)
+        return models unless models.empty?
+
+        RubyLLM.logger.debug { 'Model registry store is empty, falling back to the registry file' }
+        nil
       end
 
-      def read_from_database # :nodoc:
-        ModelRegistry::ActiveRecordSource.new.read
+      def models_from_file(file) # :nodoc:
+        return unless file
+
+        models = ModelRegistry.read(file)
+        models unless models.nil? || models.empty?
+      rescue ModelRegistryError => e
+        RubyLLM.logger.warn("Ignoring invalid model registry file #{file}: #{e.message}")
+        nil
       end
 
-      # Refreshes the global model registry from provider APIs and the
-      # models.dev catalog. Returns the global Models instance. See
+      def models_from_bundle # :nodoc:
+        ModelRegistry.read(bundled_registry_file) ||
+          raise(ModelRegistryError, "Bundled model registry is missing: #{bundled_registry_file}")
+      end
+
+      def fetch_published_registry(etag: nil) # :nodoc:
+        ModelRegistry::PublishedSource.new.fetch(etag:)
+      end
+
+      # Refreshes the global model registry from the published catalog and
+      # configured providers. Returns the global Models instance. See
       # #refresh! for the +remote_only:+ option.
       def refresh!(remote_only: false)
         instance.refresh!(remote_only: remote_only)
       end
 
+      def refresh_from_providers!(remote_only: false) # :nodoc:
+        instance.refresh_from_providers!(remote_only: remote_only)
+      end
+
       # :stopdoc:
 
-      # Fetches and merges the latest models. Call save_to_json when the
-      # refreshed registry should also be persisted.
+      # Fetches and merges models directly from upstream provider APIs and
+      # models.dev for the maintainer registry builder.
       def fetch_merged_models(remote_only: false) # :nodoc:
         RubyLLM.instrument('models.refresh.ruby_llm', remote_only:) do |payload|
           existing_models = read_existing_models
@@ -198,9 +213,8 @@ module RubyLLM
       end
 
       def read_existing_models # :nodoc:
-        existing_models = instance&.all
-        existing_models = read_from_json if existing_models.nil? || existing_models.empty?
-        existing_models
+        existing_models = instance.all
+        existing_models.empty? ? load_models : existing_models
       end
 
       def log_provider_fetch(provider_fetch) # :nodoc:
@@ -443,26 +457,30 @@ module RubyLLM
 
     # Replaces the models in this registry with those read from the JSON
     # +file+. The default is the configured
-    # <tt>RubyLLM.config.model_registry_file</tt>.
+    # <tt>RubyLLM.config.model_registry_file</tt>. A missing or invalid
+    # file falls back to the registry bundled with the gem.
     def load_from_json!(file = RubyLLM.config.model_registry_file)
-      @models = self.class.read_from_json(file)
+      @models = self.class.models_from_file(file) || self.class.models_from_bundle
+      self
     end
 
     # Replaces the models in this registry with rows read from the
     # configured ActiveRecord model registry class
     # (<tt>RubyLLM.config.model_registry_class</tt>).
     def load_from_database!
-      @models = self.class.read_from_database
+      @models = ModelRegistry::ActiveRecordStore.new.read
+      self
     end
 
-    # Writes this registry to +file+ as pretty-printed JSON. The default is
-    # the configured <tt>RubyLLM.config.model_registry_file</tt>.
+    # Exports this registry to +file+ as pretty-printed JSON. The default is
+    # the configured <tt>RubyLLM.config.model_registry_file</tt>. A regular
+    # #refresh! already persists to the active registry store.
     #
-    #   RubyLLM.models.refresh!
-    #   RubyLLM.models.save_to_json
+    #   RubyLLM.models.save_to_json('/tmp/models.json')
     #
     def save_to_json(file = RubyLLM.config.model_registry_file)
-      File.write(file, JSON.pretty_generate(all.map(&:to_h)))
+      ModelRegistry::FileStore.new(file).write(all)
+      self
     end
 
     # Returns an array of all Model entries in this registry.
@@ -533,17 +551,30 @@ module RubyLLM
       self.class.new(all.select { |m| m.provider == provider.to_s })
     end
 
-    # Replaces the models in this registry with fresh data fetched from the
-    # configured providers' APIs and the models.dev catalog, merged with the
-    # existing entries. Pass +remote_only:+ +true+ to skip local providers
-    # such as Ollama and GPUStack. Returns +self+.
+    # Replaces the registry with the latest published RubyLLM catalog,
+    # merged with models discovered from configured providers. The result is
+    # saved to the platform cache, or to the database in Rails applications.
+    # Pass +remote_only:+ +true+ to skip local providers such as Ollama and
+    # GPUStack. Returns +self+.
     #
-    # Only the in-memory registry changes. Call #save_to_json to persist.
+    # Raises ModelRegistryError when the catalog cannot be fetched or the
+    # result cannot be persisted, leaving the current registry unchanged.
     #
     #   RubyLLM.models.refresh!
     #   RubyLLM.models.refresh!(remote_only: true).chat_models
     #
     def refresh!(remote_only: false)
+      RubyLLM.instrument('models.refresh.ruby_llm', remote_only:) do |payload|
+        published = fetch_published_models
+        merged_models = merge_discovered_models(published.models, remote_only:)
+        persist_registry!(merged_models, etag: published.etag)
+        @models = merged_models
+        payload.merge!(model_count: all.size, not_modified: published.not_modified)
+      end
+      self
+    end
+
+    def refresh_from_providers!(remote_only: false) # :nodoc:
       @models = self.class.fetch_merged_models(remote_only: remote_only)
       self
     end
@@ -553,6 +584,63 @@ module RubyLLM
     end
 
     private
+
+    def file_store
+      return if RubyLLM.config.model_registry_store
+      return unless RubyLLM.config.model_registry_file
+
+      ModelRegistry::FileStore.new(RubyLLM.config.model_registry_file)
+    end
+
+    def fetch_published_models
+      store = file_store
+      cached = cached_models(store)
+      etag = store.etag if cached
+      result = self.class.fetch_published_registry(etag:)
+      result.models ||= cached
+      result
+    end
+
+    def cached_models(store)
+      models = store&.read
+      models unless models.nil? || models.empty?
+    rescue ModelRegistryError
+      nil
+    end
+
+    def merge_discovered_models(published, remote_only:)
+      provider_fetch = self.class.fetch_provider_models(remote_only: remote_only)
+      self.class.log_provider_fetch(provider_fetch)
+      failed_providers = provider_fetch[:failed].map { |failure| failure[:slug] }
+      preserved_models = all.select { |model| failed_providers.include?(model.provider) }
+      self.class.merge_models(provider_fetch[:models] + preserved_models, published)
+    end
+
+    def persist_registry!(models, etag:)
+      store = RubyLLM.config.model_registry_store
+      if store
+        raise ModelRegistryError, "Model registry store #{store.class} is read-only" unless store.respond_to?(:write)
+
+        store.write(self.class.new(models))
+        return
+      end
+
+      file = file_store
+      raise ModelRegistryError, 'No writable model registry store is configured' unless file
+
+      file.write(models, etag:)
+    rescue ModelRegistryError
+      raise
+    rescue StandardError => e
+      destination = store_description(store) || file&.path || 'the configured store'
+      raise ModelRegistryError, "Could not save the model registry to #{destination}: #{e.message}"
+    end
+
+    def store_description(store)
+      return unless store
+
+      store.respond_to?(:description) ? store.description : store.class.name
+    end
 
     def find_with_provider(model_id, provider)
       resolved_id = Aliases.resolve(model_id, provider)
@@ -588,10 +676,7 @@ module RubyLLM
     end
 
     def refresh_registry_guidance
-      rails_model = RubyLLM.config.model_registry_class
-      'If the model exists at the provider, refresh the registry with `RubyLLM.models.refresh!` ' \
-        'and persist it with `RubyLLM.models.save_to_json`. ' \
-        "Rails model registries can call `#{rails_model}.refresh!` instead."
+      'If the model exists at the provider, refresh the registry with `RubyLLM.models.refresh!`.'
     end
 
     def preferred_match(candidates)

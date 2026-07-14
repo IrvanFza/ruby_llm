@@ -8,7 +8,7 @@ RSpec.describe RubyLLM::Configuration do
 
     it 'applies core default values' do
       expect(config.model_registry_class).to eq('Model')
-      expect(config.model_registry_source).to be_nil
+      expect(config.model_registry_store).to be_nil
       expect(config.request_timeout).to eq(300)
       expect(config.max_retries).to eq(3)
       expect(config.retry_interval).to eq(0.1)

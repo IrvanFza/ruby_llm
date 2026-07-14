@@ -1,6 +1,8 @@
 name: Deploy docs
 
 on:
+  schedule:
+    - cron: '17 */6 * * *'
   push:
     branches: [main]
     paths:
@@ -8,6 +10,8 @@ on:
       - 'lib/**'
       - '.rdoc_options'
       - '.github/workflows/docs.yml'
+      - 'Rakefile'
+      - 'tasks/models.rake'
   workflow_dispatch:
 
 permissions:
@@ -22,6 +26,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.registry.outputs.deploy }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -34,10 +40,62 @@ jobs:
           ruby-version: '3.3'
           bundler-cache: true
 
-      - name: Run models:docs rake task
+      - name: Select or refresh the published model registry
+        id: registry
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
+          AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_CLOUD_LOCATION: ${{ secrets.GOOGLE_CLOUD_LOCATION }}
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.GOOGLE_CLOUD_PROJECT }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY }}
+          VERTEXAI_SERVICE_ACCOUNT_KEY: ${{ secrets.VERTEXAI_SERVICE_ACCOUNT_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: |
+          registry="$RUNNER_TEMP/ruby-llm-models.json"
+          if ! curl --fail --silent --show-error --retry 3 \
+            https://rubyllm.com/models.json --output "$registry"; then
+            cp lib/ruby_llm/models.json "$registry"
+          fi
+
+          if ! bundle exec ruby -Ilib -e '
+            require "ruby_llm"
+            require "json-schema"
+            data = JSON.parse(File.read(ARGV.fetch(0)))
+            errors = JSON::Validator.fully_validate(RubyLLM::ModelSchema.json_schema, data, list: true)
+            abort(errors.first(5).join("\n")) unless errors.empty?
+          ' "$registry"; then
+            cp lib/ruby_llm/models.json "$registry"
+          fi
+
+          deploy=true
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            before="$(sha256sum "$registry" | cut -d ' ' -f 1)"
+            MODEL_REGISTRY_FILE="$registry" bundle exec rake models:update
+            after="$(sha256sum "$registry" | cut -d ' ' -f 1)"
+            [ "$before" != "$after" ] || deploy=false
+          fi
+
+          echo "file=$registry" >> "$GITHUB_OUTPUT"
+          echo "deploy=$deploy" >> "$GITHUB_OUTPUT"
+
+      - name: Generate the live Available Models page
+        if: steps.registry.outputs.deploy == 'true'
         run: bundle exec rake models:docs
+        env:
+          MODEL_REGISTRY_FILE: ${{ steps.registry.outputs.file }}
 
       - name: Install OG image system dependencies (only if missing)
+        if: steps.registry.outputs.deploy == 'true'
         run: |
           packages=()
 
@@ -62,6 +120,7 @@ jobs:
           fi
 
       - name: Cache fonts
+        if: steps.registry.outputs.deploy == 'true'
         uses: actions/cache@v5
         id: cache-fonts
         with:
@@ -73,6 +132,7 @@ jobs:
             ${{ runner.os }}-fonts-
 
       - name: Install Plus Jakarta Sans for OG image generation
+        if: steps.registry.outputs.deploy == 'true'
         run: |
           if [ "${{ steps.cache-fonts.outputs.cache-hit }}" != "true" ]; then
             echo "Installing Plus Jakarta Sans..."
@@ -92,6 +152,7 @@ jobs:
           fc-list | grep -i jakarta || echo "Plus Jakarta Sans not found"
 
       - name: Setup Ruby for Jekyll build (docs Gemfile)
+        if: steps.registry.outputs.deploy == 'true'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.3'
@@ -99,21 +160,26 @@ jobs:
           working-directory: docs
           cache-version: 3
       - name: Setup Pages
+        if: steps.registry.outputs.deploy == 'true'
         id: pages
         uses: actions/configure-pages@v5
 
       - name: Build versioned docs (1.x at /, 2.0 dev at /next/)
+        if: steps.registry.outputs.deploy == 'true'
         run: docs/bin/build-versions.sh
         env:
           JEKYLL_ENV: production
           BASE: ${{ steps.pages.outputs.base_path }}
+          MODEL_REGISTRY_FILE: ${{ steps.registry.outputs.file }}
 
       - name: Upload artifact
+        if: steps.registry.outputs.deploy == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
           path: docs/_site
 
   deploy:
+    if: needs.build.outputs.deploy == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

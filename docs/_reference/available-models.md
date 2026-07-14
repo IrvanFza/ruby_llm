@@ -2,7 +2,7 @@
 layout: default
 title: Available Models
 nav_order: 2
-description: Browse 1183 AI models across 11 providers (not including local providers). Updated 2026-07-02.
+description: Browse 1183 AI models across 11 providers in the latest published registry.
 redirect_from:
   - /guides/available-models
 ---
@@ -21,19 +21,15 @@ redirect_from:
 
 ---
 
-_Model information enriched by [models.dev](https://models.dev) and our custom code._
+_This page reflects the latest published RubyLLM registry. Your installed gem may include an older bundled snapshot. Provider availability can also vary by account and region._
+
+_Model information is enriched by [models.dev](https://models.dev) and RubyLLM's provider integrations._
 
 Can't find a newly released model? Refresh your registry:
 
 ```ruby
-# Plain Ruby
 RubyLLM.models.refresh!
-
-# Rails
-Model.refresh!
 ```
-
-See [Working with Models: Refreshing the Registry]({% link _reference/models.md %}#refreshing-the-registry).
 
 ## Models by Provider
 
@@ -41,30 +37,30 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
-| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
-| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
-| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
-| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
+| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
+| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
+| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
+| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 
 
 ### Azure (311)
@@ -572,10 +568,10 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
-| deepseek-chat | deepseek | In: text; Out: text | function_calling | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
-| deepseek-reasoner | deepseek | In: text; Out: text | function_calling, reasoning | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
-| deepseek-v4-flash | deepseek | In: text; Out: text | function_calling, structured_output, reasoning | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
-| deepseek-v4-pro | deepseek | In: text; Out: text | function_calling, structured_output, reasoning | 1000000 | 384000 | In: $0.44, Out: $0.87, Cache Read: $0.00 |
+| deepseek-chat | deepseek | In: text; Out: text | function_calling, tool_choice | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
+| deepseek-reasoner | deepseek | In: text; Out: text | function_calling, reasoning, tool_choice | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
+| deepseek-v4-flash | deepseek | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
+| deepseek-v4-pro | deepseek | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice | 1000000 | 384000 | In: $0.44, Out: $0.87, Cache Read: $0.00 |
 
 
 ### Gemini (50)
@@ -585,50 +581,50 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | antigravity-preview-05-2026 | gemini | In: -; Out: - | - | 131072 | 65536 | In: $0.08, Out: $0.30 |
 | deep-research-max-preview-04-2026 | gemini | In: -; Out: - | - | 131072 | 65536 | In: $0.08, Out: $0.30 |
 | deep-research-preview-04-2026 | gemini | In: -; Out: - | - | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| deep-research-pro-preview-12-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-2.0-flash-001 | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40 |
-| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.08, Out: $0.30 |
+| deep-research-pro-preview-12-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash-001 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40 |
+| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.08, Out: $0.30 |
 | gemini-2.0-flash-lite-001 | gemini | In: -; Out: - | vision | 1048576 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-computer-use-preview-10-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
-| gemini-2.5-flash-native-audio-latest | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-computer-use-preview-10-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
+| gemini-2.5-flash-native-audio-latest | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 8192 | In: $0.08, Out: $0.30 |
 | gemini-2.5-flash-preview-tts | gemini | In: text; Out: audio | - | 8192 | 16384 | In: $0.50, Out: $10.00 |
-| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
-| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
+| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
 | gemini-2.5-pro-preview-tts | gemini | In: text; Out: audio | - | 8192 | 16384 | In: $1.00, Out: $20.00 |
-| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
-| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-tts-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 16384 | In: $0.08, Out: $0.30 |
-| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
+| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
+| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-tts-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 16384 | In: $0.08, Out: $0.30 |
+| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
 | gemini-embedding-001 | gemini | In: text; Out: embeddings | - | 2048 | 1 | In: $0.15 |
-| gemini-embedding-2 | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 1 | - |
-| gemini-embedding-2-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 1 | - |
-| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
-| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-omni-flash-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-pro-latest | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-robotics-er-1.5-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-robotics-er-1.6-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
-| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| gemini-embedding-2 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 1 | - |
+| gemini-embedding-2-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 1 | - |
+| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
+| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-omni-flash-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-pro-latest | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-robotics-er-1.5-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-robotics-er-1.6-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
 | imagen-4.0-generate-001 | gemini | In: -; Out: - | vision | 480 | 8192 | In: $0.03, Out: $0.03 |
 | imagen-4.0-fast-generate-001 | gemini | In: -; Out: - | vision | 480 | 8192 | In: $0.03, Out: $0.03 |
 | imagen-4.0-ultra-generate-001 | gemini | In: -; Out: - | vision | 480 | 8192 | In: $0.03, Out: $0.03 |
 | lyria-3-clip-preview | gemini | In: -; Out: - | - | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| lyria-3-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| lyria-3-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
 | aqa | gemini | In: -; Out: - | - | 7168 | 1024 | - |
 | gemini-2.5-flash-image | gemini | In: text, image; Out: text, image | reasoning, vision | 32768 | 32768 | In: $0.30, Out: $30.00, Cache Read: $0.08 |
-| gemini-3.1-flash-image | gemini | In: -; Out: - | function_calling, structured_output, vision | 65536 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-3.1-flash-image | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 65536 | 65536 | In: $0.08, Out: $0.30 |
 | gemini-3.1-flash-image-preview | gemini | In: text, image, pdf; Out: text, image | reasoning, vision | 65536 | 65536 | In: $0.50, Out: $60.00 |
 | gemini-3.1-flash-lite-image | gemini | In: -; Out: - | structured_output, vision | 65536 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-3-pro-image | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 32768 | In: $0.08, Out: $0.30 |
+| gemini-3-pro-image | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 32768 | In: $0.08, Out: $0.30 |
 | gemini-3-pro-image-preview | gemini | In: text, image; Out: text, image | reasoning, vision | 131072 | 32768 | In: $2.00, Out: $120.00 |
-| nano-banana-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 32768 | In: $0.08, Out: $0.30 |
+| nano-banana-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 32768 | In: $0.08, Out: $0.30 |
 | veo-3.1-generate-preview | gemini | In: -; Out: - | - | 480 | 8192 | In: $0.08, Out: $0.30 |
 | veo-3.1-fast-generate-preview | gemini | In: -; Out: - | - | 480 | 8192 | In: $0.08, Out: $0.30 |
 | veo-3.1-lite-generate-preview | gemini | In: -; Out: - | - | 480 | 8192 | In: $0.08, Out: $0.30 |
@@ -638,69 +634,69 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
-| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs | 32768 | 8192 | - |
+| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
 | codestral-embed | mistral | In: text; Out: embeddings | predicted_outputs | 32768 | 8192 | - |
 | codestral-embed-2505 | mistral | In: text; Out: embeddings | predicted_outputs | 32768 | 8192 | - |
-| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs | 256000 | 4096 | In: $0.30, Out: $0.90 |
-| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-medium-2507 | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.40, Out: $2.00 |
-| devstral-small-2507 | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.10, Out: $0.30 |
-| labs-devstral-small-2512 | mistral | In: text, image; Out: text | function_calling, vision | 256000 | 256000 | - |
-| devstral-small-2505 | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.10, Out: $0.30 |
-| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch | 128000 | 16384 | In: $2.00, Out: $5.00 |
-| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small | mistral | In: text; Out: text | function_calling, reasoning | 128000 | 128000 | In: $0.50, Out: $1.50 |
-| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.04, Out: $0.04 |
-| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.10, Out: $0.10 |
-| open-mistral-7b | mistral | In: text; Out: text | function_calling | 8000 | 8000 | In: $0.25, Out: $0.25 |
-| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
+| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs, tool_choice, parallel_tool_calls | 256000 | 4096 | In: $0.30, Out: $0.90 |
+| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-medium-2507 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.40, Out: $2.00 |
+| devstral-small-2507 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.30 |
+| labs-devstral-small-2512 | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 256000 | 256000 | - |
+| devstral-small-2505 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.30 |
+| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.00, Out: $5.00 |
+| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small | mistral | In: text; Out: text | function_calling, reasoning, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.50, Out: $1.50 |
+| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.04, Out: $0.04 |
+| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.10 |
+| open-mistral-7b | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 8000 | 8000 | In: $0.25, Out: $0.25 |
+| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
 | mistral-embed | mistral | In: text; Out: text | - | 8000 | 3072 | In: $0.10 |
 | mistral-embed-2312 | mistral | In: text; Out: embeddings | - | 32768 | 8192 | - |
-| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-large-2411 | mistral | In: text; Out: text | function_calling | 131072 | 16384 | In: $2.00, Out: $6.00 |
-| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 131072 | 131072 | In: $0.40, Out: $2.00 |
-| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $1.50, Out: $7.50 |
+| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-large-2411 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 131072 | 16384 | In: $2.00, Out: $6.00 |
+| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 131072 | 131072 | In: $0.40, Out: $2.00 |
+| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $1.50, Out: $7.50 |
 | mistral-moderation-2603 | mistral | In: text; Out: text | moderation | 32768 | 8192 | - |
-| mistral-nemo | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| mistral-nemo | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
 | mistral-ocr-2512 | mistral | In: text; Out: text | vision | 32768 | 8192 | - |
 | mistral-ocr-3 | mistral | In: text; Out: text | vision | 32768 | 8192 | - |
 | mistral-ocr-3-0 | mistral | In: text; Out: text | vision | 32768 | 8192 | - |
 | mistral-ocr-4 | mistral | In: text; Out: text | vision | 32768 | 8192 | - |
 | mistral-ocr-4-0 | mistral | In: text; Out: text | vision | 32768 | 8192 | - |
 | mistral-ocr-latest | mistral | In: text; Out: text | vision | 32768 | 8192 | - |
-| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 128000 | 16384 | In: $0.10, Out: $0.30 |
-| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| open-mixtral-8x22b | mistral | In: text; Out: text | function_calling | 64000 | 64000 | In: $2.00, Out: $6.00 |
-| open-mixtral-8x7b | mistral | In: text; Out: text | function_calling | 32000 | 32000 | In: $0.70, Out: $0.70 |
-| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| pixtral-12b | mistral | In: text, image; Out: text | function_calling, vision | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| pixtral-large-latest | mistral | In: text, image; Out: text | function_calling, vision | 128000 | 128000 | In: $2.00, Out: $6.00 |
+| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.10, Out: $0.30 |
+| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| open-mixtral-8x22b | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 64000 | 64000 | In: $2.00, Out: $6.00 |
+| open-mixtral-8x7b | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 32000 | 32000 | In: $0.70, Out: $0.70 |
+| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| pixtral-12b | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| pixtral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $2.00, Out: $6.00 |
 | voxtral-mini-2507 | mistral | In: text; Out: text | streaming | 32768 | 8192 | - |
 | voxtral-mini-2602 | mistral | In: text; Out: text | streaming | 32768 | 8192 | - |
 | voxtral-mini-latest | mistral | In: text; Out: text | streaming | 32768 | 8192 | - |
@@ -719,40 +715,40 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
 | gpt-3.5-turbo | openai | In: text; Out: text | - | 16385 | 4096 | In: $0.50, Out: $1.50 |
-| gpt-4 | openai | In: text; Out: text | function_calling | 8192 | 8192 | In: $30.00, Out: $60.00 |
-| gpt-4-turbo | openai | In: text, image; Out: text | function_calling, vision | 128000 | 4096 | In: $10.00, Out: $30.00 |
-| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 4096 | In: $5.00, Out: $15.00 |
-| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
-| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-4 | openai | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 8192 | 8192 | In: $30.00, Out: $60.00 |
+| gpt-4-turbo | openai | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 4096 | In: $10.00, Out: $30.00 |
+| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 4096 | In: $5.00, Out: $15.00 |
+| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
+| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
 | gpt-5-chat-latest | openai | In: text, image; Out: text | structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 272000 | In: $15.00, Out: $120.00 |
-| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision | 400000 | 128000 | In: $21.00, Out: $168.00 |
-| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
-| gpt-5.4-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
-| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
-| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
-| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
-| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 272000 | In: $15.00, Out: $120.00 |
+| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $21.00, Out: $168.00 |
+| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
+| gpt-5.4-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
+| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
+| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
+| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
 | babbage-002 | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.40, Out: $0.40 |
 | chat-latest | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | chatgpt-image-latest | openai | In: text, image; Out: text, image | vision | 0 | 0 | In: $0.50, Out: $1.50 |
@@ -763,11 +759,11 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | gpt-3.5-turbo-instruct | openai | In: -; Out: - | - | 16385 | 4096 | In: $0.50, Out: $1.50 |
 | gpt-3.5-turbo-instruct-0914 | openai | In: -; Out: - | - | 16385 | 4096 | In: $0.50, Out: $1.50 |
 | gpt-4-0613 | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
-| gpt-4-turbo-2024-04-09 | openai | In: -; Out: - | function_calling, vision | 128000 | 16384 | In: $10.00, Out: $30.00 |
-| gpt-4.1-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4.1-nano-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.10, Out: $0.40 |
-| gpt-4o-mini-2024-07-18 | openai | In: -; Out: - | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60 |
+| gpt-4-turbo-2024-04-09 | openai | In: -; Out: - | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $10.00, Out: $30.00 |
+| gpt-4.1-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4.1-nano-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.10, Out: $0.40 |
+| gpt-4o-mini-2024-07-18 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60 |
 | gpt-4o-mini-search-preview | openai | In: -; Out: - | citations | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | gpt-4o-mini-search-preview-2025-03-11 | openai | In: -; Out: - | citations | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | gpt-4o-mini-transcribe | openai | In: -; Out: - | - | 16000 | 2000 | In: $1.25, Out: $5.00 |
@@ -780,21 +776,21 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | gpt-4o-search-preview-2025-03-11 | openai | In: -; Out: - | vision, citations | 128000 | 16384 | In: $2.50, Out: $10.00 |
 | gpt-4o-transcribe | openai | In: -; Out: - | - | 128000 | 16384 | In: $2.50, Out: $10.00 |
 | gpt-4o-transcribe-diarize | openai | In: -; Out: - | - | 128000 | 16384 | In: $2.50, Out: $10.00 |
-| gpt-5-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-mini-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5-nano-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5-pro-2025-10-06 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-search-api | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-search-api-2025-10-14 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-2025-11-13 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.2-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.2-pro-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.4-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.4-mini-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5.4-nano-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5.4-pro-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.5-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.5-pro-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-mini-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5-nano-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5-pro-2025-10-06 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-search-api | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-search-api-2025-10-14 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-2025-11-13 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.2-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.2-pro-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.4-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.4-mini-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5.4-nano-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5.4-pro-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.5-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.5-pro-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
 | gpt-audio | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | gpt-audio-1.5 | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | gpt-audio-2025-08-28 | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
@@ -815,21 +811,21 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | gpt-realtime-mini-2025-12-15 | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | gpt-realtime-translate | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | gpt-realtime-whisper | openai | In: -; Out: - | - | 4096 | 16384 | In: $0.50, Out: $1.50 |
-| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
-| o1-2024-12-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 200000 | 100000 | In: $15.00, Out: $60.00 |
-| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $150.00, Out: $600.00 |
-| o1-pro-2025-03-19 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 200000 | 100000 | In: $150.00, Out: $600.00 |
-| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
+| o1-2024-12-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00 |
+| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $150.00, Out: $600.00 |
+| o1-pro-2025-03-19 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $150.00, Out: $600.00 |
+| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
 | o3-2025-04-16 | openai | In: -; Out: - | reasoning | 4096 | 16384 | In: $0.50, Out: $1.50 |
-| o3-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision | 200000 | 100000 | In: $10.00, Out: $40.00, Cache Read: $2.50 |
+| o3-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $10.00, Out: $40.00, Cache Read: $2.50 |
 | o3-deep-research-2025-06-26 | openai | In: -; Out: - | reasoning | 4096 | 16384 | In: $0.50, Out: $1.50 |
-| o3-mini | openai | In: text; Out: text | function_calling, structured_output, reasoning | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.55 |
-| o3-mini-2025-01-31 | openai | In: -; Out: - | function_calling, structured_output, reasoning | 200000 | 100000 | In: $1.10, Out: $4.40 |
-| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $20.00, Out: $80.00 |
+| o3-mini | openai | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.55 |
+| o3-mini-2025-01-31 | openai | In: -; Out: - | function_calling, structured_output, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40 |
+| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $20.00, Out: $80.00 |
 | o3-pro-2025-06-10 | openai | In: -; Out: - | reasoning | 4096 | 16384 | In: $0.50, Out: $1.50 |
-| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
+| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
 | o4-mini-2025-04-16 | openai | In: -; Out: - | reasoning | 4096 | 16384 | In: $0.50, Out: $1.50 |
-| o4-mini-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| o4-mini-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
 | o4-mini-deep-research-2025-06-26 | openai | In: -; Out: - | reasoning | 4096 | 16384 | In: $0.50, Out: $1.50 |
 | omni-moderation-2024-09-26 | openai | In: -; Out: - | vision | - | - | - |
 | omni-moderation-latest | openai | In: -; Out: - | vision | - | - | - |
@@ -1292,30 +1288,30 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
-| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
-| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
-| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
-| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
+| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
+| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
+| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
+| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | gpt-4 | azure | In: -; Out: - | function_calling, vision | 8192 | 8192 | In: $10.00, Out: $30.00 |
 | gpt-4-turbo-2024-04-09 | azure | In: -; Out: - | function_calling, vision | 128000 | 16384 | In: $10.00, Out: $30.00 |
 | gpt-4-turbo-jp | azure | In: -; Out: - | function_calling, vision | 128000 | 16384 | In: $10.00, Out: $30.00 |
@@ -1545,157 +1541,157 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | openai.gpt-oss-120b-1:0 | bedrock | In: text; Out: text | function_calling, structured_output, reasoning, streaming | 128000 | 16384 | In: $0.15, Out: $0.60 |
 | openai.gpt-oss-20b | bedrock | In: text; Out: text | function_calling, structured_output, reasoning | 128000 | 16384 | In: $0.07, Out: $0.30 |
 | openai.gpt-oss-20b-1:0 | bedrock | In: text; Out: text | function_calling, structured_output, reasoning, streaming | 128000 | 16384 | In: $0.07, Out: $0.30 |
-| deepseek-chat | deepseek | In: text; Out: text | function_calling | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
-| deepseek-reasoner | deepseek | In: text; Out: text | function_calling, reasoning | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
-| deepseek-v4-flash | deepseek | In: text; Out: text | function_calling, structured_output, reasoning | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
-| deepseek-v4-pro | deepseek | In: text; Out: text | function_calling, structured_output, reasoning | 1000000 | 384000 | In: $0.44, Out: $0.87, Cache Read: $0.00 |
-| deep-research-pro-preview-12-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-2.0-flash-001 | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40 |
-| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-computer-use-preview-10-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
-| gemini-2.5-flash-native-audio-latest | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
-| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
-| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-tts-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 16384 | In: $0.08, Out: $0.30 |
-| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
-| gemini-embedding-2 | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 1 | - |
-| gemini-embedding-2-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 1 | - |
-| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
-| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-omni-flash-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-pro-latest | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-robotics-er-1.5-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-robotics-er-1.6-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
-| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
-| lyria-3-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-3.1-flash-image | gemini | In: -; Out: - | function_calling, structured_output, vision | 65536 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-3-pro-image | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 32768 | In: $0.08, Out: $0.30 |
-| nano-banana-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 32768 | In: $0.08, Out: $0.30 |
-| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs | 32768 | 8192 | - |
-| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs | 256000 | 4096 | In: $0.30, Out: $0.90 |
-| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-medium-2507 | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.40, Out: $2.00 |
-| devstral-small-2507 | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.10, Out: $0.30 |
-| labs-devstral-small-2512 | mistral | In: text, image; Out: text | function_calling, vision | 256000 | 256000 | - |
-| devstral-small-2505 | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.10, Out: $0.30 |
-| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch | 128000 | 16384 | In: $2.00, Out: $5.00 |
-| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small | mistral | In: text; Out: text | function_calling, reasoning | 128000 | 128000 | In: $0.50, Out: $1.50 |
-| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.04, Out: $0.04 |
-| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.10, Out: $0.10 |
-| open-mistral-7b | mistral | In: text; Out: text | function_calling | 8000 | 8000 | In: $0.25, Out: $0.25 |
-| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-large-2411 | mistral | In: text; Out: text | function_calling | 131072 | 16384 | In: $2.00, Out: $6.00 |
-| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 131072 | 131072 | In: $0.40, Out: $2.00 |
-| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $1.50, Out: $7.50 |
-| mistral-nemo | mistral | In: text; Out: text | function_calling | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 128000 | 16384 | In: $0.10, Out: $0.30 |
-| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| open-mixtral-8x22b | mistral | In: text; Out: text | function_calling | 64000 | 64000 | In: $2.00, Out: $6.00 |
-| open-mixtral-8x7b | mistral | In: text; Out: text | function_calling | 32000 | 32000 | In: $0.70, Out: $0.70 |
-| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| pixtral-12b | mistral | In: text, image; Out: text | function_calling, vision | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| pixtral-large-latest | mistral | In: text, image; Out: text | function_calling, vision | 128000 | 128000 | In: $2.00, Out: $6.00 |
-| gpt-4 | openai | In: text; Out: text | function_calling | 8192 | 8192 | In: $30.00, Out: $60.00 |
-| gpt-4-turbo | openai | In: text, image; Out: text | function_calling, vision | 128000 | 4096 | In: $10.00, Out: $30.00 |
-| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 4096 | In: $5.00, Out: $15.00 |
-| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
-| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 272000 | In: $15.00, Out: $120.00 |
-| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision | 400000 | 128000 | In: $21.00, Out: $168.00 |
-| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
-| gpt-5.4-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
-| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
-| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
-| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
-| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
-| gpt-4-turbo-2024-04-09 | openai | In: -; Out: - | function_calling, vision | 128000 | 16384 | In: $10.00, Out: $30.00 |
-| gpt-4.1-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4.1-nano-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.10, Out: $0.40 |
-| gpt-4o-mini-2024-07-18 | openai | In: -; Out: - | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60 |
-| gpt-5-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-mini-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5-nano-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5-pro-2025-10-06 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-search-api | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-search-api-2025-10-14 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-2025-11-13 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.2-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.2-pro-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.4-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.4-mini-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5.4-nano-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5.4-pro-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.5-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.5-pro-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
-| o1-2024-12-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 200000 | 100000 | In: $15.00, Out: $60.00 |
-| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $150.00, Out: $600.00 |
-| o1-pro-2025-03-19 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 200000 | 100000 | In: $150.00, Out: $600.00 |
-| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| o3-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision | 200000 | 100000 | In: $10.00, Out: $40.00, Cache Read: $2.50 |
-| o3-mini | openai | In: text; Out: text | function_calling, structured_output, reasoning | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.55 |
-| o3-mini-2025-01-31 | openai | In: -; Out: - | function_calling, structured_output, reasoning | 200000 | 100000 | In: $1.10, Out: $4.40 |
-| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $20.00, Out: $80.00 |
-| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
-| o4-mini-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| deepseek-chat | deepseek | In: text; Out: text | function_calling, tool_choice | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
+| deepseek-reasoner | deepseek | In: text; Out: text | function_calling, reasoning, tool_choice | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
+| deepseek-v4-flash | deepseek | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
+| deepseek-v4-pro | deepseek | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice | 1000000 | 384000 | In: $0.44, Out: $0.87, Cache Read: $0.00 |
+| deep-research-pro-preview-12-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash-001 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40 |
+| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-computer-use-preview-10-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
+| gemini-2.5-flash-native-audio-latest | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
+| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
+| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-tts-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 16384 | In: $0.08, Out: $0.30 |
+| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
+| gemini-embedding-2 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 1 | - |
+| gemini-embedding-2-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 1 | - |
+| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
+| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-omni-flash-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-pro-latest | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-robotics-er-1.5-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-robotics-er-1.6-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| lyria-3-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-3.1-flash-image | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 65536 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-3-pro-image | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 32768 | In: $0.08, Out: $0.30 |
+| nano-banana-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 32768 | In: $0.08, Out: $0.30 |
+| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs, tool_choice, parallel_tool_calls | 256000 | 4096 | In: $0.30, Out: $0.90 |
+| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-medium-2507 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.40, Out: $2.00 |
+| devstral-small-2507 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.30 |
+| labs-devstral-small-2512 | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 256000 | 256000 | - |
+| devstral-small-2505 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.30 |
+| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.00, Out: $5.00 |
+| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small | mistral | In: text; Out: text | function_calling, reasoning, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.50, Out: $1.50 |
+| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.04, Out: $0.04 |
+| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.10 |
+| open-mistral-7b | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 8000 | 8000 | In: $0.25, Out: $0.25 |
+| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-large-2411 | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 131072 | 16384 | In: $2.00, Out: $6.00 |
+| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 131072 | 131072 | In: $0.40, Out: $2.00 |
+| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $1.50, Out: $7.50 |
+| mistral-nemo | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.10, Out: $0.30 |
+| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| open-mixtral-8x22b | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 64000 | 64000 | In: $2.00, Out: $6.00 |
+| open-mixtral-8x7b | mistral | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 32000 | 32000 | In: $0.70, Out: $0.70 |
+| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| pixtral-12b | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| pixtral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $2.00, Out: $6.00 |
+| gpt-4 | openai | In: text; Out: text | function_calling, tool_choice, parallel_tool_calls | 8192 | 8192 | In: $30.00, Out: $60.00 |
+| gpt-4-turbo | openai | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 4096 | In: $10.00, Out: $30.00 |
+| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 4096 | In: $5.00, Out: $15.00 |
+| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
+| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 272000 | In: $15.00, Out: $120.00 |
+| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $21.00, Out: $168.00 |
+| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
+| gpt-5.4-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
+| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
+| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
+| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| gpt-4-turbo-2024-04-09 | openai | In: -; Out: - | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $10.00, Out: $30.00 |
+| gpt-4.1-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4.1-nano-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.10, Out: $0.40 |
+| gpt-4o-mini-2024-07-18 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60 |
+| gpt-5-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-mini-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5-nano-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5-pro-2025-10-06 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-search-api | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-search-api-2025-10-14 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-2025-11-13 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.2-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.2-pro-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.4-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.4-mini-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5.4-nano-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5.4-pro-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.5-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.5-pro-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
+| o1-2024-12-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00 |
+| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $150.00, Out: $600.00 |
+| o1-pro-2025-03-19 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $150.00, Out: $600.00 |
+| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| o3-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $10.00, Out: $40.00, Cache Read: $2.50 |
+| o3-mini | openai | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.55 |
+| o3-mini-2025-01-31 | openai | In: -; Out: - | function_calling, structured_output, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40 |
+| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $20.00, Out: $80.00 |
+| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
+| o4-mini-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
 | ~anthropic/claude-haiku-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
 | ~anthropic/claude-sonnet-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | openrouter/auto | openrouter | In: text, image, audio, pdf, video; Out: text, image | function_calling, structured_output, reasoning, vision, streaming, predicted_outputs | 2000000 | 2000000 | - |
@@ -2137,122 +2133,122 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | openai.gpt-oss-120b-1:0 | bedrock | In: text; Out: text | function_calling, structured_output, reasoning, streaming | 128000 | 16384 | In: $0.15, Out: $0.60 |
 | openai.gpt-oss-20b | bedrock | In: text; Out: text | function_calling, structured_output, reasoning | 128000 | 16384 | In: $0.07, Out: $0.30 |
 | openai.gpt-oss-20b-1:0 | bedrock | In: text; Out: text | function_calling, structured_output, reasoning, streaming | 128000 | 16384 | In: $0.07, Out: $0.30 |
-| deepseek-v4-flash | deepseek | In: text; Out: text | function_calling, structured_output, reasoning | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
-| deepseek-v4-pro | deepseek | In: text; Out: text | function_calling, structured_output, reasoning | 1000000 | 384000 | In: $0.44, Out: $0.87, Cache Read: $0.00 |
-| deep-research-pro-preview-12-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-2.0-flash-001 | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40 |
-| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-computer-use-preview-10-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
-| gemini-2.5-flash-native-audio-latest | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
-| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
-| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-tts-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 16384 | In: $0.08, Out: $0.30 |
-| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
-| gemini-embedding-2 | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 1 | - |
-| gemini-embedding-2-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 8192 | 1 | - |
-| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
-| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-omni-flash-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-pro-latest | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-robotics-er-1.5-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-robotics-er-1.6-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 65536 | In: $0.08, Out: $0.30 |
-| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
-| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
-| lyria-3-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 1048576 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-3.1-flash-image | gemini | In: -; Out: - | function_calling, structured_output, vision | 65536 | 65536 | In: $0.08, Out: $0.30 |
+| deepseek-v4-flash | deepseek | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice | 1000000 | 384000 | In: $0.14, Out: $0.28, Cache Read: $0.00 |
+| deepseek-v4-pro | deepseek | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice | 1000000 | 384000 | In: $0.44, Out: $0.87, Cache Read: $0.00 |
+| deep-research-pro-preview-12-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash-001 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40 |
+| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-computer-use-preview-10-2025 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
+| gemini-2.5-flash-native-audio-latest | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
+| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
+| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-tts-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 16384 | In: $0.08, Out: $0.30 |
+| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
+| gemini-embedding-2 | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 1 | - |
+| gemini-embedding-2-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 8192 | 1 | - |
+| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
+| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-omni-flash-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-pro-latest | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-robotics-er-1.5-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-robotics-er-1.6-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 65536 | In: $0.08, Out: $0.30 |
+| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| lyria-3-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 1048576 | 65536 | In: $0.08, Out: $0.30 |
+| gemini-3.1-flash-image | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 65536 | 65536 | In: $0.08, Out: $0.30 |
 | gemini-3.1-flash-lite-image | gemini | In: -; Out: - | structured_output, vision | 65536 | 65536 | In: $0.08, Out: $0.30 |
-| gemini-3-pro-image | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 32768 | In: $0.08, Out: $0.30 |
-| nano-banana-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision | 131072 | 32768 | In: $0.08, Out: $0.30 |
-| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs | 32768 | 8192 | - |
-| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $1.50, Out: $7.50 |
-| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 4096 | In: $5.00, Out: $15.00 |
-| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
-| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gemini-3-pro-image | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 32768 | In: $0.08, Out: $0.30 |
+| nano-banana-pro-preview | gemini | In: -; Out: - | function_calling, structured_output, vision, tool_choice | 131072 | 32768 | In: $0.08, Out: $0.30 |
+| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $1.50, Out: $7.50 |
+| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 4096 | In: $5.00, Out: $15.00 |
+| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
+| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
 | gpt-5-chat-latest | openai | In: text, image; Out: text | structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 272000 | In: $15.00, Out: $120.00 |
-| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
-| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
-| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
-| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
-| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
-| gpt-4.1-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4.1-nano-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.10, Out: $0.40 |
-| gpt-4o-mini-2024-07-18 | openai | In: -; Out: - | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60 |
-| gpt-5-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-mini-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5-nano-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5-pro-2025-10-06 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-search-api | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-search-api-2025-10-14 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-2025-11-13 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.2-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.2-pro-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.4-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.4-mini-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5.4-nano-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5.4-pro-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.5-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.5-pro-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
-| o1-2024-12-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 200000 | 100000 | In: $15.00, Out: $60.00 |
-| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $150.00, Out: $600.00 |
-| o1-pro-2025-03-19 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning | 200000 | 100000 | In: $150.00, Out: $600.00 |
-| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| o3-mini | openai | In: text; Out: text | function_calling, structured_output, reasoning | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.55 |
-| o3-mini-2025-01-31 | openai | In: -; Out: - | function_calling, structured_output, reasoning | 200000 | 100000 | In: $1.10, Out: $4.40 |
-| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $20.00, Out: $80.00 |
-| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
+| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 272000 | In: $15.00, Out: $120.00 |
+| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
+| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
+| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
+| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
+| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| gpt-4.1-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4.1-nano-2025-04-14 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.10, Out: $0.40 |
+| gpt-4o-mini-2024-07-18 | openai | In: -; Out: - | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60 |
+| gpt-5-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-mini-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5-nano-2025-08-07 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5-pro-2025-10-06 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-search-api | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5-search-api-2025-10-14 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, citations, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-2025-11-13 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.2-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.2-pro-2025-12-11 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.4-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.4-mini-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5.4-nano-2026-03-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5.4-pro-2026-03-05 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.5-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.5-pro-2026-04-23 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 128000 | 400000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
+| o1-2024-12-17 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00 |
+| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $150.00, Out: $600.00 |
+| o1-pro-2025-03-19 | openai | In: -; Out: - | function_calling, structured_output, vision, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $150.00, Out: $600.00 |
+| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| o3-mini | openai | In: text; Out: text | function_calling, structured_output, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.55 |
+| o3-mini-2025-01-31 | openai | In: -; Out: - | function_calling, structured_output, reasoning, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40 |
+| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $20.00, Out: $80.00 |
+| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
 | ~anthropic/claude-haiku-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
 | ~anthropic/claude-sonnet-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | openrouter/auto | openrouter | In: text, image, audio, pdf, video; Out: text, image | function_calling, structured_output, reasoning, vision, streaming, predicted_outputs | 2000000 | 2000000 | - |
@@ -2625,46 +2621,46 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 | writer.palmyra-vision-7b | bedrock | In: text, image; Out: text | streaming, function_calling | - | 4096 | - |
 | openai.gpt-oss-120b-1:0 | bedrock | In: text; Out: text | function_calling, structured_output, reasoning, streaming | 128000 | 16384 | In: $0.15, Out: $0.60 |
 | openai.gpt-oss-20b-1:0 | bedrock | In: text; Out: text | function_calling, structured_output, reasoning, streaming | 128000 | 16384 | In: $0.07, Out: $0.30 |
-| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs | 32768 | 8192 | - |
-| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs | 256000 | 4096 | In: $0.30, Out: $0.90 |
-| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch | 128000 | 16384 | In: $2.00, Out: $5.00 |
-| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.04, Out: $0.04 |
-| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.10, Out: $0.10 |
-| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 131072 | 131072 | In: $0.40, Out: $2.00 |
-| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $1.50, Out: $7.50 |
-| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 128000 | 16384 | In: $0.10, Out: $0.30 |
-| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
+| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs, tool_choice, parallel_tool_calls | 256000 | 4096 | In: $0.30, Out: $0.90 |
+| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.00, Out: $5.00 |
+| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.04, Out: $0.04 |
+| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.10 |
+| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 131072 | 131072 | In: $0.40, Out: $2.00 |
+| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $1.50, Out: $7.50 |
+| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.10, Out: $0.30 |
+| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
 | voxtral-mini-2507 | mistral | In: text; Out: text | streaming | 32768 | 8192 | - |
 | voxtral-mini-2602 | mistral | In: text; Out: text | streaming | 32768 | 8192 | - |
 | voxtral-mini-latest | mistral | In: text; Out: text | streaming | 32768 | 8192 | - |
@@ -3073,46 +3069,46 @@ See [Working with Models: Refreshing the Registry]({% link _reference/models.md 
 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
-| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs | 32768 | 8192 | - |
-| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs | 256000 | 4096 | In: $0.30, Out: $0.90 |
-| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch | 128000 | 16384 | In: $2.00, Out: $5.00 |
-| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch | 32768 | 8192 | - |
-| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.04, Out: $0.04 |
-| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation | 32768 | 8192 | - |
-| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation | 128000 | 128000 | In: $0.10, Out: $0.10 |
-| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning | 32768 | 8192 | - |
-| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 131072 | 131072 | In: $0.40, Out: $2.00 |
-| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $1.50, Out: $7.50 |
-| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 128000 | 16384 | In: $0.10, Out: $0.30 |
-| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
-| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch | 32768 | 8192 | - |
+| codestral-2508 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, predicted_outputs, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| codestral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, predicted_outputs, tool_choice, parallel_tool_calls | 256000 | 4096 | In: $0.30, Out: $0.90 |
+| devstral-2512 | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| devstral-medium-latest | mistral | In: text; Out: text | function_calling, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| labs-leanstral-1-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| labs-leanstral-1-5-1 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-medium-latest | mistral | In: text; Out: text | function_calling, reasoning, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.00, Out: $5.00 |
+| magistral-medium-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-2509 | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| magistral-small-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, reasoning, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-14b-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-3b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.04, Out: $0.04 |
+| ministral-8b-2512 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, distillation, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| ministral-8b-latest | mistral | In: text; Out: text | function_calling, streaming, batch, distillation, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.10, Out: $0.10 |
+| mistral-code-agent-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-fim-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-code-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-medium | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3-5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-3.5 | mistral | In: text; Out: text | streaming, function_calling, structured_output, vision, reasoning, batch, fine_tuning, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 131072 | 131072 | In: $0.40, Out: $2.00 |
+| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $1.50, Out: $7.50 |
+| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.10, Out: $0.30 |
+| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-tiny-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-tiny-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-fast | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-latest | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| mistral-vibe-cli-with-tools | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
+| open-mistral-nemo | mistral | In: text; Out: text | function_calling, streaming, batch, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| open-mistral-nemo-2407 | mistral | In: text; Out: text | streaming, function_calling, structured_output, batch, tool_choice, parallel_tool_calls | 32768 | 8192 | - |
 
 
 ## Models by Modality
@@ -3123,30 +3119,30 @@ Models that can process images:
 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
-| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
-| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
-| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
-| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
+| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
+| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
+| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
+| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | au.anthropic.claude-opus-4-6-v1 | bedrock | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1000000 | 128000 | In: $16.50, Out: $82.50, Cache Read: $1.65, Cache Write: $20.62 |
 | au.anthropic.claude-sonnet-4-6 | bedrock | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1000000 | 128000 | In: $3.30, Out: $16.50, Cache Read: $0.33, Cache Write: $4.12 |
 | anthropic.claude-3-haiku-20240307-v1:0 | bedrock | In: text, image; Out: text | streaming, function_calling | - | - | - |
@@ -3253,82 +3249,82 @@ Models that can process images:
 | amazon.titan-embed-image-v1 | bedrock | In: text, image; Out: embeddings | function_calling | - | - | - |
 | amazon.titan-embed-image-v1:0 | bedrock | In: text, image; Out: embeddings | function_calling | - | - | - |
 | writer.palmyra-vision-7b | bedrock | In: text, image; Out: text | streaming, function_calling | - | 4096 | - |
-| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
-| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
-| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
-| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
-| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
-| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
-| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
+| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
+| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
+| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
+| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
+| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemma-4-26b-a4b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
+| gemma-4-31b-it | gemini | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 262144 | 32768 | In: $0.08, Out: $0.30 |
 | gemini-2.5-flash-image | gemini | In: text, image; Out: text, image | reasoning, vision | 32768 | 32768 | In: $0.30, Out: $30.00, Cache Read: $0.08 |
 | gemini-3.1-flash-image-preview | gemini | In: text, image, pdf; Out: text, image | reasoning, vision | 65536 | 65536 | In: $0.50, Out: $60.00 |
 | gemini-3-pro-image-preview | gemini | In: text, image; Out: text, image | reasoning, vision | 131072 | 32768 | In: $2.00, Out: $120.00 |
-| labs-devstral-small-2512 | mistral | In: text, image; Out: text | function_calling, vision | 256000 | 256000 | - |
-| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.50, Out: $1.50 |
-| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 131072 | 131072 | In: $0.40, Out: $2.00 |
-| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $0.40, Out: $2.00 |
-| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning | 262144 | 262144 | In: $1.50, Out: $7.50 |
-| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning | 128000 | 16384 | In: $0.10, Out: $0.30 |
-| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning | 256000 | 256000 | In: $0.15, Out: $0.60 |
-| pixtral-12b | mistral | In: text, image; Out: text | function_calling, vision | 128000 | 128000 | In: $0.15, Out: $0.15 |
-| pixtral-large-latest | mistral | In: text, image; Out: text | function_calling, vision | 128000 | 128000 | In: $2.00, Out: $6.00 |
-| gpt-4-turbo | openai | In: text, image; Out: text | function_calling, vision | 128000 | 4096 | In: $10.00, Out: $30.00 |
-| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 4096 | In: $5.00, Out: $15.00 |
-| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
-| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| labs-devstral-small-2512 | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 256000 | 256000 | - |
+| mistral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-large-2512 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.50, Out: $1.50 |
+| mistral-medium-latest | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2505 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 131072 | 131072 | In: $0.40, Out: $2.00 |
+| mistral-medium-2508 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $0.40, Out: $2.00 |
+| mistral-medium-2604 | mistral | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 262144 | 262144 | In: $1.50, Out: $7.50 |
+| mistral-small-latest | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| mistral-small-2506 | mistral | In: text, image; Out: text | function_calling, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.10, Out: $0.30 |
+| mistral-small-2603 | mistral | In: text, image; Out: text | function_calling, reasoning, vision, streaming, batch, fine_tuning, tool_choice, parallel_tool_calls | 256000 | 256000 | In: $0.15, Out: $0.60 |
+| pixtral-12b | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $0.15, Out: $0.15 |
+| pixtral-large-latest | mistral | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 128000 | In: $2.00, Out: $6.00 |
+| gpt-4-turbo | openai | In: text, image; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 128000 | 4096 | In: $10.00, Out: $30.00 |
+| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4.1-nano | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-05-13 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 4096 | In: $5.00, Out: $15.00 |
+| gpt-4o-2024-08-06 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-2024-11-20 | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
+| gpt-5 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
 | gpt-5-chat-latest | openai | In: text, image; Out: text | structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
-| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 272000 | In: $15.00, Out: $120.00 |
-| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
-| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.2-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision | 400000 | 128000 | In: $21.00, Out: $168.00 |
-| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
-| gpt-5.4-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
-| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
-| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
-| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
-| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| gpt-5-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.05, Out: $0.40, Cache Read: $0.01 |
+| gpt-5-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 272000 | In: $15.00, Out: $120.00 |
+| gpt-5-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-max | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gpt-5.1-codex-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.25, Out: $2.00, Cache Read: $0.02 |
+| gpt-5.2 | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.2-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $21.00, Out: $168.00 |
+| gpt-5.3-chat-latest | openai | In: text, image; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
+| gpt-5.4-pro | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| gpt-5.4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.75, Out: $4.50, Cache Read: $0.08 |
+| gpt-5.4-nano | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $0.20, Out: $1.25, Cache Read: $0.02 |
+| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
+| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
 | chatgpt-image-latest | openai | In: text, image; Out: text, image | vision | 0 | 0 | In: $0.50, Out: $1.50 |
 | gpt-image-1 | openai | In: text, image; Out: image | vision | 0 | 0 | In: $5.00, Cache Read: $1.25 |
 | gpt-image-1-mini | openai | In: text, image; Out: text, image | vision | 0 | 0 | In: $2.00, Cache Read: $0.20 |
 | gpt-image-1.5 | openai | In: text, image; Out: text, image | vision | 0 | 0 | In: $5.00, Cache Read: $1.25 |
 | gpt-image-2 | openai | In: text, image; Out: image | vision | 0 | 0 | In: $5.00, Out: $30.00, Cache Read: $1.25 |
-| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
-| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $150.00, Out: $600.00 |
-| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| o3-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision | 200000 | 100000 | In: $10.00, Out: $40.00, Cache Read: $2.50 |
-| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $20.00, Out: $80.00 |
-| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
-| o4-mini-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
+| o1-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $150.00, Out: $600.00 |
+| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| o3-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $10.00, Out: $40.00, Cache Read: $2.50 |
+| o3-pro | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $20.00, Out: $80.00 |
+| o4-mini | openai | In: text, image; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $1.10, Out: $4.40, Cache Read: $0.28 |
+| o4-mini-deep-research | openai | In: text, image; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
 | ~anthropic/claude-haiku-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
 | ~anthropic/claude-sonnet-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | openrouter/auto | openrouter | In: text, image, audio, pdf, video; Out: text, image | function_calling, structured_output, reasoning, vision, streaming, predicted_outputs | 2000000 | 2000000 | - |
@@ -3545,20 +3541,20 @@ Models that can process audio:
 | amazon.nova-2-sonic-v1:0 | bedrock | In: audio; Out: audio, text | streaming, function_calling | - | - | - |
 | mistral.voxtral-mini-3b-2507 | bedrock | In: audio, text; Out: text | function_calling, structured_output, streaming | 128000 | 4096 | In: $0.04, Out: $0.04 |
 | mistral.voxtral-small-24b-2507 | bedrock | In: text, audio; Out: text | function_calling, structured_output, streaming | 32000 | 8192 | In: $0.15, Out: $0.35 |
-| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
-| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
-| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
-| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
-| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
-| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
+| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
+| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
+| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
+| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
+| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
 | openrouter/auto | openrouter | In: text, image, audio, pdf, video; Out: text, image | function_calling, structured_output, reasoning, vision, streaming, predicted_outputs | 2000000 | 2000000 | - |
 | openai/gpt-audio | openrouter | In: text, audio; Out: text, audio | function_calling, structured_output, streaming | 128000 | 16384 | In: $2.50, Out: $10.00 |
 | openai/gpt-audio-mini | openrouter | In: text, audio; Out: text, audio | function_calling, structured_output, streaming | 128000 | 16384 | In: $0.60, Out: $2.40 |
@@ -3599,30 +3595,30 @@ Models that can process PDF documents:
 
 | Model | Provider | I/O | Capabilities | Context | Max Output | Standard Pricing (per 1M tokens) |
 | :-- | :-- | :-- | :-- | --: | --: | :-- |
-| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
-| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
-| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
-| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
-| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
-| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
-| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
-| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
+| claude-fable-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
+| claude-3-haiku-20240307 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $0.25, Out: $1.25, Cache Read: $0.03, Cache Write: $0.30 |
+| claude-haiku-4-5-20251001 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-haiku-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
+| claude-3-opus-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1-20250805 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-1 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 32000 | In: $15.00, Out: $75.00, Cache Read: $1.50, Cache Write: $18.75 |
+| claude-opus-4-5-20251101 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-7 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-opus-4-8 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $5.00, Out: $25.00, Cache Read: $0.50, Cache Write: $6.25 |
+| claude-3-sonnet-20240229 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 4096 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $0.30 |
+| claude-3-5-sonnet-20240620 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-5-sonnet-20241022 | anthropic | In: text, image, pdf; Out: text | function_calling, vision, tool_choice, parallel_tool_calls | 200000 | 8192 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-3-7-sonnet-20250219 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-20250514 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-0 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5-20250929 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-4-6 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 64000 | In: $3.00, Out: $15.00, Cache Read: $0.30, Cache Write: $3.75 |
+| claude-sonnet-5 | anthropic | In: text, image, pdf; Out: text | function_calling, reasoning, vision, citations, tool_choice, parallel_tool_calls | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | au.anthropic.claude-opus-4-6-v1 | bedrock | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1000000 | 128000 | In: $16.50, Out: $82.50, Cache Read: $1.65, Cache Write: $20.62 |
 | au.anthropic.claude-sonnet-4-6 | bedrock | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1000000 | 128000 | In: $3.30, Out: $16.50, Cache Read: $0.33, Cache Write: $4.12 |
 | anthropic.claude-fable-5 | bedrock | In: text, image, pdf; Out: text | function_calling, reasoning, vision | 1000000 | 128000 | In: $10.00, Out: $50.00, Cache Read: $1.00, Cache Write: $12.50 |
@@ -3674,33 +3670,33 @@ Models that can process PDF documents:
 | us.anthropic.claude-sonnet-5 | bedrock | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | openai.gpt-5.4 | bedrock | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 272000 | 128000 | In: $2.75, Out: $16.50, Cache Read: $0.28 |
 | openai.gpt-5.5 | bedrock | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 272000 | 128000 | In: $5.50, Out: $33.00, Cache Read: $0.55 |
-| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
-| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision | 1048576 | 8192 | In: $0.08, Out: $0.30 |
-| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
-| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
-| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
-| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
-| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
-| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
-| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
-| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
-| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
+| gemini-2.0-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, vision, tool_choice | 1048576 | 8192 | In: $0.08, Out: $0.30 |
+| gemini-2.5-flash | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.03 |
+| gemini-2.5-flash-lite | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.01 |
+| gemini-2.5-pro | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.25, Out: $10.00, Cache Read: $0.12 |
+| gemini-3-flash-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.50, Out: $3.00, Cache Read: $0.05 |
+| gemini-3-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-flash-lite | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-flash-lite-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.25, Out: $1.50, Cache Read: $0.02 |
+| gemini-3.1-pro-preview | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.1-pro-preview-customtools | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $2.00, Out: $12.00, Cache Read: $0.20 |
+| gemini-3.5-flash | gemini | In: text, image, video, audio, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $1.50, Out: $9.00, Cache Read: $0.15 |
+| gemini-flash-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.30, Out: $2.50, Cache Read: $0.08 |
+| gemini-flash-lite-latest | gemini | In: text, image, audio, video, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice | 1048576 | 65536 | In: $0.10, Out: $0.40, Cache Read: $0.02 |
 | gemini-3.1-flash-image-preview | gemini | In: text, image, pdf; Out: text, image | reasoning, vision | 65536 | 65536 | In: $0.50, Out: $60.00 |
-| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
-| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
-| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
-| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
-| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
-| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
-| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
-| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 1050000 | 128000 | In: $30.00, Out: $180.00 |
-| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
-| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
+| gpt-4.1-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 1047576 | 32768 | In: $0.40, Out: $1.60, Cache Read: $0.10 |
+| gpt-4o | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $2.50, Out: $10.00, Cache Read: $1.25 |
+| gpt-4o-mini | openai | In: text, image, pdf; Out: text | function_calling, structured_output, vision, tool_choice, parallel_tool_calls | 128000 | 16384 | In: $0.15, Out: $0.60, Cache Read: $0.08 |
+| gpt-5.2-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 400000 | 128000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.3-codex-spark | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 128000 | 32000 | In: $1.75, Out: $14.00, Cache Read: $0.18 |
+| gpt-5.4 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $2.50, Out: $15.00, Cache Read: $0.25 |
+| gpt-5.5 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $5.00, Out: $30.00, Cache Read: $0.50 |
+| gpt-5.5-pro | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 1050000 | 128000 | In: $30.00, Out: $180.00 |
+| o1 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $15.00, Out: $60.00, Cache Read: $7.50 |
+| o3 | openai | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, tool_choice, parallel_tool_calls | 200000 | 100000 | In: $2.00, Out: $8.00, Cache Read: $0.50 |
 | ~anthropic/claude-haiku-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 200000 | 64000 | In: $1.00, Out: $5.00, Cache Read: $0.10, Cache Write: $1.25 |
 | ~anthropic/claude-sonnet-latest | openrouter | In: text, image, pdf; Out: text | function_calling, structured_output, reasoning, vision, streaming | 1000000 | 128000 | In: $2.00, Out: $10.00, Cache Read: $0.20, Cache Write: $2.50 |
 | openrouter/auto | openrouter | In: text, image, audio, pdf, video; Out: text, image | function_calling, structured_output, reasoning, vision, streaming, predicted_outputs | 2000000 | 2000000 | - |

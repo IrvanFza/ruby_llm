@@ -20,6 +20,8 @@ namespace :models do
 
   desc 'Generate available models documentation'
   task :docs do
+    registry_file = ENV.fetch('MODEL_REGISTRY_FILE', RubyLLM::Models.bundled_registry_file)
+    RubyLLM.models.load_from_json!(registry_file)
     FileUtils.mkdir_p('docs/_reference')
     output = generate_models_markdown
     File.write('docs/_reference/available-models.md', output)
@@ -45,6 +47,7 @@ def configure_from_env
     config.perplexity_api_key = ENV.fetch('PERPLEXITY_API_KEY', nil)
     config.vertexai_location = ENV.fetch('GOOGLE_CLOUD_LOCATION', nil)
     config.vertexai_project_id = ENV.fetch('GOOGLE_CLOUD_PROJECT', nil)
+    config.vertexai_service_account_key = ENV.fetch('VERTEXAI_SERVICE_ACCOUNT_KEY', nil)
     config.xai_api_key = ENV.fetch('XAI_API_KEY', nil)
     configure_bedrock(config)
     config.request_timeout = 30
@@ -59,31 +62,47 @@ def configure_bedrock(config)
 end
 
 def refresh_models
-  existing_models = RubyLLM::Models.read_from_json
+  registry_file = ENV.fetch('MODEL_REGISTRY_FILE', RubyLLM::Models.bundled_registry_file)
+  RubyLLM.models.load_from_json!(registry_file)
+  existing_models = RubyLLM.models.all.dup
   initial_count = existing_models.size
   puts "Refreshing models (#{initial_count} cached)..."
 
-  models = RubyLLM.models.refresh!
+  models = RubyLLM.models.refresh_from_providers!(remote_only: true)
 
   if models.all.empty? && initial_count.zero?
     puts 'Error: Failed to fetch models.'
     exit(1)
   else
-    existing_data = sorted_models_data(existing_models)
-    new_data = sorted_models_data(models.all)
-
-    if new_data == existing_data && initial_count.positive?
-      puts 'Warning: Model list unchanged.'
-    else
-      puts 'Validating models...'
-      validate_models!(models)
-
-      puts "Saving models.json (#{models.all.size} models)"
-      models.save_to_json
-    end
+    persist_refreshed_models(existing_models, models, registry_file)
   end
 
   @models = models
+end
+
+def persist_refreshed_models(existing_models, models, registry_file)
+  initial_count = existing_models.size
+  if suspicious_model_drop?(initial_count, models.all.size)
+    abort "Refusing to replace #{initial_count} models with #{models.all.size}. " \
+          'Set ALLOW_MODEL_REGISTRY_DROP=true after reviewing the result.'
+  end
+
+  if sorted_models_data(models.all) == sorted_models_data(existing_models) && initial_count.positive?
+    puts 'Warning: Model list unchanged.'
+    return
+  end
+
+  puts 'Validating models...'
+  validate_models!(models)
+  puts "Saving models.json (#{models.all.size} models)"
+  models.save_to_json(registry_file)
+end
+
+def suspicious_model_drop?(initial_count, new_count)
+  return false if initial_count.zero?
+  return false if ENV['ALLOW_MODEL_REGISTRY_DROP'] == 'true'
+
+  new_count < (initial_count * 0.8)
 end
 
 def sorted_models_data(models)
@@ -92,14 +111,14 @@ def sorted_models_data(models)
 end
 
 def validate_models!(models)
-  schema_path = RubyLLM::Models.schema_file
   models_data = models.all.map(&:to_h)
 
-  validation_errors = JSON::Validator.fully_validate(schema_path, models_data)
+  validation_errors = JSON::Validator.fully_validate(RubyLLM::ModelSchema.json_schema, models_data, list: true)
 
   unless validation_errors.empty?
     # Save failed models for inspection
-    failed_path = File.expand_path('../ruby_llm/models.failed.json', __dir__)
+    failed_path = File.expand_path('../tmp/models.failed.json', __dir__)
+    FileUtils.mkdir_p(File.dirname(failed_path))
     File.write(failed_path, JSON.pretty_generate(models_data))
 
     puts 'ERROR: Models validation failed:'
@@ -142,14 +161,13 @@ def generate_models_markdown
   models = RubyLLM.models.all
   total_models = models.count
   provider_count = models.map(&:provider).uniq.count
-  generated_on = Time.now.utc.strftime('%Y-%m-%d')
 
   <<~MARKDOWN
     ---
     layout: default
     title: Available Models
     nav_order: 2
-    description: Browse #{total_models} AI models across #{provider_count} providers (not including local providers). Updated #{generated_on}.
+    description: Browse #{total_models} AI models across #{provider_count} providers in the latest published registry.
     redirect_from:
       - /guides/available-models
     ---
@@ -168,19 +186,15 @@ def generate_models_markdown
 
     ---
 
-    _Model information enriched by [models.dev](https://models.dev) and our custom code._
+    _This page reflects the latest published RubyLLM registry. Your installed gem may include an older bundled snapshot. Provider availability can also vary by account and region._
+
+    _Model information is enriched by [models.dev](https://models.dev) and RubyLLM's provider integrations._
 
     Can't find a newly released model? Refresh your registry:
 
     ```ruby
-    # Plain Ruby
     RubyLLM.models.refresh!
-
-    # Rails
-    Model.refresh!
     ```
-
-    See [Working with Models: Refreshing the Registry]({% link _reference/models.md %}#refreshing-the-registry).
 
     ## Models by Provider
 

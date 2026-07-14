@@ -79,8 +79,8 @@ RSpec.describe RubyLLM::Models do
       end.to raise_error(RubyLLM::ModelNotFoundError) { |error|
         expect(error.message).to include('Unknown model: "nonexistent-model-12345"')
         expect(error.message).to include('RubyLLM.models.refresh!')
-        expect(error.message).to include('RubyLLM.models.save_to_json')
-        expect(error.message).to include('Model.refresh!')
+        expect(error.message).not_to include('save_to_json')
+        expect(error.message).not_to include('Model.refresh!')
         expect(error.message).not_to include('Known')
       }
     end
@@ -91,7 +91,7 @@ RSpec.describe RubyLLM::Models do
       end.to raise_error(RubyLLM::ModelNotFoundError) { |error|
         expect(error.message).to include('Unknown model: "nonexistent-model-12345" for provider: "openai"')
         expect(error.message).to include('RubyLLM.models.refresh!')
-        expect(error.message).to include('Model.refresh!')
+        expect(error.message).not_to include('Model.refresh!')
         expect(error.message).not_to include('Known')
       }
     end
@@ -142,7 +142,9 @@ RSpec.describe RubyLLM::Models do
 
   describe '#refresh!' do
     before do
+      published = RubyLLM::ModelRegistry.read(described_class.bundled_registry_file)
       allow(described_class).to receive_messages(
+        fetch_published_registry: RubyLLM::ModelRegistry::PublishedSource::Result.new(published, 'test-etag', false),
         fetch_provider_models: {
           models: [],
           fetched_providers: [],
@@ -151,6 +153,7 @@ RSpec.describe RubyLLM::Models do
         },
         fetch_models_dev_models: { models: [], fetched: true }
       )
+      allow_any_instance_of(described_class).to receive(:persist_registry!) # rubocop:disable RSpec/AnyInstance
     end
 
     it 'updates models and returns a chainable Models instance' do
@@ -423,6 +426,7 @@ RSpec.describe RubyLLM::Models do
 
       # Verify model data was saved
       parsed_models = JSON.parse(saved_content)
+      expect(parsed_models).to be_an(Array)
       expect(parsed_models.size).to eq(models.all.size)
 
       temp_file.unlink
@@ -435,7 +439,7 @@ RSpec.describe RubyLLM::Models do
       models.save_to_json(temp_file.path)
 
       # Load from custom path
-      reloaded_models = described_class.read_from_json(temp_file.path)
+      reloaded_models = described_class.models_from_file(temp_file.path)
 
       expect(reloaded_models.size).to eq(models.all.size)
       expect(reloaded_models.first.id).to eq(models.all.first.id)

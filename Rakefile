@@ -4,7 +4,16 @@ require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'rake/clean'
 
-Dir.glob('lib/tasks/**/*.rake').each { |r| load r }
+Dir.glob('tasks/**/*.rake').each { |task_file| load task_file }
+load 'lib/tasks/ruby_llm.rake'
+
+def run_test_queue_rspec
+  workers = ENV.fetch('RSPEC_WORKERS', nil)
+  env = {}
+  env['TEST_QUEUE_WORKERS'] = workers if workers && !workers.empty? && ENV.fetch('TEST_QUEUE_WORKERS', '').empty?
+
+  system(env, 'bundle', 'exec', 'bin/rspec-queue')
+end
 
 desc 'Run test suite with rspec-queue'
 task :test do

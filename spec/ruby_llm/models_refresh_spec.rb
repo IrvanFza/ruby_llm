@@ -6,7 +6,7 @@ RSpec.describe RubyLLM::Models do
   include_context 'with configured RubyLLM'
 
   describe 'models.json structure validation' do
-    let(:models_json_path) { RubyLLM.config.model_registry_file }
+    let(:models_json_path) { described_class.bundled_registry_file }
     let(:models_data) { JSON.parse(File.read(models_json_path)) }
 
     it 'validates models.json has correct structure' do
@@ -103,7 +103,9 @@ RSpec.describe RubyLLM::Models do
   describe 'refresh models output structure' do
     before do
       # Mock the API responses to ensure consistent test results
+      published = RubyLLM::ModelRegistry.read(described_class.bundled_registry_file)
       allow(described_class).to receive_messages(
+        fetch_published_registry: RubyLLM::ModelRegistry::PublishedSource::Result.new(published, 'test-etag', false),
         fetch_provider_models: {
           models: mock_provider_models,
           fetched_providers: mock_provider_models.map(&:provider).uniq,
@@ -112,6 +114,7 @@ RSpec.describe RubyLLM::Models do
         },
         fetch_models_dev_models: { models: [], fetched: true }
       )
+      allow_any_instance_of(described_class).to receive(:persist_registry!) # rubocop:disable RSpec/AnyInstance
     end
 
     after do

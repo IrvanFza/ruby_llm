@@ -13,6 +13,9 @@ module RubyLLM
     #   category.output # => 15
     #
     class PricingCategory
+      # The billing tiers a category may define.
+      TIERS = %i[standard batch].freeze
+
       # The standard-tier PricingTier, or +nil+ when the model has no
       # standard pricing for this category.
       attr_reader :standard

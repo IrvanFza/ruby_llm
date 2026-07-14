@@ -25,14 +25,16 @@ redirect_from:
 After reading this guide, you will know:
 
 *   How RubyLLM discovers and registers models.
-*   How to refresh the registry from provider APIs and persist it to disk.
+*   How RubyLLM selects and refreshes the bundled, cached, or database registry.
 *   How to find and filter available models by provider, type, or capabilities.
 *   What `RubyLLM::Model` exposes about a model's capabilities and pricing.
 *   How to use model aliases and resolve the same alias across providers.
 
 ## The Model Registry
 
-RubyLLM maintains an internal registry of known AI models, typically stored in `lib/ruby_llm/models.json` within the gem. This registry is populated by running the `rake models:update` task, which queries the APIs of configured providers to discover their available models and capabilities.
+RubyLLM maintains a registry of known AI models. Every gem includes a snapshot so a new installation works immediately. The latest published registry is also available at [`https://rubyllm.com/models.json`](https://rubyllm.com/models.json).
+
+In plain Ruby, RubyLLM uses the valid registry in your operating system's user cache when it exists, otherwise it uses the bundled snapshot. In Rails applications using `acts_as_model`, the database is authoritative once it has rows; while the table is empty, RubyLLM falls back to the registry file, then to the bundled snapshot.
 
 The registry stores crucial information about each model, including:
 
@@ -58,32 +60,24 @@ You can see the full list of currently registered models in the [Available Model
 
 **For Application Developers:**
 
-The recommended way to refresh models in your application is to call `RubyLLM.models.refresh!` directly:
+Refresh models everywhere with one call:
 
 ```ruby
 RubyLLM.models.refresh!
-puts "Refreshed in-memory model list."
 ```
 
-This refreshes the in-memory model registry and is what you want 99% of the time. This method is safe to call from Rails applications, background jobs, or any running Ruby process.
+The call has the same meaning in every environment. It replaces the in-memory registry and persists it to the active store: the platform cache in plain Ruby or the models table with the Active Record integration. You do not need a second save call.
 
-**Important:** `refresh!` only updates the in-memory registry. To persist changes to disk, call:
-
-```ruby
-RubyLLM.models.refresh!
-RubyLLM.models.save_to_json  # Saves to configured model_registry_file (v1.9.0+)
-```
-
-If your gem directory is read-only, configure a writable location with `config.model_registry_file` (v1.9.0+). See the [Connection, Logging and Contexts Guide]({% link _getting_started/configuration-connection.md %}#model-registry-file) for details.
+RubyLLM does not refresh automatically. Network access and provider credentials remain explicit application concerns, and a missing-model lookup never triggers network I/O.
 
 **How refresh! Works:**
 
 The `refresh!` method performs the following steps:
 
-1. **Fetches from configured providers**: Queries the APIs of all configured providers (OpenAI, Anthropic, Ollama, etc.) to get their current list of available models.
-2. **Fetches from models.dev API**: Retrieves comprehensive model metadata from [models.dev](https://models.dev), which aggregates LLM documentation across providers. It provides details about model capabilities, pricing, context windows, and more.
-3. **Merges the data**: Combines provider-specific data with models.dev metadata. Provider data takes precedence for availability, while models.dev enriches models with additional details.
-4. **Updates the in-memory registry**: Replaces the current registry with the refreshed data.
+1. **Fetches the published catalog**: Downloads the current registry from rubyllm.com, using its ETag when a file cache is active.
+2. **Discovers configured providers**: Queries configured provider APIs, including local providers by default.
+3. **Merges the data**: Keeps the published metadata while adding provider-specific or local discoveries.
+4. **Persists the result**: Atomically replaces the file cache, or updates the configured Active Record model inside a transaction.
 
 The method returns a chainable `Models` instance, allowing you to immediately query the updated registry:
 
@@ -91,7 +85,7 @@ The method returns a chainable `Models` instance, allowing you to immediately qu
 chat_models = RubyLLM.models.refresh!.chat_models
 ```
 
-**Note:** models.dev is the upstream registry for RubyLLM metadata. If you encounter issues with model data, please report them via the models.dev site or repo.
+The published registry is generated from provider APIs and [models.dev](https://models.dev). A failed refresh raises `RubyLLM::ModelRegistryError` and leaves the previously loaded registry available.
 
 **Local Provider Models:**
 
@@ -103,17 +97,33 @@ RubyLLM.models.refresh!(remote_only: true)
 
 This is useful when you want to refresh only cloud-based models without querying local model servers.
 
-**For Gem Development:**
+### Cache Location
 
-The `rake models:update` task is designed for gem maintainers and updates the `models.json` file shipped with the gem:
+The default plain Ruby cache locations are:
+
+* Linux: `$XDG_CACHE_HOME/ruby_llm/models.json`, or `~/.cache/ruby_llm/models.json`
+* macOS: `~/Library/Caches/RubyLLM/models.json`
+* Windows: `%LOCALAPPDATA%\RubyLLM\Cache\models.json`
+
+Set `config.model_registry_file` to use another writable path. See [Connection, Logging and Contexts]({% link _getting_started/configuration-connection.md %}#model-registry-file).
+
+`refresh!` already saves to the active registry store. Use `save_to_json` separately when you want to export the currently loaded registry to another file:
+
+```ruby
+RubyLLM.models.save_to_json('/tmp/models.json')
+```
+
+### For Gem Maintainers
+
+The source repository includes a maintainer-only task that builds a registry directly from provider APIs and models.dev:
 
 ```bash
 bundle exec rake models:update
 ```
 
-This task is not intended for Rails applications as it writes to gem directories and requires the full gem development environment.
+These tasks live outside the gem's packaged Rake task directory. They are not application commands and are intentionally unavailable after installing the gem.
 
-**Persisting Models to Your Database:**
+### Rails Database Registry
 
 For Rails applications, the install generator sets up everything automatically:
 
@@ -124,11 +134,10 @@ bin/rails db:migrate
 
 This creates the Model table and loads model data from the gem's registry.
 
-To refresh model data from provider APIs:
+Refresh the database with the same public entry point used by plain Ruby:
 
 ```ruby
-# Fetches latest model info from configured providers (requires API keys)
-Model.refresh!
+RubyLLM.models.refresh!
 ```
 
 ## Exploring and Finding Models

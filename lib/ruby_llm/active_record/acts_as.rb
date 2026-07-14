@@ -42,7 +42,7 @@ module RubyLLM
 
       def self.included(base) # :nodoc:
         super
-        RubyLLM.config.model_registry_source ||= RubyLLM::ModelRegistry::ActiveRecordSource.new
+        RubyLLM.config.model_registry_store ||= RubyLLM::ModelRegistry::ActiveRecordStore.new
       end
 
       class_methods do # rubocop:disable Metrics/BlockLength

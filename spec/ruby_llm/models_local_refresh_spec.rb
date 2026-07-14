@@ -6,6 +6,11 @@ RSpec.describe RubyLLM::Models do
   include_context 'with configured RubyLLM'
   before do
     skip 'Local provider specs disabled via SKIP_LOCAL_PROVIDER_TESTS' if ENV['SKIP_LOCAL_PROVIDER_TESTS']
+
+    published = RubyLLM::ModelRegistry.read(described_class.bundled_registry_file)
+    allow(described_class).to receive(:fetch_published_registry)
+      .and_return(RubyLLM::ModelRegistry::PublishedSource::Result.new(published, 'test-etag', false))
+    allow_any_instance_of(described_class).to receive(:persist_registry!) # rubocop:disable RSpec/AnyInstance
   end
 
   describe 'local provider model fetching' do

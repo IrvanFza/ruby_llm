@@ -62,7 +62,7 @@ module RubyLLM
       def empty_pricing?(data)
         return true unless data
 
-        %i[standard batch].each do |tier|
+        PricingCategory::TIERS.each do |tier|
           next unless data[tier]
 
           data[tier].each_value do |value|

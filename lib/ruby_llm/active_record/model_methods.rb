@@ -22,24 +22,22 @@ module RubyLLM
       extend ActiveSupport::Concern
 
       class_methods do # rubocop:disable Metrics/BlockLength
-        # Refreshes the in-memory model registry from provider APIs, then
-        # saves every model to the database with #save_to_database.
+        # Refreshes the model registry and saves every model to the database.
         # See Models#refresh!.
         #
         #   Model.refresh!
         #
         def refresh!
           RubyLLM.models.refresh!
-
-          save_to_database
         end
 
-        # Saves every model in the in-memory registry to the database inside
-        # a single transaction. Rows are matched on their +model_id+ and
-        # +provider+ columns, updated when found and created otherwise.
-        def save_to_database
+        # Saves every model in +registry+ to the database inside a single
+        # transaction. The global registry is the default. Rows are matched
+        # on their +model_id+ and +provider+ columns, updated when found and
+        # created otherwise.
+        def save_to_database(registry = RubyLLM.models)
           transaction do
-            RubyLLM.models.all.each do |model_info|
+            registry.all.each do |model_info|
               model = find_or_initialize_by(
                 model_id: model_info.id,
                 provider: model_info.provider

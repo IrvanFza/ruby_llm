@@ -45,10 +45,9 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
 
     describe 'model persistence' do
       it 'syncs models from RubyLLM registry' do
-        allow(RubyLLM.models).to receive(:refresh!)
         allow(RubyLLM.models).to receive(:all).and_return([model_info])
 
-        expect { model_class.refresh! }.to change(model_class, :count).from(0).to(1)
+        expect { model_class.save_to_database }.to change(model_class, :count).from(0).to(1)
 
         model = model_class.last
         expect(model.model_id).to eq('gpt-4')
@@ -63,13 +62,20 @@ RSpec.describe RubyLLM::ActiveRecord::ActsAs do
           provider: 'openai'
         )
 
-        allow(RubyLLM.models).to receive(:refresh!)
         allow(RubyLLM.models).to receive(:all).and_return([model_info])
 
-        expect { model_class.refresh! }.not_to(change(model_class, :count))
+        expect { model_class.save_to_database }.not_to(change(model_class, :count))
 
         model = model_class.last
         expect(model.name).to eq('GPT-4')
+      end
+
+      it 'uses the same refresh entry point as plain Ruby' do
+        allow(RubyLLM.models).to receive(:refresh!)
+
+        model_class.refresh!
+
+        expect(RubyLLM.models).to have_received(:refresh!).once
       end
     end
 

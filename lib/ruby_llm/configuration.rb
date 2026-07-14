@@ -105,10 +105,10 @@ module RubyLLM
     ##
     # :attr_accessor: model_registry_file
     #
-    # Path of the JSON file holding the model registry. Defaults to the
-    # copy bundled with the gem. Point it at a writable location when the
-    # gem directory is read-only.
-    option :model_registry_file, -> { File.expand_path('models.json', __dir__) }
+    # Path of the writable JSON cache holding the model registry. Defaults
+    # to the operating system's user cache directory. The copy bundled with
+    # the gem is used until this file exists.
+    option :model_registry_file, -> { ModelRegistry.cache_path }
 
     ##
     # :attr_accessor: model_registry_class
@@ -118,11 +118,14 @@ module RubyLLM
     option :model_registry_class, 'Model'
 
     ##
-    # :attr_accessor: model_registry_source
+    # :attr_accessor: model_registry_store
     #
-    # Source object the model registry loads models from. Rails apps
-    # using the acts_as helpers set this automatically. Default: +nil+.
-    option :model_registry_source, nil
+    # Store object the model registry reads from and persists to. Rails
+    # apps using the acts_as helpers set this to the database store
+    # automatically. A store must respond to +read+, returning an array of
+    # Model entries, and may respond to +write(registry)+ to let
+    # Models#refresh! persist. Default: +nil+ (use +model_registry_file+).
+    option :model_registry_store, nil
 
     ##
     # :attr_accessor: request_timeout
