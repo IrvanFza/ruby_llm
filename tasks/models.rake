@@ -111,7 +111,7 @@ def sorted_models_data(models)
 end
 
 def validate_models!(models)
-  models_data = models.all.map(&:to_h)
+  models_data = JSON.parse(RubyLLM::ModelRegistry.pretty_json(models.all))
 
   validation_errors = JSON::Validator.fully_validate(RubyLLM::ModelSchema.json_schema, models_data, list: true)
 
