@@ -187,17 +187,15 @@ def generate_models_markdown
 
     ---
 
-    _Updated #{updated_on}. This page reflects the latest published registry, also available as raw JSON at [rubyllm.com/models.json](https://rubyllm.com/models.json). Your installed gem may include an older bundled snapshot, and provider availability can vary by account and region._
+    _Updated #{updated_on}. This page lists the latest refreshed registry, also available as raw JSON at [rubyllm.com/models.json](https://rubyllm.com/models.json). It covers remote providers only; models on local providers (Ollama, GPUStack) are discovered from your own servers when you refresh._
 
-    _The registry covers remote providers only. Models on local providers (Ollama, GPUStack) are discovered from your own servers when you call `RubyLLM.models.refresh!`._
-
-    _Model information is enriched by [models.dev](https://models.dev) and RubyLLM's provider integrations._
-
-    Can't find a newly released model? Refresh your registry:
+    Your installed gem may bundle an older snapshot of the registry. Refresh it to get the latest models in your app too:
 
     ```ruby
     RubyLLM.models.refresh!
     ```
+
+    See [the models guide](https://rubyllm.com/guides/models/) for how refreshing works in plain Ruby and Rails.
 
     ## Models by Provider
 
@@ -210,6 +208,10 @@ def generate_models_markdown
     ## Models by Modality
 
     #{generate_modality_sections}
+
+    ---
+
+    _Provider availability can vary by account and region. Model information is enriched by [models.dev](https://models.dev) and RubyLLM's provider integrations._
   MARKDOWN
 end
 
