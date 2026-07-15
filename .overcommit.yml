@@ -33,7 +33,10 @@ PreCommit:
   AppraisalUpdate:
     enabled: true
     description: 'Update appraisal gemfiles'
-    command: ['bundle', 'exec', 'appraisal', 'update']
+    # env -u: git exports GIT_INDEX_FILE to hooks, and Bundler's git-gem
+    # operations (archspec) would otherwise write the gem's tree into
+    # this repo's index, corrupting the commit.
+    command: ['env', '-u', 'GIT_INDEX_FILE', 'bundle', 'exec', 'appraisal', 'update']
 
   Gitleaks:
     enabled: true
