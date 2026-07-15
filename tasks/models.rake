@@ -161,13 +161,14 @@ def generate_models_markdown
   models = RubyLLM.models.all
   total_models = models.count
   provider_count = models.map(&:provider).uniq.count
+  updated_on = Time.now.utc.strftime('%Y-%m-%d')
 
   <<~MARKDOWN
     ---
     layout: default
     title: Available Models
     nav_order: 2
-    description: Browse #{total_models} AI models across #{provider_count} providers in the latest published registry.
+    description: Browse #{total_models} AI models across #{provider_count} remote providers. Updated #{updated_on}.
     redirect_from:
       - /guides/available-models
     ---
@@ -186,7 +187,9 @@ def generate_models_markdown
 
     ---
 
-    _This page reflects the latest published RubyLLM registry. Your installed gem may include an older bundled snapshot. Provider availability can also vary by account and region._
+    _Updated #{updated_on}. This page reflects the latest published registry, also available as raw JSON at [rubyllm.com/models.json](https://rubyllm.com/models.json). Your installed gem may include an older bundled snapshot, and provider availability can vary by account and region._
+
+    _The registry covers remote providers only. Models on local providers (Ollama, GPUStack) are discovered from your own servers when you call `RubyLLM.models.refresh!`._
 
     _Model information is enriched by [models.dev](https://models.dev) and RubyLLM's provider integrations._
 

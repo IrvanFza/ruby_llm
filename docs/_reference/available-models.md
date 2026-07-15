@@ -2,7 +2,7 @@
 layout: default
 title: Available Models
 nav_order: 2
-description: Browse 1183 AI models across 11 providers in the latest published registry.
+description: Browse 1183 AI models across 11 remote providers. Updated 2026-07-15.
 redirect_from:
   - /guides/available-models
 ---
@@ -21,7 +21,9 @@ redirect_from:
 
 ---
 
-_This page reflects the latest published RubyLLM registry. Your installed gem may include an older bundled snapshot. Provider availability can also vary by account and region._
+_Updated 2026-07-15. This page reflects the latest published registry, also available as raw JSON at [rubyllm.com/models.json](https://rubyllm.com/models.json). Your installed gem may include an older bundled snapshot, and provider availability can vary by account and region._
+
+_The registry covers remote providers only. Models on local providers (Ollama, GPUStack) are discovered from your own servers when you call `RubyLLM.models.refresh!`._
 
 _Model information is enriched by [models.dev](https://models.dev) and RubyLLM's provider integrations._
 
